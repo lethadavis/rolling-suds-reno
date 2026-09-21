@@ -103,12 +103,13 @@ nav.top .wrap{display:flex;align-items:center;justify-content:space-between;heig
   box-shadow:0 14px 34px rgba(0,0,0,.28);transition:transform .15s,box-shadow .15s,border-color .15s}
 .promo:hover{transform:translateY(-2px);box-shadow:0 18px 40px rgba(0,0,0,.35);border-color:rgba(255,255,255,.24);border-left-color:var(--lime)}
 .promo:focus-visible{outline:3px solid var(--lime);outline-offset:3px}
-.promo-icon{flex:none;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;color:var(--lime);background:rgba(198,242,78,.1);border:1.5px solid rgba(198,242,78,.55)}
+.promo-icon{flex:none;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;color:#ff5a47;background:rgba(255,90,71,.12);border:1.5px solid rgba(255,90,71,.6)}
 .promo-icon svg{width:28px;height:28px}
 .promo-body{display:flex;flex-direction:column;gap:4px}
 .promo-eyebrow{font-size:12px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;color:var(--lime)}
 .promo-title{font-family:var(--display);font-size:22px;font-weight:800;letter-spacing:-.01em;line-height:1.2}
 .promo-text{font-size:15px;line-height:1.5;color:rgba(255,255,255,.82)}
+.promo-text strong{color:#fff;font-weight:700}
 
 /* Quote card */
 .quote-card{background:#fff;color:var(--text);border-radius:20px;padding:32px;box-shadow:0 30px 60px rgba(0,0,0,.35)}
@@ -241,7 +242,7 @@ section{padding:96px 0}
 .rev-track::-webkit-scrollbar{display:none}
 .rev-track:focus-visible{outline:3px solid var(--sky);outline-offset:4px;border-radius:var(--radius)}
 .rev{flex:0 0 calc((100% - 44px) / 3);scroll-snap-align:start;background:var(--off);border:1px solid var(--border);border-radius:var(--radius);padding:28px;display:flex;flex-direction:column}
-.rev .stars{font-size:18px}
+.rev .stars{font-size:18px;color:#fbbc04}
 .rev blockquote{font-size:16px;margin:14px 0 22px;flex:1}
 .rev-who{display:flex;align-items:center;gap:12px}
 .avatar{width:44px;height:44px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-weight:700}
@@ -390,12 +391,12 @@ footer a:hover{color:#fff}
         <span class="dot"></span>
         <span class="shield"><svg><use href="#i-shield"/></svg>Fully Insured &amp; Licensed</span>
       </div>
-      <a class="promo" href="#quote" data-service="Wildfire Smoke &amp; Soot Cleanup">
+      <a class="promo" href="#quote" data-service="Wildfire Ash &amp; Soot Cleanup">
         <span class="promo-icon" aria-hidden="true"><svg><use href="#i-flame"/></svg></span>
         <span class="promo-body">
           <span class="promo-eyebrow">Now Booking: Reno &amp; Tahoe</span>
-          <span class="promo-title">Wildfire Smoke &amp; Soot Cleanup</span>
-          <span class="promo-text">Ash, soot and smoke film washed off roofs, siding, decks and windows &mdash; Reno &amp; Tahoe.</span>
+          <span class="promo-title">Wildfire ash and soot cleanup</span>
+          <span class="promo-text">Ash and smoke film from the recent fires is sitting on roofs, siding, decks, windows and solar panels across the region. We&rsquo;re washing it off. <strong>$75 off any residential wash through October 31</strong>, and we&rsquo;ll rinse your solar panels free while we&rsquo;re there.</span>
         </span>
       </a>
     </div>
@@ -423,7 +424,7 @@ footer a:hover{color:#fff}
               <option>Fleet Washing</option>
               <option>Hood Vent Cleaning</option>
               <option>Restaurant Cleaning Services</option>
-              <option>Wildfire Smoke &amp; Soot Cleanup</option>
+              <option>Wildfire Ash &amp; Soot Cleanup</option>
               <option>Multiple Services</option>
               <option>Not Sure: Need a Consultation</option>
             </select>
