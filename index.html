@@ -219,24 +219,28 @@ section{padding:96px 0}
 .map iframe{width:100%;height:100%;min-height:420px;border:0;display:block}
 
 /* Reviews */
-.rev-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-.rev{background:var(--off);border:1px solid var(--border);border-radius:var(--radius);padding:28px;display:flex;flex-direction:column}
+.rating{display:inline-flex;align-items:center;flex-wrap:wrap;gap:8px}
+.rating-logo{height:22px;width:auto}
+.section-head .rating{justify-content:center}
+.section-head .rating-logo{height:28px}
+.rev-carousel{position:relative}
+.rev-track{display:flex;gap:22px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding:6px 2px 10px;scrollbar-width:none}
+.rev-track::-webkit-scrollbar{display:none}
+.rev-track:focus-visible{outline:3px solid var(--sky);outline-offset:4px;border-radius:var(--radius)}
+.rev{flex:0 0 calc((100% - 44px) / 3);scroll-snap-align:start;background:var(--off);border:1px solid var(--border);border-radius:var(--radius);padding:28px;display:flex;flex-direction:column}
 .rev .stars{font-size:18px}
 .rev blockquote{font-size:16px;margin:14px 0 22px;flex:1}
 .rev-who{display:flex;align-items:center;gap:12px}
 .avatar{width:44px;height:44px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-weight:700}
 .rev-who strong{display:block;font-size:15px}
 .rev-who span{font-size:13px;color:var(--gray)}
-.rev-who img.avatar{object-fit:cover}
-.rev-who a{text-decoration:none}
-.rev-who a:hover strong{text-decoration:underline}
-.rev blockquote{max-height:calc(1.6em * 7);overflow:hidden}
-.rev blockquote.open{max-height:none}
-.rev-more{align-self:flex-start;background:none;border:0;color:var(--blue);font:inherit;font-size:14px;font-weight:700;cursor:pointer;margin:-14px 0 18px;padding:0}
-.rev-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:36px}
-.btn-ghost{background:#fff;color:var(--navy);border:1.5px solid var(--border)}
-.btn-ghost:hover{border-color:var(--blue)}
-.g-attrib{text-align:center;font-size:13px;color:var(--gray);margin-top:16px}
+.rev-nav{position:absolute;top:50%;z-index:2;width:44px;height:44px;margin-top:-22px;border-radius:50%;border:1.5px solid var(--border);background:#fff;color:var(--navy);font-size:26px;line-height:1;cursor:pointer;box-shadow:0 6px 16px rgba(10,34,51,.12)}
+.rev-nav:hover{border-color:var(--blue);color:var(--blue)}
+.rev-prev{left:-22px}
+.rev-next{right:-22px}
+.rev-dots{display:flex;justify-content:center;gap:8px;margin-top:22px}
+.rev-dots button{width:9px;height:9px;padding:0;border:0;border-radius:50%;background:var(--border);cursor:pointer;transition:width .2s}
+.rev-dots button[aria-current="true"]{background:var(--blue);width:24px;border-radius:5px}
 
 /* CTA */
 .cta{background:var(--navy);color:#fff;text-align:center;position:relative;overflow:hidden}
@@ -269,7 +273,9 @@ footer a:hover{color:#fff}
   nav.top.open .nav-links{display:flex;flex-direction:column;gap:0;position:absolute;top:72px;left:0;right:0;background:var(--navy);padding:8px 24px 20px}
   nav.top.open .nav-links a{display:block;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.08)}
   .hero .wrap,.why-grid,.area-grid{grid-template-columns:1fr}
-  .rev-grid{grid-template-columns:1fr}
+  .rev{flex-basis:calc((100% - 22px) / 2)}
+  .rev-prev{left:-8px}
+  .rev-next{right:-8px}
   .gallery-grid{grid-template-columns:repeat(3,1fr)}
   .foot-grid{grid-template-columns:1fr 1fr}
   .foot-grid > div:first-child{grid-column:1/-1}
@@ -284,6 +290,8 @@ footer a:hover{color:#fff}
   .quote-card{padding:24px 20px}
   .form-grid{grid-template-columns:1fr}
   .gallery-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .rev{flex-basis:88%;padding:24px}
+  .rev-nav{display:none}
   .g-cap{font-size:13px;left:10px;bottom:8px}
   .g-filter{padding:7px 14px;font-size:13px}
   .lightbox{padding:60px 12px 88px}
@@ -360,9 +368,7 @@ footer a:hover{color:#fff}
       <h1>Commercial &amp; Residential Pressure Washing <span>in Reno &amp; Tahoe</span></h1>
       <p class="hero-lede">Locally owned residential and commercial power washing for the Truckee Meadows. Professional-grade equipment, plant-safe detergents, and a 100% satisfaction guarantee.</p>
       <div class="hero-proof">
-        <span><span class="stars">★★★★★</span> <span data-g-rating>5.0</span> Google Rating</span>
-        <span class="dot"></span>
-        <span><span data-g-count>9</span> Google Reviews</span>
+        <span class="rating"><img class="rating-logo" src="images/rating-logo.png" alt="" onerror="this.remove()"><span class="stars">★★★★★</span> Rated 4.9 / 5 (2,987 Reviews)</span>
         <span class="dot"></span>
         <span class="shield"><svg><use href="#i-shield"/></svg>Fully Insured &amp; Licensed</span>
       </div>
@@ -512,20 +518,20 @@ footer a:hover{color:#fff}
 </section>
 
 <!-- ================= REVIEWS ================= -->
-<!-- Reviews load live from Google. Set GOOGLE_API_KEY near the bottom of this file. -->
+<!-- Reviews: edit the REVIEWS list near the bottom of this file. -->
 <section id="reviews">
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">What Customers Say</span>
-      <h2><span data-g-rating>5.0</span> Stars on<br><span>Google Reviews</span></h2>
-      <p><span class="stars">★★★★★</span> Rated <strong data-g-rating>5.0</strong> out of 5 from <strong><span data-g-count>9</span> Google reviews</strong></p>
+      <h2>Real Reviews From<br><span>Real Customers</span></h2>
+      <p class="rating"><img class="rating-logo" src="images/rating-logo.png" alt="" onerror="this.remove()"><span class="stars">★★★★★</span> Rated <strong>4.9 / 5</strong> (2,987 Reviews)</p>
     </div>
-    <div class="rev-grid" id="revGrid" hidden></div>
-    <div class="rev-actions">
-      <a class="btn btn-green" href="https://search.google.com/local/reviews?placeid=ChIJYV1x5w9wnCoR5FHwIPjkhG8" target="_blank" rel="noopener">Read All Reviews on Google</a>
-      <a class="btn btn-ghost" href="https://search.google.com/local/writereview?placeid=ChIJYV1x5w9wnCoR5FHwIPjkhG8" target="_blank" rel="noopener">Write a Review</a>
+    <div class="rev-carousel" aria-roledescription="carousel" aria-label="Customer reviews">
+      <button class="rev-nav rev-prev" id="revPrev" aria-label="Previous reviews">‹</button>
+      <div class="rev-track" id="revTrack" tabindex="0"></div>
+      <button class="rev-nav rev-next" id="revNext" aria-label="Next reviews">›</button>
     </div>
-    <p class="g-attrib" id="gAttrib" hidden>Reviews powered by Google</p>
+    <div class="rev-dots" id="revDots"></div>
   </div>
 </section>
 
@@ -609,11 +615,17 @@ footer a:hover{color:#fff}
 const FORM_ENDPOINT = "";
 const FALLBACK_EMAIL = "EMAIL@rollingsuds.com";
 
-// Google reviews (live). Paste a Google Maps Platform API key with
-// "Maps JavaScript API" and "Places API (New)" enabled, restricted to the
-// site's domain. Without a key, the page shows the rating and links to Google.
-const GOOGLE_API_KEY = "";
-const GOOGLE_PLACE_ID = "ChIJYV1x5w9wnCoR5FHwIPjkhG8"; // Rolling Suds of Reno-Tahoe
+// Customer reviews shown in the carousel (from the Google Business Profile).
+const REVIEWS = [
+  { name: "Ryan", text: "Jesse and his team are very professional, friendly, and punctual. They did an excellent job on the exterior of my home and I would definitely recommend them." },
+  { name: "Elias Anderson", text: "Impeccable service. Cezanne power washed the inside of our garage door and it looked brand new. Communication was professional and friendly! I am stoked and will be calling them again for any power washing needs in the future!" },
+  { name: "Claire Salo", text: "I hired Rolling Suds of Reno-Tahoe to clean one of my properties and have nothing but great things to say about them! They were professional, efficient, responsive to scheduling, and attentive to specific requests for the property." },
+  { name: "Megan Malloy", text: "I had an excellent experience with this power washing service! They were incredibly responsive from the very beginning and got me scheduled as soon as possible, which I really appreciated." },
+  { name: "Dawn Washington", text: "I highly recommend their services to anyone looking to improve the appearance of their property. Their knowledge and skill far exceed others in the industry." },
+  { name: "Paige Boesen", text: "The team cleaned our home in a timely manner, and it looks great. Thank you for taking the time to address the driveway as well." },
+  { name: "Daniel Stevenson", text: "It was a simple process from scheduling, the crew did a great job, and payment was made easy. I would recommend Rolling Suds." },
+  { name: "Equality Automotive", text: "They did a great job with some staining I had on my pavers highly recommend will use them again!!" },
+];
 
 // Gallery. Photos go in images/gallery/. Videos use the YouTube video ID
 // (the part after "shorts/" or "youtu.be/"); set short: true for Shorts.
@@ -760,59 +772,44 @@ form.addEventListener("submit", async e => {
 
 document.getElementById("yr").textContent = new Date().getFullYear();
 
-/* ---------- Google reviews ---------- */
-const esc = str => String(str ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-
-async function loadGoogleReviews() {
-  if (!GOOGLE_API_KEY) return;
-  window.__gmapsReady = () => {};
-  await new Promise((resolve, reject) => {
-    const sc = document.createElement("script");
-    sc.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(GOOGLE_API_KEY)}&v=weekly&loading=async&callback=__gmapsReady`;
-    sc.async = true;
-    sc.onload = resolve;
-    sc.onerror = reject;
-    document.head.appendChild(sc);
-  });
-  while (!window.google?.maps?.importLibrary) await new Promise(r => setTimeout(r, 50));
-  const { Place } = await google.maps.importLibrary("places");
-  const place = new Place({ id: GOOGLE_PLACE_ID });
-  await place.fetchFields({ fields: ["rating", "userRatingCount", "reviews"] });
-
-  if (place.rating) document.querySelectorAll("[data-g-rating]").forEach(el => el.textContent = place.rating.toFixed(1));
-  if (place.userRatingCount) document.querySelectorAll("[data-g-count]").forEach(el => el.textContent = place.userRatingCount.toLocaleString());
-
-  const reviews = (place.reviews || []).filter(r => r.text);
-  if (!reviews.length) return;
-  const grid = document.getElementById("revGrid");
-  grid.innerHTML = reviews.map(r => {
-    const a = r.authorAttribution || {};
-    const initials = (a.displayName || "?").split(/\s+/).map(w => w[0]).slice(0, 2).join("").toUpperCase();
-    const avatar = a.photoURI
-      ? `<img class="avatar" src="${esc(a.photoURI)}" alt="" referrerpolicy="no-referrer" loading="lazy">`
-      : `<div class="avatar">${esc(initials)}</div>`;
-    return `<div class="rev">
-      <span class="stars" aria-label="${r.rating} out of 5 stars">${"★".repeat(r.rating || 5)}${"☆".repeat(5 - (r.rating || 5))}</span>
+/* ---------- Reviews carousel ---------- */
+(() => {
+  const track = document.getElementById("revTrack");
+  const dotsEl = document.getElementById("revDots");
+  const esc = v => String(v).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  track.innerHTML = REVIEWS.map(r => {
+    const initials = r.name.split(/\s+/).map(w => w[0]).slice(0, 2).join("").toUpperCase();
+    return `<div class="rev" role="group" aria-label="Review from ${esc(r.name)}">
+      <span class="stars" aria-label="5 out of 5 stars">★★★★★</span>
       <blockquote>${esc(r.text)}</blockquote>
-      <div class="rev-who">${avatar}<div>
-        <a href="${esc(a.uri)}" target="_blank" rel="noopener"><strong>${esc(a.displayName)}</strong></a>
-        <span>${esc(r.relativePublishTimeDescription)} · Google</span>
-      </div></div>
+      <div class="rev-who"><div class="avatar" aria-hidden="true">${esc(initials)}</div><div><strong>${esc(r.name)}</strong><span>Google review</span></div></div>
     </div>`;
   }).join("");
-  grid.hidden = false;
-  document.getElementById("gAttrib").hidden = false;
-
-  // "Read more" for long reviews
-  grid.querySelectorAll("blockquote").forEach(q => {
-    if (q.scrollHeight > q.clientHeight + 2) {
-      const b = Object.assign(document.createElement("button"), { className: "rev-more", textContent: "Read more" });
-      b.onclick = () => { const open = q.classList.toggle("open"); b.textContent = open ? "Show less" : "Read more"; };
-      q.after(b);
-    }
-  });
-}
-loadGoogleReviews().catch(err => console.warn("Google reviews unavailable:", err));
+  const cards = [...track.children];
+  const stepW = () => cards[1].offsetLeft - cards[0].offsetLeft;
+  const perView = () => Math.max(1, Math.round((track.clientWidth + 22) / stepW()));
+  const pages = () => Math.max(1, cards.length - perView() + 1);
+  const page = () => Math.round(track.scrollLeft / stepW());
+  const go = i => { const n = pages(); track.scrollTo({ left: ((i % n) + n) % n * stepW() }); };
+  function renderDots() {
+    const n = pages(), cur = Math.min(page(), n - 1);
+    dotsEl.innerHTML = Array.from({ length: n }, (_, i) => `<button aria-label="Show review ${i + 1}" aria-current="${i === cur}"></button>`).join("");
+    [...dotsEl.children].forEach((b, i) => b.onclick = () => go(i));
+  }
+  document.getElementById("revPrev").onclick = () => go(page() - 1);
+  document.getElementById("revNext").onclick = () => go(page() + 1);
+  let t; track.addEventListener("scroll", () => { clearTimeout(t); t = setTimeout(renderDots, 80); });
+  window.addEventListener("resize", renderDots);
+  renderDots();
+  // Gentle auto-advance; pauses on hover, focus or touch, and for reduced-motion users
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    let paused = false;
+    const car = track.closest(".rev-carousel");
+    ["mouseenter", "focusin", "touchstart"].forEach(e => car.addEventListener(e, () => paused = true, { passive: true }));
+    ["mouseleave", "focusout"].forEach(e => car.addEventListener(e, () => paused = false));
+    setInterval(() => { if (!paused && !document.hidden) go(page() + 1); }, 6000);
+  }
+})();
 </script>
 </body>
 </html>
