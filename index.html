@@ -98,7 +98,7 @@ nav.top .wrap{display:flex;align-items:center;justify-content:space-between;heig
 .hero-proof .shield svg{width:16px;height:16px;color:var(--sky)}
 .hero-ctas{display:flex;flex-wrap:wrap;gap:12px}
 /* Hero promo callout */
-.promo{--lime:#c6f24e;--fire:#ef3b2d;position:relative;display:flex;align-items:center;gap:22px;max-width:560px;padding:22px 26px 22px 24px;border-radius:12px;text-decoration:none;color:#fff;
+.promo{--lime:#c6f24e;--fire:#ef3b2d;position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:16px;max-width:560px;padding:22px 26px 22px 24px;border-radius:12px;text-decoration:none;color:#fff;
   background:linear-gradient(135deg,#0b3d78 0%,#08305f 100%);border:1px solid rgba(255,255,255,.14);border-left:5px solid var(--fire);
   box-shadow:0 14px 34px rgba(0,0,0,.28);transition:transform .15s,box-shadow .15s,border-color .15s}
 .promo:hover{transform:translateY(-2px);box-shadow:0 18px 40px rgba(0,0,0,.35);border-color:rgba(255,255,255,.24);border-left-color:var(--fire)}
@@ -109,11 +109,7 @@ nav.top .wrap{display:flex;align-items:center;justify-content:space-between;heig
 .promo-eyebrow{font-size:12px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;color:var(--lime)}
 .promo-title{font-family:var(--display);font-size:22px;font-weight:800;letter-spacing:-.01em;line-height:1.2}
 .promo-text{font-size:15px;line-height:1.5;color:rgba(255,255,255,.82)}
-.promo-text strong{color:#fff;font-weight:700}
-.promo-badge{position:absolute;top:-26px;right:-20px;width:88px;height:88px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-  background:var(--accent);color:#fff;font-weight:800;font-size:18px;white-space:nowrap;letter-spacing:-.01em;
-  box-shadow:0 8px 20px rgba(0,0,0,.35),0 0 0 4px rgba(255,255,255,.18);transform:rotate(-8deg)}
-.promo-eyebrow,.promo-title{padding-right:56px}
+.promo-offer{align-self:flex-start;margin-top:10px;padding:8px 14px;border:1.5px solid #fff;border-radius:8px;color:#fff;font-weight:700;font-size:15px;line-height:1.35}
 
 /* Quote card */
 .quote-card{background:#fff;color:var(--text);border-radius:20px;padding:32px;box-shadow:0 30px 60px rgba(0,0,0,.35)}
@@ -310,12 +306,10 @@ footer a:hover{color:#fff}
   .gallery-grid{grid-template-columns:repeat(2,1fr);gap:10px}
   .rev{flex-basis:88%;padding:24px}
   .hero-proof .dot{display:none}
-  .promo{gap:16px;padding:18px 18px 18px 16px}
+  .promo{gap:14px;padding:18px 18px 18px 16px}
   .promo-icon{width:48px;height:48px}
   .promo-icon svg{width:24px;height:24px}
   .promo-title{font-size:19px}
-  .promo-badge{width:74px;height:74px;font-size:15px;top:-22px;right:-6px}
-  .promo-eyebrow,.promo-title{padding-right:52px}
   .rev-nav{display:none}
   .g-cap{font-size:13px;left:10px;bottom:8px}
   .g-filter{padding:7px 14px;font-size:13px}
@@ -398,12 +392,12 @@ footer a:hover{color:#fff}
         <span class="shield"><svg><use href="#i-shield"/></svg>Fully Insured &amp; Licensed</span>
       </div>
       <a class="promo" href="#quote" data-service="Wildfire Ash &amp; Soot Cleanup">
-        <span class="promo-badge" aria-hidden="true">$75 off</span>
         <span class="promo-icon" aria-hidden="true"><svg><use href="#i-flame"/></svg></span>
         <span class="promo-body">
           <span class="promo-eyebrow">Now Booking: Reno &amp; Tahoe</span>
           <span class="promo-title">Wildfire ash and soot cleanup</span>
-          <span class="promo-text">Ash and smoke film from the recent fires is sitting on roofs, siding, decks, windows and solar panels across the region. We&rsquo;re washing it off. <strong>$75 off any residential wash through October 31</strong>, and we&rsquo;ll rinse your solar panels free while we&rsquo;re there.</span>
+          <span class="promo-text">Ash and smoke film from the recent fires is sitting on roofs, siding, decks, windows and solar panels across the region. We&rsquo;re washing it off.</span>
+          <span class="promo-offer">$75 off any residential wash through October 31</span>
         </span>
       </a>
     </div>
