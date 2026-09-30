@@ -2,13 +2,17 @@
 // Run with: node build.mjs
 import { readFileSync, writeFileSync, mkdirSync, cpSync, rmSync, existsSync } from "node:fs";
 import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { dirname, join } from "node:path";
 import { SITE_URL, FLAGS } from "./site.config.js";
 import { renderPage, fillTokens, canonicalFor } from "./src/layout.mjs";
 import { buildPages, SERVICES, CITIES } from "./src/content/pages.mjs";
 
 const OUT = "dist";
-const buildStamp = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+// Assets are cached for a week, so the query string has to change whenever
+// their contents change, not merely when the date does.
+const hash = (file) => createHash("sha256").update(readFileSync(file)).digest("hex").slice(0, 8);
+const buildStamp = hash("assets/site.css") + hash("assets/site.js");
 
 /* ---------- Production detection ----------
    Netlify sets CONTEXT and URL. Production means the production context of the

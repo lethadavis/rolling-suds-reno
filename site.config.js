@@ -30,11 +30,13 @@ export const CONTACT = {
   sameAs: [],
 };
 
-// Local Google rating only. Never the national Rolling Suds aggregate.
+// Which rating the site shows.
+// "national" is the Rolling Suds brand aggregate published by corporate.
+// "local" is this franchise's own Google Business Profile rating.
 export const REVIEWS = {
-  rating: "5.0",
-  count: 9, // verified on the Google Business Profile, 2026-09-30
-  source: "Google",
+  display: "national",
+  national: { rating: "4.9", count: "2,987", label: "Reviews" },
+  local: { rating: "5.0", count: "9", label: "Google reviews" }, // verified 2026-09-30
 };
 
 // Counties and areas the crews cover, used by LocalBusiness schema and the service area page.

@@ -17,8 +17,9 @@ export function fillTokens(html, extra = {}) {
     MAP_EMBED_URL: CONTACT.mapEmbedUrl.replace(/&/g, "&amp;"),
     REVIEW_URL: CONTACT.reviewUrl,
     CORPORATE_URL: CONTACT.corporateUrl,
-    REVIEW_RATING: REVIEWS.rating,
-    REVIEW_COUNT: String(REVIEWS.count),
+    REVIEW_RATING: REVIEWS[REVIEWS.display].rating,
+    REVIEW_COUNT: String(REVIEWS[REVIEWS.display].count),
+    REVIEW_LABEL: REVIEWS[REVIEWS.display].label,
   };
   return html.replace(/\{\{([A-Z_]+)\}\}/g, (m, key) => (key in map ? map[key] : m));
 }

@@ -9,7 +9,7 @@
   --body:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue","Segoe UI",Roboto,Arial,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;scroll-padding-top:94px}
+html{scroll-behavior:smooth;scroll-padding-top:112px}
 body{font-family:var(--body);color:var(--text);background:var(--white);line-height:1.6;-webkit-font-smoothing:antialiased}
 img{max-width:100%;display:block}
 a{color:inherit}
@@ -29,9 +29,9 @@ a{color:inherit}
 
 /* ---------- Nav ---------- */
 nav.top{position:fixed;inset:0 0 auto 0;z-index:50;background:rgba(10,34,51,.96);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,.06)}
-nav.top .wrap{display:flex;align-items:center;justify-content:space-between;height:86px;gap:24px}
+nav.top .wrap{display:flex;align-items:center;justify-content:space-between;height:104px;gap:24px}
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff}
-.logo img{height:74px;width:auto}
+.logo img{height:92px;width:auto}
 .logo-area{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--sky);padding-left:12px;border-left:1px solid rgba(255,255,255,.18);line-height:1.45;white-space:nowrap}
 .logo-text{font-family:var(--display);font-weight:800;font-size:21px;letter-spacing:-.02em;line-height:1;text-transform:uppercase}
 .logo-text small{display:block;font-family:var(--body);font-size:10px;letter-spacing:2px;margin-top:3px;color:var(--sky);font-weight:600}
@@ -44,7 +44,7 @@ nav.top .wrap{display:flex;align-items:center;justify-content:space-between;heig
 .menu-btn svg{width:28px;height:28px}
 
 /* ---------- Hero ---------- */
-.hero{position:relative;background:var(--navy);color:#fff;padding:150px 0 90px;overflow:hidden}
+.hero{position:relative;background:var(--navy);color:#fff;padding:168px 0 90px;overflow:hidden}
 /* Add images/hero.jpg and uncomment to put a photo behind the hero.
 .hero::before{content:"";position:absolute;inset:0;background:url("/images/hero.jpg") center/cover no-repeat;opacity:.35} */
 .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,rgba(10,34,51,.97) 0%,rgba(10,34,51,.82) 45%,rgba(10,34,51,.45) 100%)}
@@ -250,7 +250,7 @@ footer a:hover{color:#fff}
 @media (max-width:1140px){
   .nav-links{display:none}
   .menu-btn{display:block}
-  nav.top.open .nav-links{display:flex;flex-direction:column;gap:0;position:absolute;top:86px;left:0;right:0;background:var(--navy);padding:8px 24px 20px}
+  nav.top.open .nav-links{display:flex;flex-direction:column;gap:0;position:absolute;top:104px;left:0;right:0;background:var(--navy);padding:8px 24px 20px}
   nav.top.open .nav-links a{display:block;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.08)}
   .hero .wrap,.why-grid,.area-grid{grid-template-columns:1fr}
   .rev{flex-basis:calc((100% - 22px) / 2)}
@@ -264,7 +264,7 @@ footer a:hover{color:#fff}
 @media (max-width:640px){
   .wrap{padding:0 16px}
   .nav-cta{display:none}
-  .logo img{height:62px}
+  .logo img{height:74px}
   .hero{padding:120px 0 60px}
   section{padding:68px 0}
   .quote-card{padding:24px 20px}
@@ -296,7 +296,7 @@ footer a:hover{color:#fff}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 
 /* ---------- Inner pages ---------- */
-.breadcrumbs{margin-top:86px;background:var(--navy-deep);color:rgba(255,255,255,.6);font-size:13px;padding:12px 0}
+.breadcrumbs{margin-top:104px;background:var(--navy-deep);color:rgba(255,255,255,.6);font-size:13px;padding:12px 0}
 .breadcrumbs a{color:var(--sky);text-decoration:underline}
 .breadcrumbs a:hover{text-decoration:underline}
 .crumb-sep{margin:0 9px;opacity:.45}
@@ -315,7 +315,7 @@ footer a:hover{color:#fff}
 .prose ul{margin:0 0 18px;padding-left:20px;color:#33505b;display:grid;gap:8px}
 .prose a{color:var(--blue);font-weight:600}
 .prose strong{color:var(--text)}
-.side-card{background:var(--off);border:1px solid var(--border);border-radius:var(--radius);padding:26px;position:sticky;top:104px}
+.side-card{background:var(--off);border:1px solid var(--border);border-radius:var(--radius);padding:26px;position:sticky;top:122px}
 .side-card h2{font-family:var(--display);font-size:24px;font-weight:800;text-transform:uppercase;letter-spacing:-.02em;margin-bottom:10px}
 .side-card p{font-size:15px;color:var(--gray);margin-bottom:16px}
 .side-card .btn{width:100%;margin-bottom:10px}
@@ -344,7 +344,7 @@ footer a:hover{color:#fff}
   .foot-links{grid-template-columns:1fr 1fr}
 }
 @media (max-width:640px){
-  .breadcrumbs{margin-top:86px;font-size:12px}
+  .breadcrumbs{margin-top:104px;font-size:12px}
   .page-body{padding:48px 0}
   .foot-links{grid-template-columns:1fr}
 }
