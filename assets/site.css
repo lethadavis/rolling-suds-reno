@@ -48,11 +48,22 @@ nav.top .wrap{display:flex;align-items:center;justify-content:space-between;heig
 /* Add images/hero.jpg and uncomment to put a photo behind the hero.
 .hero::before{content:"";position:absolute;inset:0;background:url("/images/hero.jpg") center/cover no-repeat;opacity:.35} */
 .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,rgba(10,34,51,.97) 0%,rgba(10,34,51,.82) 45%,rgba(10,34,51,.45) 100%)}
-.hero .wrap{position:relative;z-index:1;display:grid;grid-template-columns:1.1fr 1fr;gap:56px;align-items:center}
+.hero .wrap{position:relative;z-index:2;display:grid;grid-template-columns:1.1fr 1fr;gap:56px;align-items:center}
 .pill{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--foam);background:rgba(0,180,204,.14);border:1px solid rgba(0,180,204,.35);border-radius:999px;padding:7px 14px}
 .pill::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--sky);box-shadow:0 0 0 3px rgba(0,180,204,.25)}
 .hero h1{font-family:var(--display);font-weight:800;font-size:clamp(32px,4.2vw,52px);line-height:1.04;letter-spacing:-.03em;text-transform:uppercase;margin:22px 0 20px}
 .hero h1 span{color:var(--sky);display:block}
+/* Decorative Reno skyline band along the bottom of the hero.
+   Duotone: greyscale, screened with navy and multiplied with aqua, then held
+   at low opacity and faded out at the top edge. */
+.hero-skyline{position:absolute;left:0;right:0;bottom:0;height:55%;z-index:1;opacity:.16;pointer-events:none;
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 45%,#000 100%);
+  mask-image:linear-gradient(to bottom,transparent 0,#000 45%,#000 100%)}
+.hero-skyline picture{position:absolute;inset:0;display:block;isolation:isolate}
+.hero-skyline img{width:100%;height:100%;object-fit:cover;object-position:center bottom;filter:grayscale(1) contrast(1.05)}
+.hero-skyline picture::before,.hero-skyline picture::after{content:"";position:absolute;inset:0}
+.hero-skyline picture::before{background:#0f2a44;mix-blend-mode:screen}
+.hero-skyline picture::after{background:#19b5d9;mix-blend-mode:multiply}
 .hero-lede{font-size:18px;color:rgba(255,255,255,.88);max-width:520px}
 .hero-proof{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin:24px 0 30px;font-size:14px;font-weight:600}
 .stars{color:var(--accent);letter-spacing:2px}
@@ -269,6 +280,8 @@ footer a:hover{color:#fff}
   .nav-cta{display:none}
   .logo img{height:74px}
   .hero{padding:120px 0 60px}
+  .hero-skyline{height:40%;opacity:.14}
+  .hero-skyline img{object-position:58% bottom}
   section{padding:68px 0}
   .quote-card{padding:24px 20px}
   .form-grid{grid-template-columns:1fr}
