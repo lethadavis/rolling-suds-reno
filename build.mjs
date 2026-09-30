@@ -8,6 +8,7 @@ import { SITE_URL, FLAGS } from "./site.config.js";
 import { renderPage, fillTokens, canonicalFor } from "./src/layout.mjs";
 import { buildPages, SERVICES, CITIES } from "./src/content/pages.mjs";
 import { shot } from "./src/templates/image.mjs";
+import { beforeAfter } from "./src/templates/before-after.mjs";
 
 const OUT = "dist";
 // Assets are cached for a week, so the query string has to change whenever
@@ -85,7 +86,34 @@ const footerColumn = (heading, links) =>
 
 const liveServices = SERVICES.filter((s) => !s.flag || FLAGS[s.flag]);
 
+// Before and after pairs at the top of the gallery's right column.
+// TODO: confirm both captions.
+const comparisons = [
+  beforeAfter({
+    beforeName: "building-before",
+    afterName: "building-after",
+    caption: "Commercial Building Wash",
+    alts: {
+      before: "Commercial building wall with dark streaks below the light fixture before washing",
+      after: "The same building wall after washing, with the staining removed",
+    },
+  }),
+  beforeAfter({
+    beforeName: "garage-during",
+    afterName: "garage-after",
+    // The left photo is mid wash, so it is labelled DURING until a true
+    // before photo exists. Switch to "Before" here if one is supplied.
+    beforeLabel: "During",
+    caption: "Garage Door Wash",
+    alts: {
+      before: "Garage door partway through a wash, with cleaned and uncleaned panels side by side",
+      after: "The same garage door after washing, clean across every panel",
+    },
+  }),
+].join("\n        ");
+
 const tokens = {
+  GALLERY_COMPARE: comparisons,
   FOOTER_SERVICES: footerColumn("Services", liveServices.map((s) => ({ route: "/" + s.slug, label: s.label }))),
   FOOTER_CITIES: footerColumn(
     "Service Area",

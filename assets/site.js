@@ -53,17 +53,25 @@ const GALLERY = [
     return btn;
   });
 
+  // Comparison cards sit at the top of the right column, after the featured tile.
+  const compareTpl = document.getElementById("galleryCompare");
+  const compareCards = compareTpl ? [...compareTpl.content.children] : [];
+  if (compareCards.length && tiles.length) {
+    compareCards.reduce((prev, card) => { prev.after(card); return card; }, tiles[0]);
+  }
+
   // Filter buttons (only categories that have items)
   const cats = ["all", ...Object.keys(GALLERY_CATEGORIES).filter(c => GALLERY.some(g => g.cat === c))];
   cats.forEach(c => {
-    const n = c === "all" ? GALLERY.length : GALLERY.filter(g => g.cat === c).length;
+    const extra = compareCards.filter(x => c === "all" || x.dataset.cat === c).length;
+  const n = (c === "all" ? GALLERY.length : GALLERY.filter(g => g.cat === c).length) + extra;
     const b = document.createElement("button");
     b.className = "g-filter";
     b.innerHTML = `${c === "all" ? "All" : GALLERY_CATEGORIES[c]}<span>${n}</span>`;
     b.setAttribute("aria-pressed", c === "all");
     b.addEventListener("click", () => {
       filters.querySelectorAll(".g-filter").forEach(x => x.setAttribute("aria-pressed", x === b));
-      tiles.forEach(t => t.hidden = c !== "all" && t.dataset.cat !== c);
+      [...tiles, ...compareCards].forEach(t => t.hidden = c !== "all" && t.dataset.cat !== c);
     });
     filters.appendChild(b);
   });
