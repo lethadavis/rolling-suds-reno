@@ -127,7 +127,29 @@ menuBtn.addEventListener("click", () => {
   const open = nav.classList.toggle("open");
   menuBtn.setAttribute("aria-expanded", open);
 });
-nav.querySelectorAll(".nav-links a").forEach(a => a.addEventListener("click", () => nav.classList.remove("open")));
+nav.querySelectorAll(".nav-links a").forEach(a => a.addEventListener("click", () => closeMenu()));
+
+function closeMenu() {
+  nav.classList.remove("open");
+  menuBtn.setAttribute("aria-expanded", "false");
+}
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && nav.classList.contains("open")) {
+    closeMenu();
+    menuBtn.focus();
+  }
+});
+
+// Compact the header once the page has scrolled past the first 40px.
+let ticking = false;
+function syncHeader() {
+  nav.classList.toggle("is-compact", window.scrollY > 40);
+  ticking = false;
+}
+addEventListener("scroll", () => {
+  if (!ticking) { ticking = true; requestAnimationFrame(syncHeader); }
+}, { passive: true });
+syncHeader();
 
 /* ---------- Quote form ---------- */
 (() => {

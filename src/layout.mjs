@@ -87,10 +87,13 @@ ${schema}
 </head>
 <body${page.bodyClass ? ` class="${page.bodyClass}"` : ""}>
 
+<a class="skip-link" href="#main">Skip to content</a>
 ${parts.icons}
 ${parts.nav}
 ${breadcrumbHtml(page.breadcrumbs)}
+<main id="main">
 ${page.body}
+</main>
 ${parts.footer}
 ${parts.mobileBar}
 ${page.needsLightbox ? parts.lightbox : ""}
