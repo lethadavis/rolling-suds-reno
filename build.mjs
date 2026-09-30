@@ -5,7 +5,7 @@ import { execFileSync } from "node:child_process";
 import { dirname, join } from "node:path";
 import { SITE_URL, FLAGS } from "./site.config.js";
 import { renderPage, fillTokens, canonicalFor } from "./src/layout.mjs";
-import { buildPages } from "./src/content/pages.mjs";
+import { buildPages, SERVICES, CITIES } from "./src/content/pages.mjs";
 
 const OUT = "dist";
 const buildStamp = new Date().toISOString().slice(0, 10).replace(/-/g, "");
@@ -72,10 +72,28 @@ function validateSchema(page) {
 if (existsSync(OUT)) rmSync(OUT, { recursive: true });
 const pages = buildPages({ flags: FLAGS });
 
+// Footer link columns are generated so a flagged off page never gets linked.
+const footerColumn = (heading, links) =>
+  `      <div>\n        <h4>${heading}</h4>\n        <ul>\n` +
+  links.map((l) => `          <li><a href="${l.route}/">${l.label}</a></li>`).join("\n") +
+  `\n        </ul>\n      </div>`;
+
+const liveServices = SERVICES.filter((s) => !s.flag || FLAGS[s.flag]);
+const tokens = {
+  FOOTER_SERVICES: footerColumn("Services", liveServices.map((s) => ({ route: "/" + s.slug, label: s.label }))),
+  FOOTER_CITIES: footerColumn(
+    "Service Area",
+    CITIES.map((c) => ({ route: "/" + c.slug, label: c.label })).concat([{ route: "/service-area", label: "All areas" }, { route: "/blog", label: "Blog" }])
+  ),
+  HOOD_VENT_LINK: FLAGS.HOOD_VENT_ENABLED
+    ? '<a class="svc-link" href="/hood-vent-cleaning/">See hood vent cleaning &rarr;</a>'
+    : '<a class="svc-link" href="/#quote">Ask about hood vent cleaning &rarr;</a>',
+};
+
 for (const page of pages) {
   validateSchema(page);
-  const html = renderPage(page, partials, { noindex, buildStamp });
-  write(page.route === "/" ? "index.html" : `${page.route.slice(1)}/index.html`, html);
+  const html = renderPage(page, partials, { noindex, buildStamp, tokens });
+  write(page.outputPath || (page.route === "/" ? "index.html" : `${page.route.slice(1)}/index.html`), html);
 }
 
 // Assets and images ship as-is. Contact tokens are filled in the JS and CSS too.

@@ -5,8 +5,9 @@ export const esc = (v) =>
   String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
 // Contact values live in site.config.js. Templates reference them as tokens.
-export function fillTokens(html) {
+export function fillTokens(html, extra = {}) {
   const map = {
+    ...extra,
     PHONE: CONTACT.phone,
     PHONE_HREF: CONTACT.phoneHref,
     EMAIL: CONTACT.email,
@@ -36,12 +37,13 @@ function breadcrumbHtml(trail) {
 }
 
 export function renderPage(page, parts, opts) {
-  const { noindex, buildStamp } = opts;
+  const { noindex, buildStamp, tokens = {} } = opts;
   const canonical = canonicalFor(page.route);
   const ogImage = SITE_URL + (page.ogImage || BRAND.ogImage);
   const schema = (page.schema || []).map((s) => `<script type="application/ld+json">\n${JSON.stringify(s, null, 2)}\n</script>`).join("\n");
 
-  return fillTokens(`<!DOCTYPE html>
+  return fillTokens(
+    `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -79,5 +81,7 @@ ${parts.mobileBar}
 ${page.needsLightbox ? parts.lightbox : ""}
 </body>
 </html>
-`);
+`,
+    tokens
+  );
 }
