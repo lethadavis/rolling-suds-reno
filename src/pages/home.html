@@ -13,20 +13,14 @@
       <h1>Commercial &amp; Residential Pressure Washing <span>in Reno &amp; Tahoe</span></h1>
       <p class="hero-lede">Locally owned residential and commercial power washing for the Truckee Meadows. Professional-grade equipment, plant-safe detergents, and a 100% satisfaction guarantee.</p>
       <div class="hero-proof">
-        <span class="rating"><span class="g-stars" role="img" aria-label="Google rating, {{REVIEW_RATING}} stars"></span> Rated {{REVIEW_RATING}} / 5 ({{REVIEW_COUNT}} {{REVIEW_LABEL}})</span>
+        {{RATING_LINE_HERO}}
         <span class="dot"></span>
         <span class="shield"><svg><use href="#i-shield"/></svg>Fully Insured &amp; Licensed</span>
       </div>
-      <a class="promo" href="#quote" data-service="Wildfire Ash &amp; Soot Cleanup">
-        <span class="promo-icon" aria-hidden="true"><svg><use href="#i-flame"/></svg></span>
-        <span class="promo-body">
-          <span class="promo-eyebrow">Now Booking: Reno &amp; Tahoe</span>
-          <span class="promo-title">Wildfire ash and soot cleanup</span>
-          <span class="promo-text">It&rsquo;s been settling on our houses all summer, same as yours. We&rsquo;ll wash it off your roof, siding, deck, windows and solar panels</span>
-          <span class="promo-offer">$75 off a full residential exterior wash</span>
-          <span class="promo-until">through October 31</span>
-        </span>
-      </a>
+      <div class="hero-ctas">
+        <a class="btn btn-green btn-lg" href="#quote">Get a Free Quote &rarr;</a>
+        <a class="btn btn-ghost btn-lg" href="tel:{{PHONE_HREF}}"><svg><use href="#i-phone"/></svg>Call {{PHONE}}</a>
+      </div>
     </div>
 
     <div class="quote-card">
@@ -98,6 +92,16 @@
       <article class="svc"><div class="svc-icon"><svg><use href="#i-building"/></svg></div><h3>Property Management</h3><p>Breezeways, entries, concrete and building exteriors for apartment communities and managed portfolios, on a schedule you can plan around.</p><a class="svc-link" href="/property-management-pressure-washing/">See property management cleaning &rarr;</a></article>
       <article class="svc"><div class="svc-icon"><svg><use href="#i-house"/></svg></div><h3>HOA Common Areas</h3><p>Monument signs, sidewalks, clubhouse entries and amenity decks cleaned on a scope your board can approve line by line.</p><a class="svc-link" href="/hoa-pressure-washing/">See HOA pressure washing &rarr;</a></article>
     </div>
+      <a class="promo promo-wide" href="#quote" data-service="Wildfire Ash &amp; Soot Cleanup">
+        <span class="promo-icon" aria-hidden="true"><svg><use href="#i-flame"/></svg></span>
+        <span class="promo-body">
+          <span class="promo-eyebrow">Now Booking: Reno &amp; Tahoe</span>
+          <span class="promo-title">Wildfire ash and soot cleanup</span>
+          <span class="promo-text">It&rsquo;s been settling on our houses all summer, same as yours. We&rsquo;ll wash it off your roof, siding, deck, windows and solar panels</span>
+          <span class="promo-offer">$75 off a full residential exterior wash</span>
+          <span class="promo-until">through October 31</span>
+        </span>
+      </a>
   </div>
 </section>
 
@@ -144,7 +148,7 @@
 
 <!-- ================= SERVICE AREA ================= -->
 <!-- TODO: confirm towns and zip codes against the Reno franchise's territory -->
-<section class="bg-off" id="area" style="padding-top:0">
+<section id="area">
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">Where We Work</span>
@@ -172,12 +176,12 @@
 
 <!-- ================= REVIEWS ================= -->
 <!-- Reviews: each review is one <div class="rev"> card below. Copy one to add more. -->
-<section id="reviews">
+<section class="bg-off" id="reviews">
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">What Customers Say</span>
       <h2>Real Reviews From<br><span>Real Customers</span></h2>
-      <p class="rating"><span class="g-stars" role="img" aria-label="Google rating, {{REVIEW_RATING}} stars"></span> Rated <strong>{{REVIEW_RATING}} / 5</strong> ({{REVIEW_COUNT}} {{REVIEW_LABEL}})</p>
+      {{RATING_LINE_SECTION}}
     </div>
     <div class="rev-carousel" aria-roledescription="carousel" aria-label="Customer reviews">
       <button class="rev-nav rev-prev" id="revPrev" aria-label="Previous reviews">‹</button>

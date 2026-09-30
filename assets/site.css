@@ -1,9 +1,12 @@
+/* Brand palette lives here only. Navy is reserved for the header bar, the
+   trust band, the closing call to action and the footer. Everything between
+   them alternates white and pale. Aqua is decoration: teal carries text. */
 :root{
-  --navy:#0a2233; --navy-mid:#0d3347; --navy-deep:#051219;
-  --blue:#007a9a; --sky:#00b4cc; --foam:#e0f9fb;
-  --white:#ffffff; --off:#f2fcfd; --gray:#4f6b75; --text:#0a2233;
-  --accent:#6cc24a; --accent-dark:#58a83a; --border:#b0e8ef;
-  --radius:16px; --shadow:0 18px 40px rgba(10,34,51,.14);
+  --navy:#0f2a44; --slate:#1c3e5a; --navy-mid:#1c3e5a; --navy-deep:#0a1e33;
+  --blue:#11738a; --sky:#19b5d9; --foam:#d7ebf4;
+  --white:#ffffff; --off:#e9f3f8; --gray:#4a6478; --text:#0f2a44;
+  --accent:#6cc24a; --accent-dark:#58a83a; --border:#c3dbe8;
+  --radius:16px; --shadow:0 18px 40px rgba(15,42,68,.14);
   /* San Francisco on Apple devices; each platform's system UI font elsewhere */
   --display:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue","Segoe UI",Roboto,Arial,sans-serif;
   --body:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue","Segoe UI",Roboto,Arial,sans-serif;
@@ -43,51 +46,28 @@ nav.top .wrap{display:flex;align-items:center;justify-content:space-between;heig
 .menu-btn{display:none;background:none;border:0;color:#fff;cursor:pointer;padding:6px}
 .menu-btn svg{width:28px;height:28px}
 
-/* ---------- Hero ---------- */
-.hero{position:relative;background:var(--navy);color:#fff;padding:168px 0 90px;overflow:hidden}
-/* Add images/hero.jpg and uncomment to put a photo behind the hero.
-.hero::before{content:"";position:absolute;inset:0;background:url("/images/hero.jpg") center/cover no-repeat;opacity:.35} */
-.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,rgba(10,34,51,.97) 0%,rgba(10,34,51,.82) 45%,rgba(10,34,51,.45) 100%)}
+/* ---------- Hero: bright daytime ---------- */
+.hero{position:relative;background:var(--off);color:var(--text);padding:168px 0 84px;overflow:hidden}
+/* Photo sits in natural colour. The wash over it keeps the text column readable
+   while the sky, mountains and skyline stay visible to the right and above. */
+.hero-skyline{position:absolute;inset:0;z-index:0;pointer-events:none}
+.hero-skyline picture{position:absolute;inset:0;display:block}
+.hero-skyline img{width:100%;height:100%;object-fit:cover;object-position:center 35%}
+.hero::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(100deg,rgba(233,243,248,.985) 0%,rgba(233,243,248,.96) 40%,rgba(233,243,248,.66) 60%,rgba(233,243,248,.14) 84%,rgba(233,243,248,0) 100%)}
 .hero .wrap{position:relative;z-index:2;display:grid;grid-template-columns:1.1fr 1fr;gap:56px;align-items:center}
-.pill{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--foam);background:rgba(0,180,204,.14);border:1px solid rgba(0,180,204,.35);border-radius:999px;padding:7px 14px}
-.pill::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--sky);box-shadow:0 0 0 3px rgba(0,180,204,.25)}
-.hero h1{font-family:var(--display);font-weight:800;font-size:clamp(32px,4.2vw,52px);line-height:1.04;letter-spacing:-.03em;text-transform:uppercase;margin:22px 0 20px}
-.hero h1 span{color:var(--sky);display:block}
-/* Decorative Reno skyline band along the bottom of the hero.
-   Duotone: greyscale, screened with navy and multiplied with aqua, then held
-   at low opacity and faded out at the top edge. */
-.hero-skyline{position:absolute;left:0;right:0;bottom:0;height:55%;z-index:1;opacity:.16;pointer-events:none;
-  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 45%,#000 100%);
-  mask-image:linear-gradient(to bottom,transparent 0,#000 45%,#000 100%)}
-.hero-skyline picture{position:absolute;inset:0;display:block;isolation:isolate}
-.hero-skyline img{width:100%;height:100%;object-fit:cover;object-position:center bottom;filter:grayscale(1) contrast(1.05)}
-.hero-skyline picture::before,.hero-skyline picture::after{content:"";position:absolute;inset:0}
-.hero-skyline picture::before{background:#0f2a44;mix-blend-mode:screen}
-.hero-skyline picture::after{background:#19b5d9;mix-blend-mode:multiply}
-.hero-lede{font-size:18px;color:rgba(255,255,255,.88);max-width:520px}
-.hero-proof{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin:24px 0 30px;font-size:14px;font-weight:600}
-.stars{color:var(--accent);letter-spacing:2px}
-.hero-proof .dot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.4)}
+.pill{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);background:rgba(255,255,255,.9);border:1px solid var(--border);border-radius:999px;padding:7px 14px}
+.pill::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--sky);box-shadow:0 0 0 3px rgba(25,181,217,.22)}
+.hero h1{font-family:var(--display);font-weight:800;font-size:clamp(32px,4.2vw,52px);line-height:1.04;letter-spacing:-.03em;text-transform:uppercase;margin:16px 0 18px;color:var(--text)}
+.hero h1 span{color:var(--blue);display:block}
+.hero-lede{font-size:18px;color:var(--slate);max-width:520px}
+.hero-proof{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin:22px 0 26px;font-size:14px;font-weight:600;color:var(--text)}
+.stars{color:#fbbc04;letter-spacing:2px}
+.hero-proof .dot{width:4px;height:4px;border-radius:50%;background:rgba(15,42,68,.3)}
 .hero-proof .shield{display:inline-flex;align-items:center;gap:6px}
-.hero-proof .shield svg{width:16px;height:16px;color:var(--sky)}
+.hero-proof .shield svg{width:16px;height:16px;color:var(--blue)}
 .hero-ctas{display:flex;flex-wrap:wrap;gap:12px}
-/* Hero promo callout */
-.promo{--lime:#c6f24e;--fire:#ef3b2d;position:relative;display:flex;align-items:flex-start;gap:20px;max-width:560px;padding:22px 26px 22px 24px;border-radius:12px;text-decoration:none;color:#fff;
-  background:linear-gradient(135deg,#0b3d78 0%,#08305f 100%);border:1px solid rgba(255,255,255,.14);border-left:5px solid var(--fire);
-  box-shadow:0 14px 34px rgba(0,0,0,.28);transition:transform .15s,box-shadow .15s,border-color .15s}
-.promo:hover{transform:translateY(-2px);box-shadow:0 18px 40px rgba(0,0,0,.35);border-color:rgba(255,255,255,.24);border-left-color:var(--fire)}
-.promo:focus-visible{outline:3px solid var(--lime);outline-offset:3px}
-.promo-icon{flex:none;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;color:var(--fire);background:#fff;box-shadow:0 4px 12px rgba(0,0,0,.25)}
-.promo-icon svg{width:28px;height:28px}
-.promo-body{display:flex;flex-direction:column;gap:4px}
-.promo-eyebrow{font-size:12px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;color:var(--lime)}
-.promo-title{font-family:var(--display);font-size:22px;font-weight:800;letter-spacing:-.01em;line-height:1.2}
-.promo-text{font-size:14px;line-height:1.5;color:rgba(255,255,255,.82)}
-.promo-offer{align-self:flex-start;margin-top:10px;padding:8px 14px;border:1.5px solid #fff;border-radius:8px;color:#fff;font-weight:800;font-size:15px;line-height:1.35;letter-spacing:.6px;text-transform:uppercase}
-.promo-until{font-size:13px;color:rgba(255,255,255,.75)}
-
 /* Quote card */
-.quote-card{background:#fff;color:var(--text);border-radius:20px;padding:32px;box-shadow:0 30px 60px rgba(0,0,0,.35)}
+.quote-card{background:#fff;color:var(--text);border-radius:20px;padding:32px;box-shadow:0 34px 72px rgba(15,42,68,.26),0 2px 8px rgba(15,42,68,.08)}
 .tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--blue);background:var(--foam);border-radius:999px;padding:5px 12px;text-transform:uppercase}
 .quote-card h2{font-family:var(--display);font-weight:800;font-size:30px;line-height:1.05;letter-spacing:-.025em;text-transform:uppercase;margin:14px 0 8px}
 .quote-card h2 span{color:var(--blue)}
@@ -105,10 +85,10 @@ nav.top .wrap{display:flex;align-items:center;justify-content:space-between;heig
 .form-msg{display:none;margin-top:14px;padding:12px 14px;border-radius:10px;font-size:14px;background:var(--foam);color:var(--navy)}
 
 /* ---------- Trust strip ---------- */
-.trust{background:var(--blue);color:#fff;overflow:hidden}
+.trust{background:var(--navy);color:#fff;overflow:hidden}
 .trust-track{display:flex;gap:44px;padding:16px 0;width:max-content;animation:marquee 40s linear infinite}
 .trust-track span{display:inline-flex;align-items:center;gap:10px;font-weight:600;font-size:15px;white-space:nowrap}
-.trust-track span::before{content:"✓";display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.18);font-size:12px}
+.trust-track span::before{content:"✓";display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:rgba(25,181,217,.28);color:#fff;font-size:12px}
 @keyframes marquee{to{transform:translateX(-50%)}}
 
 /* ---------- Sections ---------- */
@@ -279,9 +259,9 @@ footer a:hover{color:#fff}
   .wrap{padding:0 16px}
   .nav-cta{display:none}
   .logo img{height:74px}
-  .hero{padding:120px 0 60px}
-  .hero-skyline{height:40%;opacity:.14}
-  .hero-skyline img{object-position:58% bottom}
+  .hero{padding:120px 0 56px}
+  .hero-skyline img{object-position:58% 38%}
+  .hero::after{background:linear-gradient(180deg,rgba(233,243,248,.9) 0%,rgba(233,243,248,.86) 45%,rgba(233,243,248,.84) 100%)}
   section{padding:68px 0}
   .quote-card{padding:24px 20px}
   .form-grid{grid-template-columns:1fr}

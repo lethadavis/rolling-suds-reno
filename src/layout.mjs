@@ -17,11 +17,20 @@ export function fillTokens(html, extra = {}) {
     MAP_EMBED_URL: CONTACT.mapEmbedUrl.replace(/&/g, "&amp;"),
     REVIEW_URL: CONTACT.reviewUrl,
     CORPORATE_URL: CONTACT.corporateUrl,
-    REVIEW_RATING: REVIEWS[REVIEWS.display].rating,
-    REVIEW_COUNT: String(REVIEWS[REVIEWS.display].count),
-    REVIEW_LABEL: REVIEWS[REVIEWS.display].label,
+    RATING_LINE_HERO: ratingLine("hero"),
+    RATING_LINE_SECTION: ratingLine("section"),
   };
   return html.replace(/\{\{([A-Z_]+)\}\}/g, (m, key) => (key in map ? map[key] : m));
+}
+
+// No rating configured means no rating line anywhere on the site.
+function ratingLine(kind) {
+  const { rating, count, label } = REVIEWS;
+  if (!rating || !count) return "";
+  const stars = `<span class="g-stars" role="img" aria-label="Google rating, ${rating} stars"></span>`;
+  return kind === "hero"
+    ? `<span class="rating">${stars} Rated ${rating} / 5 (${count} ${label})</span>`
+    : `<p class="rating">${stars} Rated <strong>${rating} / 5</strong> (${count} ${label})</p>`;
 }
 
 export const canonicalFor = (route) => (route === "/" ? SITE_URL + "/" : SITE_URL + route + "/");
@@ -67,7 +76,7 @@ ${noindex ? '<meta name="robots" content="noindex, nofollow">' : '<meta name="ro
 <meta name="twitter:title" content="${esc(page.ogTitle || page.title)}">
 <meta name="twitter:description" content="${esc(page.description)}">
 <meta name="twitter:image" content="${ogImage}">
-<meta name="theme-color" content="#0a2233">
+<meta name="theme-color" content="#0f2a44">
 <link rel="icon" href="/images/favicon.png" type="image/png">
 <link rel="apple-touch-icon" href="/images/favicon.png">
 <link rel="stylesheet" href="/assets/site.css?v=${buildStamp}">
