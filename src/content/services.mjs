@@ -77,7 +77,7 @@ export const SERVICES = [
     keyword: "property management pressure washing Reno",
     title: "Property Management Pressure Washing | Reno NV",
     description:
-      "Pressure washing for apartment communities and managed properties in Reno and Sparks: breezeways, entries, concrete and siding. Ask for a property walkthrough.",
+      "Pressure washing for apartment communities and managed properties in Reno and Sparks: breezeways, entries, concrete, siding. Book a walkthrough.",
     eyebrow: "For Property Managers",
     h1: "Pressure washing for property managers in Reno and Sparks",
     lede:

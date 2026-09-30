@@ -65,6 +65,8 @@ ${noindex ? '<meta name="robots" content="noindex, nofollow">' : '<meta name="ro
 <meta name="twitter:description" content="${esc(page.description)}">
 <meta name="twitter:image" content="${ogImage}">
 <meta name="theme-color" content="#0a2233">
+<link rel="icon" href="/images/favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="/images/favicon.png">
 <link rel="stylesheet" href="/assets/site.css?v=${buildStamp}">
 ${page.preloadHero ? `<link rel="preload" as="image" href="${page.preloadHero}" fetchpriority="high">` : ""}
 <script src="/assets/site.js?v=${buildStamp}" defer></script>

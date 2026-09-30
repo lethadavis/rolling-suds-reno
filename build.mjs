@@ -74,7 +74,7 @@ const pages = buildPages({ flags: FLAGS });
 
 // Footer link columns are generated so a flagged off page never gets linked.
 const footerColumn = (heading, links) =>
-  `      <div>\n        <h4>${heading}</h4>\n        <ul>\n` +
+  `      <div>\n        <h3>${heading}</h3>\n        <ul>\n` +
   links.map((l) => `          <li><a href="${l.route}/">${l.label}</a></li>`).join("\n") +
   `\n        </ul>\n      </div>`;
 
