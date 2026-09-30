@@ -1,6 +1,10 @@
-# Static site: no build step, publish the folder as-is.
+# Static build: node build.mjs renders src/ into dist/.
 [build]
-  publish = "."
+  command = "node build.mjs"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
 
 [[headers]]
   for = "/*"
@@ -13,3 +17,29 @@
   for = "/images/*"
   [headers.values]
     Cache-Control = "public, max-age=604800"
+
+# Stylesheet and script are cache busted with ?v= on every build.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+# Old domain to the new one, path preserved. These take effect once both
+# domains are pointed at this site in Netlify.
+[[redirects]]
+  from = "https://rollingsudsrenotahoe.com/*"
+  to = "https://rollingsudsreno.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.rollingsudsrenotahoe.com/*"
+  to = "https://rollingsudsreno.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.rollingsudsreno.com/*"
+  to = "https://rollingsudsreno.com/:splat"
+  status = 301
+  force = true

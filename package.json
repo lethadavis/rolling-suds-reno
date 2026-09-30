@@ -1,0 +1,10 @@
+{
+  "name": "rolling-suds-reno",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "check": "node scripts/check-site.mjs",
+    "serve": "node build.mjs && cd dist && python3 -m http.server 8765"
+  }
+}
