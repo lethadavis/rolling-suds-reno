@@ -7,16 +7,17 @@ import { POSTS } from "../src/content/blog.mjs";
 import { resolveShot } from "../src/templates/image.mjs";
 
 const rows = [];
-const add = (page, group, name, size, shotIdea, alt) =>
-  rows.push({ page, group, name, size, shotIdea, alt, have: Boolean(resolveShot(group, name)) });
+const add = (page, group, name, size, shotIdea, alt, kind) =>
+  rows.push({ page, group, name, size, shotIdea, alt, kind, have: Boolean(resolveShot(group, name)) });
 
 add(
   "Homepage hero",
   "hero",
-  "hero",
-  "2000x1200",
-  "Truck and crew on a residential job, wide shot with open sky. Darkened behind the headline, so keep the left third uncluttered.",
-  "Background image, no alt needed"
+  "reno-skyline",
+  "1920x1080",
+  "Daytime Reno skyline with the mountains behind it, shot wide. The left third sits under a pale wash and carries the headline, so keep it free of detail. A hi-res replacement for the current 1500px file is wanted.",
+  "Decorative, no alt needed",
+  "Regional scenery"
 );
 add(
   "Homepage, Why Us",
@@ -24,7 +25,8 @@ add(
   "crew",
   "1600x700",
   "Crew and truck on site, people visible and in uniform.",
-  "Our crew and truck on a job in the Truckee Meadows"
+  "Our crew and truck on a job in the Truckee Meadows",
+  "Real job photography"
 );
 for (const s of SERVICES) {
   add(
@@ -33,14 +35,15 @@ for (const s of SERVICES) {
     s.slug,
     "1200x800",
     "Work in progress or a finished result for this service. Before and after pairs work well.",
-    s.shotAlt
+    s.shotAlt,
+    "Real job photography"
   );
 }
 for (const c of CITIES) {
-  add(`City: ${c.label}`, "cities", c.slug, "1200x800", `Recognisable ${c.label} property or streetscape with our crew or truck in frame.`, c.shotAlt);
+  add(`City: ${c.label}`, "cities", c.slug, "1200x800", `Recognisable ${c.label} property or streetscape, ideally with our crew or truck in frame.`, c.shotAlt, "Real job photography, or regional scenery if no job shot exists");
 }
 for (const p of POSTS) {
-  add(`Blog: ${p.h1}`, "blog", p.slug, "1200x675", "Header image matching the topic. Real job photography, not stock.", p.shotAlt);
+  add(`Blog: ${p.h1}`, "blog", p.slug, "1200x675", "Header image matching the topic.", p.shotAlt, "Real job photography");
 }
 
 const missing = rows.filter((r) => !r.have);
@@ -55,6 +58,15 @@ until then it shows a neutral placeholder at the right shape.
 
 **Status: ${rows.length - missing.length} of ${rows.length} slots filled.**
 
+## Already covered
+
+- **Homepage gallery:** filled with 13 client supplied photos and videos in
+  \`images/gallery/\`. Add more by dropping files there and listing them in the
+  GALLERY array in \`src/content/pages.mjs\`.
+- **Team or About portrait:** wanted, but there is no About page yet. Once that
+  page exists the slot is \`images/why-us/team.webp\` at 1200x800, real job
+  photography of the family and crew.
+
 ## Shooting notes
 
 - Real jobs in our service area, no stock photography.
@@ -65,10 +77,10 @@ until then it shows a neutral placeholder at the right shape.
 
 ## Slots
 
-| Page | File | Target size | Shot | Suggested alt text | Have it? |
-| --- | --- | --- | --- | --- | --- |
+| Page | File | Target size | Shot | Type | Suggested alt text | Have it? |
+| --- | --- | --- | --- | --- | --- | --- |
 ${rows
-  .map((r) => `| ${r.page} | \`images/${r.group}/${r.name}.webp\` | ${r.size} | ${r.shotIdea} | ${r.alt} | ${r.have ? "yes" : "no"} |`)
+  .map((r) => `| ${r.page} | \`images/${r.group}/${r.name}.webp\` | ${r.size} | ${r.shotIdea} | ${r.kind} | ${r.alt} | ${r.have ? "yes" : "no"} |`)
   .join("\n")}
 `;
 

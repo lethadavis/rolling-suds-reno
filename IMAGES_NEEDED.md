@@ -7,7 +7,16 @@ preference: `.webp`, `.jpg`, `.jpeg`, `.png`. WebP is preferred for photographs.
 Nothing else needs changing: each slot picks up its file on the next build, and
 until then it shows a neutral placeholder at the right shape.
 
-**Status: 0 of 23 slots filled.**
+**Status: 1 of 23 slots filled.**
+
+## Already covered
+
+- **Homepage gallery:** filled with 13 client supplied photos and videos in
+  `images/gallery/`. Add more by dropping files there and listing them in the
+  GALLERY array in `src/content/pages.mjs`.
+- **Team or About portrait:** wanted, but there is no About page yet. Once that
+  page exists the slot is `images/why-us/team.webp` at 1200x800, real job
+  photography of the family and crew.
 
 ## Shooting notes
 
@@ -19,28 +28,28 @@ until then it shows a neutral placeholder at the right shape.
 
 ## Slots
 
-| Page | File | Target size | Shot | Suggested alt text | Have it? |
-| --- | --- | --- | --- | --- | --- |
-| Homepage hero | `images/hero/hero.webp` | 2000x1200 | Truck and crew on a residential job, wide shot with open sky. Darkened behind the headline, so keep the left third uncluttered. | Background image, no alt needed | no |
-| Homepage, Why Us | `images/why-us/crew.webp` | 1600x700 | Crew and truck on site, people visible and in uniform. | Our crew and truck on a job in the Truckee Meadows | no |
-| Service: Commercial Pressure Washing | `images/services/commercial-pressure-washing.webp` | 1200x800 | Work in progress or a finished result for this service. Before and after pairs work well. | Our crew pressure washing a commercial storefront entry in Reno, NV | no |
-| Service: Property Management | `images/services/property-management-pressure-washing.webp` | 1200x800 | Work in progress or a finished result for this service. Before and after pairs work well. | Breezeway and stairwell cleaning at an apartment community in Sparks, NV | no |
-| Service: HOA Pressure Washing | `images/services/hoa-pressure-washing.webp` | 1200x800 | Work in progress or a finished result for this service. Before and after pairs work well. | Entry monument and sidewalk cleaning in a Reno, NV community | no |
-| Service: Restaurant Exterior Cleaning | `images/services/restaurant-exterior-cleaning.webp` | 1200x800 | Work in progress or a finished result for this service. Before and after pairs work well. | Restaurant patio and entry concrete being cleaned in Reno, NV | no |
-| Service: Fleet Washing | `images/services/fleet-washing.webp` | 1200x800 | Work in progress or a finished result for this service. Before and after pairs work well. | Box truck being washed at a fleet yard in Sparks, NV | no |
-| Service: House Washing | `images/services/house-washing.webp` | 1200x800 | Work in progress or a finished result for this service. Before and after pairs work well. | Soft wash house washing on a stucco home in Reno, NV | no |
-| Service: Roof Cleaning | `images/services/roof-cleaning.webp` | 1200x800 | Work in progress or a finished result for this service. Before and after pairs work well. | Low pressure roof cleaning on a home in Reno, NV | no |
-| Service: Driveway & Concrete Cleaning | `images/services/driveway-and-concrete-cleaning.webp` | 1200x800 | Work in progress or a finished result for this service. Before and after pairs work well. | Surface cleaner lifting stains from a driveway in Reno, NV | no |
-| Service: Deck & Fence Cleaning | `images/services/deck-and-fence-cleaning.webp` | 1200x800 | Work in progress or a finished result for this service. Before and after pairs work well. | Wood deck being cleaned at a home in Reno, NV | no |
-| Service: Gutter Cleaning | `images/services/gutter-cleaning.webp` | 1200x800 | Work in progress or a finished result for this service. Before and after pairs work well. | Gutter being cleared and flushed on a home in Reno, NV | no |
-| Service: Wildfire Ash & Soot Cleanup | `images/services/wildfire-ash-and-soot-cleanup.webp` | 1200x800 | Work in progress or a finished result for this service. Before and after pairs work well. | Wildfire ash being washed off a home exterior in Reno, NV | no |
-| Service: Hood Vent Cleaning | `images/services/hood-vent-cleaning.webp` | 1200x800 | Work in progress or a finished result for this service. Before and after pairs work well. | Kitchen exhaust hood being cleaned at a restaurant in Reno, NV | no |
-| Service: Window Cleaning | `images/services/window-cleaning.webp` | 1200x800 | Work in progress or a finished result for this service. Before and after pairs work well. | Exterior window cleaning with a water fed pole in Reno, NV | no |
-| City: Reno | `images/cities/pressure-washing-reno.webp` | 1200x800 | Recognisable Reno property or streetscape with our crew or truck in frame. | Our crew washing a home exterior in Reno, NV | no |
-| City: Sparks | `images/cities/pressure-washing-sparks.webp` | 1200x800 | Recognisable Sparks property or streetscape with our crew or truck in frame. | Driveway cleaning at a home in Sparks, NV | no |
-| City: Carson City | `images/cities/pressure-washing-carson-city.webp` | 1200x800 | Recognisable Carson City property or streetscape with our crew or truck in frame. | House washing on an older home in Carson City, NV | no |
-| City: Lake Tahoe | `images/cities/pressure-washing-lake-tahoe.webp` | 1200x800 | Recognisable Lake Tahoe property or streetscape with our crew or truck in frame. | Deck cleaning at a cabin near Lake Tahoe | no |
-| Blog: How to clean wildfire ash and soot from your home in Reno | `images/blog/cleaning-wildfire-ash-and-soot.webp` | 1200x675 | Header image matching the topic. Real job photography, not stock. | Ash covered patio and railings at a home in Reno, NV before cleaning | no |
-| Blog: How often should commercial properties be pressure washed in Reno? | `images/blog/commercial-pressure-washing-schedule-reno.webp` | 1200x675 | Header image matching the topic. Real job photography, not stock. | Commercial entry and sidewalk being cleaned at a property in Reno, NV | no |
-| Blog: Pressure washing vs soft washing: which does your Reno property need? | `images/blog/pressure-washing-vs-soft-washing.webp` | 1200x675 | Header image matching the topic. Real job photography, not stock. | Side by side of a surface cleaner on concrete and a soft wash on siding in Reno, NV | no |
-| Blog: How much does pressure washing cost in Reno? | `images/blog/how-much-does-pressure-washing-cost-in-reno.webp` | 1200x675 | Header image matching the topic. Real job photography, not stock. | Technician quoting exterior cleaning work at a home in Reno, NV | no |
+| Page | File | Target size | Shot | Type | Suggested alt text | Have it? |
+| --- | --- | --- | --- | --- | --- | --- |
+| Homepage hero | `images/hero/reno-skyline.webp` | 1920x1080 | Daytime Reno skyline with the mountains behind it, shot wide. The left third sits under a pale wash and carries the headline, so keep it free of detail. A hi-res replacement for the current 1500px file is wanted. | Regional scenery | Decorative, no alt needed | yes |
+| Homepage, Why Us | `images/why-us/crew.webp` | 1600x700 | Crew and truck on site, people visible and in uniform. | Real job photography | Our crew and truck on a job in the Truckee Meadows | no |
+| Service: Commercial Pressure Washing | `images/services/commercial-pressure-washing.webp` | 1200x800 | Work in progress or a finished result for this service. Before and after pairs work well. | Real job photography | Our crew pressure washing a commercial storefront entry in Reno, NV | no |
+| Service: Property Management | `images/services/property-management-pressure-washing.webp` | 1200x800 | Work in progress or a finished result for this service. Before and after pairs work well. | Real job photography | Breezeway and stairwell cleaning at an apartment community in Sparks, NV | no |
+| Service: HOA Pressure Washing | `images/services/hoa-pressure-washing.webp` | 1200x800 | Work in progress or a finished result for this service. Before and after pairs work well. | Real job photography | Entry monument and sidewalk cleaning in a Reno, NV community | no |
+| Service: Restaurant Exterior Cleaning | `images/services/restaurant-exterior-cleaning.webp` | 1200x800 | Work in progress or a finished result for this service. Before and after pairs work well. | Real job photography | Restaurant patio and entry concrete being cleaned in Reno, NV | no |
+| Service: Fleet Washing | `images/services/fleet-washing.webp` | 1200x800 | Work in progress or a finished result for this service. Before and after pairs work well. | Real job photography | Box truck being washed at a fleet yard in Sparks, NV | no |
+| Service: House Washing | `images/services/house-washing.webp` | 1200x800 | Work in progress or a finished result for this service. Before and after pairs work well. | Real job photography | Soft wash house washing on a stucco home in Reno, NV | no |
+| Service: Roof Cleaning | `images/services/roof-cleaning.webp` | 1200x800 | Work in progress or a finished result for this service. Before and after pairs work well. | Real job photography | Low pressure roof cleaning on a home in Reno, NV | no |
+| Service: Driveway & Concrete Cleaning | `images/services/driveway-and-concrete-cleaning.webp` | 1200x800 | Work in progress or a finished result for this service. Before and after pairs work well. | Real job photography | Surface cleaner lifting stains from a driveway in Reno, NV | no |
+| Service: Deck & Fence Cleaning | `images/services/deck-and-fence-cleaning.webp` | 1200x800 | Work in progress or a finished result for this service. Before and after pairs work well. | Real job photography | Wood deck being cleaned at a home in Reno, NV | no |
+| Service: Gutter Cleaning | `images/services/gutter-cleaning.webp` | 1200x800 | Work in progress or a finished result for this service. Before and after pairs work well. | Real job photography | Gutter being cleared and flushed on a home in Reno, NV | no |
+| Service: Wildfire Ash & Soot Cleanup | `images/services/wildfire-ash-and-soot-cleanup.webp` | 1200x800 | Work in progress or a finished result for this service. Before and after pairs work well. | Real job photography | Wildfire ash being washed off a home exterior in Reno, NV | no |
+| Service: Hood Vent Cleaning | `images/services/hood-vent-cleaning.webp` | 1200x800 | Work in progress or a finished result for this service. Before and after pairs work well. | Real job photography | Kitchen exhaust hood being cleaned at a restaurant in Reno, NV | no |
+| Service: Window Cleaning | `images/services/window-cleaning.webp` | 1200x800 | Work in progress or a finished result for this service. Before and after pairs work well. | Real job photography | Exterior window cleaning with a water fed pole in Reno, NV | no |
+| City: Reno | `images/cities/pressure-washing-reno.webp` | 1200x800 | Recognisable Reno property or streetscape, ideally with our crew or truck in frame. | Real job photography, or regional scenery if no job shot exists | Our crew washing a home exterior in Reno, NV | no |
+| City: Sparks | `images/cities/pressure-washing-sparks.webp` | 1200x800 | Recognisable Sparks property or streetscape, ideally with our crew or truck in frame. | Real job photography, or regional scenery if no job shot exists | Driveway cleaning at a home in Sparks, NV | no |
+| City: Carson City | `images/cities/pressure-washing-carson-city.webp` | 1200x800 | Recognisable Carson City property or streetscape, ideally with our crew or truck in frame. | Real job photography, or regional scenery if no job shot exists | House washing on an older home in Carson City, NV | no |
+| City: Lake Tahoe | `images/cities/pressure-washing-lake-tahoe.webp` | 1200x800 | Recognisable Lake Tahoe property or streetscape, ideally with our crew or truck in frame. | Real job photography, or regional scenery if no job shot exists | Deck cleaning at a cabin near Lake Tahoe | no |
+| Blog: How to clean wildfire ash and soot from your home in Reno | `images/blog/cleaning-wildfire-ash-and-soot.webp` | 1200x675 | Header image matching the topic. | Real job photography | Ash covered patio and railings at a home in Reno, NV before cleaning | no |
+| Blog: How often should commercial properties be pressure washed in Reno? | `images/blog/commercial-pressure-washing-schedule-reno.webp` | 1200x675 | Header image matching the topic. | Real job photography | Commercial entry and sidewalk being cleaned at a property in Reno, NV | no |
+| Blog: Pressure washing vs soft washing: which does your Reno property need? | `images/blog/pressure-washing-vs-soft-washing.webp` | 1200x675 | Header image matching the topic. | Real job photography | Side by side of a surface cleaner on concrete and a soft wash on siding in Reno, NV | no |
+| Blog: How much does pressure washing cost in Reno? | `images/blog/how-much-does-pressure-washing-cost-in-reno.webp` | 1200x675 | Header image matching the topic. | Real job photography | Technician quoting exterior cleaning work at a home in Reno, NV | no |

@@ -7,7 +7,7 @@ import { dirname, join } from "node:path";
 import { SITE_URL, FLAGS } from "./site.config.js";
 import { renderPage, fillTokens, canonicalFor } from "./src/layout.mjs";
 import { buildPages, SERVICES, CITIES } from "./src/content/pages.mjs";
-import { shot, resolveShot } from "./src/templates/image.mjs";
+import { shot } from "./src/templates/image.mjs";
 
 const OUT = "dist";
 // Assets are cached for a week, so the query string has to change whenever
@@ -85,13 +85,6 @@ const footerColumn = (heading, links) =>
 
 const liveServices = SERVICES.filter((s) => !s.flag || FLAGS[s.flag]);
 
-// Hero photo is optional. When the file lands it is used and preloaded.
-const heroSrc = resolveShot("hero", "hero");
-const home = pages.find((p) => p.route === "/");
-if (heroSrc) {
-  home.preloadHero = heroSrc;
-  home.headExtra = `<style>.hero::before{content:"";position:absolute;inset:0;background:url("${heroSrc}") center/cover no-repeat;opacity:.35}</style>`;
-}
 const tokens = {
   FOOTER_SERVICES: footerColumn("Services", liveServices.map((s) => ({ route: "/" + s.slug, label: s.label }))),
   FOOTER_CITIES: footerColumn(
