@@ -72,6 +72,7 @@ ${noindex ? '<meta name="robots" content="noindex, nofollow">' : '<meta name="ro
 <link rel="apple-touch-icon" href="/images/favicon.png">
 <link rel="stylesheet" href="/assets/site.css?v=${buildStamp}">
 ${page.preloadHero ? `<link rel="preload" as="image" href="${page.preloadHero}" fetchpriority="high">` : ""}
+${page.headExtra || ""}
 <script src="/assets/site.js?v=${buildStamp}" defer></script>
 ${schema}
 </head>

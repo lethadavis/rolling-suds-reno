@@ -4,6 +4,7 @@
 export const CITIES = [
   {
     slug: "pressure-washing-reno",
+    shotAlt: "Our crew washing a home exterior in Reno, NV",
     label: "Reno",
     keyword: "pressure washing Reno",
     title: "Pressure Washing in Reno NV | Rolling Suds Reno-Tahoe",
@@ -64,6 +65,7 @@ export const CITIES = [
 
   {
     slug: "pressure-washing-sparks",
+    shotAlt: "Driveway cleaning at a home in Sparks, NV",
     label: "Sparks",
     keyword: "pressure washing Sparks NV",
     title: "Pressure Washing in Sparks NV | Rolling Suds Reno-Tahoe",
@@ -123,6 +125,7 @@ export const CITIES = [
 
   {
     slug: "pressure-washing-carson-city",
+    shotAlt: "House washing on an older home in Carson City, NV",
     label: "Carson City",
     keyword: "pressure washing Carson City",
     title: "Pressure Washing in Carson City NV | Rolling Suds",
@@ -182,6 +185,7 @@ export const CITIES = [
 
   {
     slug: "pressure-washing-lake-tahoe",
+    shotAlt: "Deck cleaning at a cabin near Lake Tahoe",
     label: "Lake Tahoe",
     keyword: "pressure washing Lake Tahoe",
     title: "Pressure Washing at Lake Tahoe | Rolling Suds Reno-Tahoe",

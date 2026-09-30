@@ -2,11 +2,20 @@
 import { readFileSync } from "node:fs";
 import { SERVICES } from "./services.mjs";
 import { CITIES } from "./cities.mjs";
-import { localBusiness, serviceSchema, faqSchema, breadcrumbSchema } from "../schema.mjs";
+import { POSTS } from "./blog.mjs";
+import { localBusiness, serviceSchema, faqSchema, breadcrumbSchema, BUSINESS_ID } from "../schema.mjs";
+import { SITE_URL } from "../../site.config.js";
 import { contentPage, pageHero, sections, faqBlock, linkCloud, ctaBand, sideCard } from "../templates/page.mjs";
+import { shot, resolveShot } from "../templates/image.mjs";
 
 const read = (p) => readFileSync(p, "utf8").trimEnd();
 const HOME_CRUMB = { name: "Home", route: "/" };
+
+// Put the photo after the opening section rather than above it.
+function withShot(figure, body) {
+  const marker = body.indexOf("<h2>", body.indexOf("<h2>") + 1);
+  return marker === -1 ? body + "\n\n      " + figure : body.slice(0, marker) + figure + "\n\n      " + body.slice(marker);
+}
 
 export function buildPages({ flags }) {
   const liveServices = SERVICES.filter((s) => !s.flag || flags[s.flag]);
@@ -44,14 +53,17 @@ export function buildPages({ flags }) {
       breadcrumbs: [HOME_CRUMB, { name: s.label, route: "/" + s.slug }],
       body: contentPage({
         hero: { eyebrow: s.eyebrow, h1: s.h1, lede: s.lede },
-        body: (s.offer
+        body: withShot(
+          shot({ group: "services", name: s.slug, alt: s.shotAlt, width: 1200, height: 800 }),
+          (s.offer
           ? `<div class="offer-box">
         <span class="offer-tag">${s.offer.tag}</span>
         <p>${s.offer.text}</p>
         <span class="offer-deal">${s.offer.deal}</span>
         <span class="offer-until">${s.offer.until}</span>
       </div>\n\n      `
-          : "") + sections(s.sections),
+          : "") + sections(s.sections)
+        ),
         aside: {
           heading: "Free quote, same business day",
           text: "Tell us about the property and we will come back to you with a no obligation estimate.",
@@ -90,7 +102,7 @@ export function buildPages({ flags }) {
       breadcrumbs: crumbs,
       body: contentPage({
         hero: { eyebrow: c.eyebrow, h1: c.h1, lede: c.lede },
-        body: sections(c.sections),
+        body: withShot(shot({ group: "cities", name: c.slug, alt: c.shotAlt, width: 1200, height: 800 }), sections(c.sections)),
         aside: {
           heading: `Quotes for ${c.label} properties`,
           text: "Send us the address and what needs cleaning. We will reply the same business day.",
@@ -165,17 +177,10 @@ export function buildPages({ flags }) {
   });
 
   /* ---------- Blog ---------- */
-  const post = {
-    slug: "how-much-does-pressure-washing-cost-in-reno",
-    title: "How Much Does Pressure Washing Cost in Reno? | Rolling Suds",
-    label: "How much does pressure washing cost in Reno?",
-    description:
-      "What drives pressure washing costs in Reno and Sparks, typical industry price ranges, and how to compare quotes properly. Ask us for a free quote.",
-  };
   const blogCrumbs = [HOME_CRUMB, { name: "Blog", route: "/blog" }];
   pages.push({
     route: "/blog",
-    sourceFile: "src/content/pages.mjs",
+    sourceFile: "src/content/blog.mjs",
     title: "Blog | Pressure Washing Advice for Reno & Tahoe",
     description:
       "Practical exterior cleaning advice for northern Nevada property owners, from our crews in Reno. Read the latest and request a free quote.",
@@ -189,11 +194,13 @@ export function buildPages({ flags }) {
 <section class="page-body">
   <div class="wrap">
     <div class="svc-grid">
-      <article class="svc">
-        <h3>${post.label}</h3>
-        <p>What drives the price of a wash here, the ranges the industry generally quotes, and how to compare two estimates that are not measuring the same thing.</p>
-        <a class="svc-link" href="/blog/${post.slug}/">Read about pressure washing costs &rarr;</a>
-      </article>
+      ${POSTS.map(
+        (post) => `<article class="svc">
+        <h3>${post.h1}</h3>
+        <p>${post.lede}</p>
+        <a class="svc-link" href="/blog/${post.slug}/">Read ${post.eyebrow.toLowerCase()} guide &rarr;</a>
+      </article>`
+      ).join("\n      ")}
     </div>
   </div>
 </section>
@@ -202,79 +209,68 @@ ${ctaBand({ heading: "Questions about your property?", text: "Send us the detail
     schema: [breadcrumbSchema(blogCrumbs)],
   });
 
-  const postCrumbs = [HOME_CRUMB, { name: "Blog", route: "/blog" }, { name: post.label, route: "/blog/" + post.slug }];
-  const postFaqs = [
-    {
-      q: "Is pressure washing priced by the hour or by the job?",
-      a: "Most exterior cleaning is quoted by the job, based on size, access, surface type and how much buildup there is. Hourly pricing is more common for unusual or open ended work.",
-    },
-    {
-      q: "Why do two quotes for the same house differ so much?",
-      a: "Usually because they cover different scopes. One may include gutter faces, window frames and the back fence line while the other covers walls only, so compare the written scope before comparing the totals.",
-    },
-    {
-      q: "Does a bundled visit cost less than separate visits?",
-      a: "Generally yes. Setting up on site is a fixed cost, so adding the driveway to a house wash usually costs less than booking the driveway on its own later.",
-    },
-  ];
-  pages.push({
-    route: "/blog/" + post.slug,
-    sourceFile: "src/content/pages.mjs",
-    title: post.title,
-    description: post.description,
-    breadcrumbs: postCrumbs,
-    body: contentPage({
-      hero: {
-        eyebrow: "Blog",
-        h1: "How much does pressure washing cost in Reno?",
-        lede: "A plain explanation of what moves the price, with typical industry ranges rather than a number pulled out of the air.",
-      },
-      body: `<h2>Why nobody can quote your house from a phone call</h2>
-      <p>Exterior cleaning is priced on what is in front of the crew. Two houses on the same street can differ by a factor of two because one is single story with clear access and the other is two story with a fenced side yard, a steep lot and ten years of buildup on the north wall.</p>
-      <p>The honest answer is that a quote needs the address, the surfaces and a look at the condition. What we can do here is explain what drives the number so the quotes you collect make sense.</p>
+  POSTS.forEach((post, i) => {
+    const route = "/blog/" + post.slug;
+    const crumbs = [HOME_CRUMB, { name: "Blog", route: "/blog" }, { name: post.h1, route }];
+    const prev = POSTS[i - 1];
+    const next = POSTS[i + 1];
+    const relatedLinks = post.related
+      .map((slug) => serviceBySlug[slug])
+      .filter((s) => s && (!s.flag || flags[s.flag]))
+      .map((s) => ({ route: "/" + s.slug, label: s.label }));
+    const cityPage = CITIES.find((c) => c.slug === post.city);
 
-      <h2>What actually drives the price</h2>
-      <ul>
-        <li><strong>Size and height.</strong> More square footage takes longer, and a second story means more setup, more reach and more care.</li>
-        <li><strong>Surface type.</strong> Stucco, wood, brick and composite all take different detergents and different dwell times. Concrete is fast per square foot. Wood is slow because it cannot be rushed.</li>
-        <li><strong>Condition.</strong> A house washed last year is a maintenance clean. A house that has never been washed is a restoration, and it takes more product and more passes.</li>
-        <li><strong>Access.</strong> Gates, slopes, tight side yards, parked cars and roof pitch all add time.</li>
-        <li><strong>Scope.</strong> Walls only, or walls plus soffits, gutter faces, window frames, entry and walkway. These are very different jobs.</li>
-      </ul>
+    const nav = prev || next
+      ? `<nav class="post-nav" aria-label="More posts">
+        ${prev ? `<a href="/blog/${prev.slug}/"><span>Previous</span>${prev.h1}</a>` : "<span></span>"}
+        ${next ? `<a href="/blog/${next.slug}/"><span>Next</span>${next.h1}</a>` : "<span></span>"}
+      </nav>`
+      : "";
 
-      <h2>Typical ranges you will see quoted</h2>
-      <p>These are general industry ranges published across the pressure washing trade, not our prices. They are useful for sanity checking a bid, not for budgeting a specific property.</p>
-      <ul>
-        <li><strong>House washing:</strong> typically quoted per square foot of the home, with most single family jobs landing in the low hundreds of dollars.</li>
-        <li><strong>Driveways and flatwork:</strong> typically quoted per square foot, with a minimum charge for a single driveway.</li>
-        <li><strong>Roof cleaning:</strong> usually higher than a house wash for the same property because of access, safety and the low pressure method involved.</li>
-        <li><strong>Commercial work:</strong> nearly always quoted per site after a walkthrough, and often lower per visit on a recurring schedule.</li>
-      </ul>
-      <p>Anyone quoting a firm price for your property sight unseen is guessing, and that guess usually has to be protected somewhere: with a fast pass, a weaker mix or a narrower scope than you expected.</p>
-
-      <h2>Reno specifics that affect a quote</h2>
-      <p>Our region adds a few wrinkles. Hard water means rinse water left to dry on glass or panels spots, so purified water rinsing is worth including where it matters. Wind blown dust means a house downwind of open ground gets dirty faster than one in a sheltered established neighborhood. Winter road treatment leaves a film that needs degreasing rather than a plain rinse. Wildfire ash adds an extra cleaning to some years and not others.</p>
-      <p>Properties at Tahoe elevations cost more to service for a simple reason: drive time, a shorter working season and more organic growth to remove after months under snow.</p>
-
-      <h2>How to compare two quotes fairly</h2>
-      <p>Line the scopes up side by side before you look at the totals. Check whether each includes soffits and eaves, gutter exteriors, window frames and screens, the back fence line, and any concrete. Check whether the company carries its own water. Ask whether they are insured, and ask what happens if you are not satisfied.</p>
-      <p>Price matters, but the cheapest bid that skips the north elevation or blasts your stucco is not the cheaper job. It is the one you pay for twice.</p>`,
-      aside: {
-        heading: "Want a real number?",
-        text: "Send the address and what needs cleaning. We will come back the same business day with a no obligation quote.",
-        links: [
-          { route: "/house-washing", label: "House washing" },
-          { route: "/driveway-and-concrete-cleaning", label: "Driveway and concrete cleaning" },
-          { route: "/roof-cleaning", label: "Roof cleaning" },
-        ],
-        linksHeading: "Popular services",
-      },
-      faqs: postFaqs,
-      cloudHeading: "Where we work",
-      cloudLinks: cityLinks,
-      cta: { heading: "Get your free quote", text: "No obligation, and most estimates go out the same business day." },
-    }),
-    schema: [faqSchema(postFaqs, "/blog/" + post.slug), breadcrumbSchema(postCrumbs)],
+    pages.push({
+      route,
+      sourceFile: "src/content/blog.mjs",
+      title: post.title,
+      description: post.description,
+      breadcrumbs: crumbs,
+      body: contentPage({
+        hero: { eyebrow: post.eyebrow, h1: post.h1, lede: post.lede },
+        body:
+          shot({ group: "blog", name: post.slug, alt: post.shotAlt, width: 1200, height: 675, lazy: false }) +
+          "\n\n      " +
+          sections(post.sections) +
+          "\n\n      " +
+          nav,
+        aside: {
+          heading: "Want this handled for you?",
+          text: "Send the address and what needs cleaning. We will reply the same business day with a free quote.",
+          links: relatedLinks.concat(cityPage ? [{ route: "/" + cityPage.slug, label: `Pressure washing in ${cityPage.label}` }] : []),
+          linksHeading: "Related pages",
+        },
+        faqs: post.faqs,
+        cloudHeading: "More from the blog",
+        cloudLinks: POSTS.filter((o) => o.slug !== post.slug).map((o) => ({ route: "/blog/" + o.slug, label: o.h1 })),
+        cta: { heading: "Get your free quote", text: "No obligation, and most estimates go out the same business day." },
+      }),
+      schema: [
+        {
+          "@context": "https://schema.org",
+          "@type": "BlogPosting",
+          "@id": `${SITE_URL}${route}/#post`,
+          headline: post.h1,
+          description: post.description,
+          url: `${SITE_URL}${route}/`,
+          datePublished: post.published,
+          dateModified: post.published,
+          image: SITE_URL + (resolveShot("blog", post.slug) || "/images/og-default.png"),
+          author: { "@id": BUSINESS_ID },
+          publisher: { "@id": BUSINESS_ID },
+          mainEntityOfPage: `${SITE_URL}${route}/`,
+        },
+        faqSchema(post.faqs, route),
+        breadcrumbSchema(crumbs),
+      ],
+    });
   });
 
   /* ---------- 404 ---------- */

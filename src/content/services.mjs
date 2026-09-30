@@ -4,6 +4,7 @@
 export const SERVICES = [
   {
     slug: "commercial-pressure-washing",
+    shotAlt: "Our crew pressure washing a commercial storefront entry in Reno, NV",
     label: "Commercial Pressure Washing",
     cardTitle: "Commercial Washing",
     keyword: "commercial pressure washing Reno",
@@ -72,6 +73,7 @@ export const SERVICES = [
 
   {
     slug: "property-management-pressure-washing",
+    shotAlt: "Breezeway and stairwell cleaning at an apartment community in Sparks, NV",
     label: "Property Management",
     cardTitle: "Property Management",
     keyword: "property management pressure washing Reno",
@@ -138,6 +140,7 @@ export const SERVICES = [
 
   {
     slug: "hoa-pressure-washing",
+    shotAlt: "Entry monument and sidewalk cleaning in a Reno, NV community",
     label: "HOA Pressure Washing",
     cardTitle: "HOA Communities",
     keyword: "HOA pressure washing Reno",
@@ -204,6 +207,7 @@ export const SERVICES = [
 
   {
     slug: "restaurant-exterior-cleaning",
+    shotAlt: "Restaurant patio and entry concrete being cleaned in Reno, NV",
     label: "Restaurant Exterior Cleaning",
     cardTitle: "Restaurant Cleaning",
     keyword: "restaurant exterior cleaning Reno",
@@ -269,6 +273,7 @@ export const SERVICES = [
 
   {
     slug: "fleet-washing",
+    shotAlt: "Box truck being washed at a fleet yard in Sparks, NV",
     label: "Fleet Washing",
     cardTitle: "Fleet Washing",
     keyword: "fleet washing Reno",
@@ -333,6 +338,7 @@ export const SERVICES = [
 
   {
     slug: "house-washing",
+    shotAlt: "Soft wash house washing on a stucco home in Reno, NV",
     label: "House Washing",
     cardTitle: "House Washing",
     keyword: "house washing Reno",
@@ -403,6 +409,7 @@ export const SERVICES = [
 
   {
     slug: "roof-cleaning",
+    shotAlt: "Low pressure roof cleaning on a home in Reno, NV",
     label: "Roof Cleaning",
     cardTitle: "Roof Cleaning",
     keyword: "roof cleaning Reno",
@@ -467,6 +474,7 @@ export const SERVICES = [
 
   {
     slug: "driveway-and-concrete-cleaning",
+    shotAlt: "Surface cleaner lifting stains from a driveway in Reno, NV",
     label: "Driveway & Concrete Cleaning",
     cardTitle: "Driveway & Concrete",
     keyword: "driveway cleaning Reno",
@@ -533,6 +541,7 @@ export const SERVICES = [
 
   {
     slug: "deck-and-fence-cleaning",
+    shotAlt: "Wood deck being cleaned at a home in Reno, NV",
     label: "Deck & Fence Cleaning",
     cardTitle: "Deck & Fence Cleaning",
     keyword: "deck cleaning Reno",
@@ -597,6 +606,7 @@ export const SERVICES = [
 
   {
     slug: "gutter-cleaning",
+    shotAlt: "Gutter being cleared and flushed on a home in Reno, NV",
     label: "Gutter Cleaning",
     cardTitle: "Gutter Cleaning",
     keyword: "gutter cleaning Reno",
@@ -662,6 +672,7 @@ export const SERVICES = [
 
   {
     slug: "wildfire-ash-and-soot-cleanup",
+    shotAlt: "Wildfire ash being washed off a home exterior in Reno, NV",
     label: "Wildfire Ash & Soot Cleanup",
     cardTitle: "Wildfire Ash & Soot Cleanup",
     keyword: "wildfire ash cleanup Reno",
@@ -734,6 +745,7 @@ export const SERVICES = [
 
   {
     slug: "hood-vent-cleaning",
+    shotAlt: "Kitchen exhaust hood being cleaned at a restaurant in Reno, NV",
     label: "Hood Vent Cleaning",
     cardTitle: "Hood Vent Cleaning & Inspection",
     keyword: "hood vent cleaning Reno",
@@ -787,6 +799,7 @@ export const SERVICES = [
 
   {
     slug: "window-cleaning",
+    shotAlt: "Exterior window cleaning with a water fed pole in Reno, NV",
     label: "Window Cleaning",
     cardTitle: "Window Cleaning",
     keyword: "window cleaning Reno",

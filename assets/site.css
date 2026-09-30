@@ -140,6 +140,8 @@ section{padding:96px 0}
 .feature .svc-icon{flex:none;margin:0;background:#fff}
 .feature h4{font-size:18px;margin-bottom:4px}
 .feature p{font-size:15px;color:var(--gray)}
+.cert-slot{margin-top:14px;min-height:64px;display:flex;align-items:center;gap:12px}
+.cert-slot img{max-height:64px;width:auto}
 
 /* Gallery */
 .review-cta{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:20px 26px;margin-bottom:28px}
@@ -335,6 +337,19 @@ footer a:hover{color:#fff}
 .offer-box p{color:rgba(255,255,255,.85);margin:0;flex:1 1 260px;font-size:15px}
 .offer-box .offer-deal{border:1.5px solid #fff;border-radius:8px;padding:8px 14px;font-weight:800;font-size:15px;letter-spacing:.6px;text-transform:uppercase}
 .offer-box .offer-until{width:100%;font-size:13px;color:rgba(255,255,255,.75)}
+.shot{margin:22px 0 28px;border-radius:12px;overflow:hidden}
+.shot img{width:100%;height:auto;display:block}
+.shot figcaption{font-size:13px;color:var(--gray);padding-top:8px}
+.shot-empty{display:grid;place-items:center;width:100%;background:linear-gradient(135deg,#0f2a44 0%,#0a2233 100%);border:1px solid rgba(25,181,217,.35);position:relative}
+.shot-empty::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:#19b5d9}
+.shot-empty-label{font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(25,181,217,.9)}
+.shot-wide{max-width:none}
+.post-nav{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:36px 0 8px;padding-top:24px;border-top:1px solid var(--border)}
+.post-nav a{display:block;background:var(--off);border:1px solid var(--border);border-radius:12px;padding:16px 18px;text-decoration:none;color:var(--navy);font-weight:700;font-size:15px;line-height:1.35}
+.post-nav a:hover{border-color:var(--blue);color:var(--blue)}
+.post-nav a span{display:block;font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:var(--gray);font-weight:700;margin-bottom:6px}
+.post-nav a:last-child{text-align:right}
+@media (max-width:640px){.post-nav{grid-template-columns:1fr}.post-nav a:last-child{text-align:left}}
 .link-cloud{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
 .link-cloud a{background:var(--off);border:1px solid var(--border);border-radius:999px;padding:9px 16px;font-size:14px;font-weight:600;color:var(--navy);text-decoration:none}
 .link-cloud a:hover{border-color:var(--blue);color:var(--blue)}

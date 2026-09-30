@@ -7,6 +7,7 @@ import { dirname, join } from "node:path";
 import { SITE_URL, FLAGS } from "./site.config.js";
 import { renderPage, fillTokens, canonicalFor } from "./src/layout.mjs";
 import { buildPages, SERVICES, CITIES } from "./src/content/pages.mjs";
+import { shot, resolveShot } from "./src/templates/image.mjs";
 
 const OUT = "dist";
 // Assets are cached for a week, so the query string has to change whenever
@@ -83,12 +84,29 @@ const footerColumn = (heading, links) =>
   `\n        </ul>\n      </div>`;
 
 const liveServices = SERVICES.filter((s) => !s.flag || FLAGS[s.flag]);
+
+// Hero photo is optional. When the file lands it is used and preloaded.
+const heroSrc = resolveShot("hero", "hero");
+const home = pages.find((p) => p.route === "/");
+if (heroSrc) {
+  home.preloadHero = heroSrc;
+  home.headExtra = `<style>.hero::before{content:"";position:absolute;inset:0;background:url("${heroSrc}") center/cover no-repeat;opacity:.35}</style>`;
+}
 const tokens = {
   FOOTER_SERVICES: footerColumn("Services", liveServices.map((s) => ({ route: "/" + s.slug, label: s.label }))),
   FOOTER_CITIES: footerColumn(
     "Service Area",
     CITIES.map((c) => ({ route: "/" + c.slug, label: c.label })).concat([{ route: "/service-area", label: "All areas" }, { route: "/blog", label: "Blog" }])
   ),
+  // Empty slot, revealed only when a certification is actually held.
+  WBE_BADGE_SLOT: FLAGS.WBE_CERTIFIED ? '<div class="cert-slot" data-slot="certification-badge"></div>' : "",
+  WHY_US_SHOT: shot({
+    group: "why-us",
+    name: "crew",
+    alt: "Our crew and truck on a job in the Truckee Meadows",
+    width: 1600,
+    height: 700,
+  }),
   HOOD_VENT_LINK: FLAGS.HOOD_VENT_ENABLED
     ? '<a class="svc-link" href="/hood-vent-cleaning/">See hood vent cleaning &rarr;</a>'
     : '<a class="svc-link" href="/#quote">Ask about hood vent cleaning &rarr;</a>',
