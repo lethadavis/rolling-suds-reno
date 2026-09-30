@@ -2,3 +2,10 @@
 .netlify/
 node_modules/
 *.icloud
+
+# Internal docs and notes stay out of the repo
+*.docx
+*.pdf
+*.xlsx
+*.key
+*.pages
