@@ -1,71 +1,62 @@
 <!-- ================= HERO + QUOTE ================= -->
 <section class="hero" id="quote">
-  <div class="hero-skyline" aria-hidden="true">
-    <picture>
-      <source srcset="/images/hero/reno-skyline.avif" type="image/avif">
-      <source srcset="/images/hero/reno-skyline.webp" type="image/webp">
-      <img src="/images/hero/reno-skyline.jpg" alt="" width="1500" height="514" loading="lazy" decoding="async" fetchpriority="low">
-    </picture>
-  </div>
-  <div class="wrap">
-    <div>
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
       <span class="pill">Reno, Sparks &amp; Northern Nevada</span>
       <h1>Commercial &amp; Residential Pressure Washing <span>in Reno &amp; Tahoe</span></h1>
-      <p class="hero-lede">Locally owned residential and commercial power washing for the Truckee Meadows. Professional-grade equipment, plant-safe detergents, and a 100% satisfaction guarantee.</p>
-      <div class="hero-proof">
-        {{RATING_LINE_HERO}}
-        <span class="dot"></span>
-        <span class="shield"><svg><use href="#i-shield"/></svg>Fully Insured &amp; Licensed</span>
-      </div>
-      <div class="hero-ctas">
-        <a class="btn btn-green btn-lg" href="#quote">Get a Free Quote &rarr;</a>
-        <a class="btn btn-ghost btn-lg" href="tel:{{PHONE_HREF}}"><svg><use href="#i-phone"/></svg>Call {{PHONE}}</a>
+      <!-- TODO: Francine to approve this subline. -->
+      <p class="hero-lede">One crew, one visit, and the whole property looks cared for again, from the roof line down to the driveway.</p>
+      <div class="hero-actions">
+        <a class="btn btn-green btn-lg js-quote" href="#quote-form">Get a Free Quote</a>
+        <a class="hero-call" href="tel:{{PHONE_HREF}}">or call {{PHONE}}</a>
       </div>
     </div>
+    <div class="hero-photo">{{HERO_IMAGE}}</div>
+  </div>
 
-    <div class="quote-card">
-      <span class="tag">Free · No Obligation</span>
-      <h2>Get Your <span>Free</span> Quote</h2>
-      <p>Tell us about your property and we'll get back to you the same business day with a no-obligation estimate.</p>
-      <form id="quoteForm">
-        <div class="form-grid">
-          <div class="field"><label for="f-name">Full Name *</label><input id="f-name" name="name" required placeholder="Jane Smith" autocomplete="name"></div>
-          <div class="field"><label for="f-phone">Phone Number *</label><input id="f-phone" name="phone" type="tel" required placeholder="(775) 000-0000" autocomplete="tel"></div>
-          <div class="field"><label for="f-email">Email Address *</label><input id="f-email" name="email" type="email" required placeholder="you@example.com" autocomplete="email"></div>
-          <div class="field"><label for="f-addr">Service Address *</label><input id="f-addr" name="address" required placeholder="123 Main St, Reno" autocomplete="street-address"></div>
-          <div class="field full"><label for="f-svc">Requested Service *</label>
-            <select id="f-svc" name="service" required>
-              <option value="">Select a service…</option>
-              <option>House Washing</option>
-              <option>Roof Cleaning</option>
-              <option>Driveway &amp; Concrete</option>
-              <option>Deck &amp; Fence Cleaning</option>
-              <option>Gutter Cleaning</option>
-              <option>Commercial Washing</option>
-              <option>Window Cleaning</option>
-              <option>Fleet Washing</option>
-              <option>Hood Vent Cleaning</option>
-              <option>Restaurant Cleaning Services</option>
-              <option>Wildfire Ash &amp; Soot Cleanup</option>
-              <option>Multiple Services</option>
-              <option>Not Sure: Need a Consultation</option>
-            </select>
-          </div>
-          <div class="field full"><label for="f-notes">Additional Notes</label><textarea id="f-notes" name="notes" placeholder="Property size, problem areas, preferred timing…"></textarea></div>
-        </div>
-        <button class="btn btn-green" type="submit">Request My Free Quote →</button>
-        <div class="form-msg" id="formMsg" role="status"></div>
-      </form>
-      <p class="form-foot">Rather talk it through? Call <a href="tel:{{PHONE_HREF}}">{{PHONE}}</a></p>
-    </div>
+  <div class="wrap">
+    <form class="quote-bar" id="quoteBar" aria-label="Start a free quote">
+      <div class="qb-field">
+        <label for="qb-svc">Service</label>
+        <select id="qb-svc" name="service" required>
+          <option value="">Select a service…</option>
+          <option>House Washing</option>
+          <option>Roof Cleaning</option>
+          <option>Driveway &amp; Concrete</option>
+          <option>Deck &amp; Fence Cleaning</option>
+          <option>Gutter Cleaning</option>
+          <option>Commercial Washing</option>
+          <option>Window Cleaning</option>
+          <option>Fleet Washing</option>
+          <option>Hood Vent Cleaning</option>
+          <option>Restaurant Cleaning Services</option>
+          <option>Wildfire Ash &amp; Soot Cleanup</option>
+          <option>Multiple Services</option>
+          <option>Not Sure: Need a Consultation</option>
+        </select>
+      </div>
+      <div class="qb-field">
+        <label for="qb-zip">ZIP or service address</label>
+        <input id="qb-zip" name="address" required placeholder="89502 or 123 Main St" autocomplete="postal-code">
+      </div>
+      <div class="qb-field">
+        <label for="qb-phone">Phone</label>
+        <input id="qb-phone" name="phone" type="tel" required placeholder="(775) 000-0000" autocomplete="tel">
+      </div>
+      <button class="btn btn-green" type="submit">Get My Free Quote</button>
+    </form>
   </div>
 </section>
 
 <!-- ================= TRUST STRIP ================= -->
+<!-- TODO: Francine to verify each of these claims. -->
 <div class="trust" aria-label="Why customers choose us">
-  <div class="trust-track">
-    <span>100% Satisfaction Guarantee</span><span>Fully Insured &amp; Licensed</span><span>Flexible Scheduling</span><span>Professional-Grade Trucks &amp; Equipment</span><span>Locally Owned &amp; Operated</span><span>Serving Reno, Sparks &amp; Northern Nevada</span><span>Residential &amp; Commercial</span>
-    <span aria-hidden="true">100% Satisfaction Guarantee</span><span aria-hidden="true">Fully Insured &amp; Licensed</span><span aria-hidden="true">Flexible Scheduling</span><span aria-hidden="true">Professional-Grade Trucks &amp; Equipment</span><span aria-hidden="true">Locally Owned &amp; Operated</span><span aria-hidden="true">Serving Reno, Sparks &amp; Northern Nevada</span><span aria-hidden="true">Residential &amp; Commercial</span>
+  <div class="wrap trust-row">
+    {{TRUST_RATING}}
+    <span class="trust-item"><svg><use href="#i-shield"/></svg>Fully Insured &amp; Licensed</span>
+    <span class="trust-item"><svg><use href="#i-handshake"/></svg>100% Satisfaction Guarantee</span>
+    {{TRUST_WOMAN_OWNED}}
+    <span class="trust-item"><svg><use href="#i-house"/></svg>Locally Owned &amp; Operated</span>
   </div>
 </div>
 

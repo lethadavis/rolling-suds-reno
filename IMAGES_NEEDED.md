@@ -7,7 +7,7 @@ preference: `.webp`, `.jpg`, `.jpeg`, `.png`. WebP is preferred for photographs.
 Nothing else needs changing: each slot picks up its file on the next build, and
 until then it shows a neutral placeholder at the right shape.
 
-**Status: 1 of 23 slots filled.**
+**Status: 0 of 23 slots filled.**
 
 ## Already covered
 
@@ -30,7 +30,7 @@ until then it shows a neutral placeholder at the right shape.
 
 | Page | File | Target size | Shot | Type | Suggested alt text | Have it? |
 | --- | --- | --- | --- | --- | --- | --- |
-| Homepage hero | `images/hero/reno-skyline.webp` | 1920x1080 | Daytime Reno skyline with the mountains behind it, shot wide. The left third sits under a pale wash and carries the headline, so keep it free of detail. A hi-res replacement for the current 1500px file is wanted. | Regional scenery | Decorative, no alt needed | yes |
+| Homepage hero | `images/hero/reno-skyline.webp` | 1920x1080 | Daytime Reno skyline with the mountains behind it, shot wide. The left third sits under a pale wash and carries the headline, so keep it free of detail. A hi-res replacement for the current 1500px file is wanted. | Regional scenery | Decorative, no alt needed | no |
 | Homepage, Why Us | `images/why-us/crew.webp` | 1600x700 | Crew and truck on site, people visible and in uniform. | Real job photography | Our crew and truck on a job in the Truckee Meadows | no |
 | Service: Commercial Pressure Washing | `images/services/commercial-pressure-washing.webp` | 1200x800 | Work in progress or a finished result for this service. Before and after pairs work well. | Real job photography | Our crew pressure washing a commercial storefront entry in Reno, NV | no |
 | Service: Property Management | `images/services/property-management-pressure-washing.webp` | 1200x800 | Work in progress or a finished result for this service. Before and after pairs work well. | Real job photography | Breezeway and stairwell cleaning at an apartment community in Sparks, NV | no |

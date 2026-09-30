@@ -1,0 +1,39 @@
+<!-- Free quote modal. Lives on every page; Free Quote buttons open it. -->
+<dialog class="modal" id="quoteModal" aria-labelledby="quoteModalTitle">
+  <div class="modal-inner">
+    <button class="modal-close" id="quoteModalClose" aria-label="Close">&times;</button>
+    <span class="tag">Free &middot; No Obligation</span>
+    <h2 id="quoteModalTitle">Get Your <span>Free</span> Quote</h2>
+    <p class="modal-lede">Tell us about your property and we&rsquo;ll get back to you the same business day with a no-obligation estimate.</p>
+      <form id="quoteForm">
+        <div class="form-grid">
+          <div class="field"><label for="f-name">Full Name *</label><input id="f-name" name="name" required placeholder="Jane Smith" autocomplete="name"></div>
+          <div class="field"><label for="f-phone">Phone Number *</label><input id="f-phone" name="phone" type="tel" required placeholder="(775) 000-0000" autocomplete="tel"></div>
+          <div class="field"><label for="f-email">Email Address *</label><input id="f-email" name="email" type="email" required placeholder="you@example.com" autocomplete="email"></div>
+          <div class="field"><label for="f-addr">Service Address *</label><input id="f-addr" name="address" required placeholder="123 Main St, Reno" autocomplete="street-address"></div>
+          <div class="field full"><label for="f-svc">Requested Service *</label>
+            <select id="f-svc" name="service" required>
+              <option value="">Select a service…</option>
+              <option>House Washing</option>
+              <option>Roof Cleaning</option>
+              <option>Driveway &amp; Concrete</option>
+              <option>Deck &amp; Fence Cleaning</option>
+              <option>Gutter Cleaning</option>
+              <option>Commercial Washing</option>
+              <option>Window Cleaning</option>
+              <option>Fleet Washing</option>
+              <option>Hood Vent Cleaning</option>
+              <option>Restaurant Cleaning Services</option>
+              <option>Wildfire Ash &amp; Soot Cleanup</option>
+              <option>Multiple Services</option>
+              <option>Not Sure: Need a Consultation</option>
+            </select>
+          </div>
+          <div class="field full"><label for="f-notes">Additional Notes</label><textarea id="f-notes" name="notes" placeholder="Property size, problem areas, preferred timing…"></textarea></div>
+        </div>
+        <button class="btn btn-green" type="submit">Request My Free Quote →</button>
+        <div class="form-msg" id="formMsg" role="status"></div>
+      </form>
+      <p class="form-foot">Rather talk it through? Call <a href="tel:{{PHONE_HREF}}">{{PHONE}}</a></p>
+  </div>
+</dialog>

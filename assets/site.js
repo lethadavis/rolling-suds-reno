@@ -188,17 +188,62 @@ syncHeader();
 const yearEl = document.getElementById("yr");
 if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-/* ---------- Promo: preselect its service in the quote form ---------- */
+/* ---------- Free quote modal ---------- */
 (() => {
-  const sel = document.getElementById("f-svc");
-  if (!sel) return;
-  document.querySelectorAll("[data-service]").forEach(a => a.addEventListener("click", () => {
-    const opt = [...sel.options].find(o => o.text === a.dataset.service);
-    if (opt) sel.value = opt.value;
-    setTimeout(() => document.getElementById("f-name").focus({ preventScroll: true }), 400);
-  }));
+  const modal = document.getElementById("quoteModal");
+  if (!modal) return;
+  const supportsDialog = typeof modal.showModal === "function";
+  let lastFocus = null;
 
+  function openQuote(prefill = {}) {
+    lastFocus = document.activeElement;
+    for (const [id, value] of Object.entries(prefill)) {
+      const el = document.getElementById(id);
+      if (el && value) el.value = value;
+    }
+    // <dialog> gives us the focus trap and Escape for free.
+    if (supportsDialog) modal.showModal();
+    else modal.setAttribute("open", "");
+    const firstEmpty = [...modal.querySelectorAll("input, select, textarea")].find(el => !el.value);
+    (firstEmpty || modal.querySelector("input, select")).focus();
+  }
+  function closeQuote() {
+    if (supportsDialog) modal.close();
+    else modal.removeAttribute("open");
+    lastFocus?.focus();
+  }
+  window.openQuote = openQuote;
+
+  document.getElementById("quoteModalClose")?.addEventListener("click", closeQuote);
+  modal.addEventListener("close", () => lastFocus?.focus());
+  // Clicking the backdrop closes it
+  modal.addEventListener("click", e => { if (e.target === modal) closeQuote(); });
+  if (!supportsDialog) {
+    document.addEventListener("keydown", e => { if (e.key === "Escape" && modal.hasAttribute("open")) closeQuote(); });
+  }
+
+  // Any Free Quote link opens the modal. Without scripting they still land on
+  // the hero quote bar, which posts on its own.
+  document.addEventListener("click", e => {
+    const link = e.target.closest('a.js-quote, a[href="#quote"], a[href="/#quote"], a[href="#quote-form"]');
+    if (!link) return;
+    e.preventDefault();
+    openQuote(link.dataset.service ? { "f-svc": link.dataset.service } : {});
+  });
+
+  // The slim hero bar carries its three answers into the full form.
+  const bar = document.getElementById("quoteBar");
+  bar?.addEventListener("submit", e => {
+    e.preventDefault();
+    if (!bar.reportValidity()) return;
+    openQuote({
+      "f-svc": document.getElementById("qb-svc").value,
+      "f-addr": document.getElementById("qb-zip").value,
+      "f-phone": document.getElementById("qb-phone").value,
+    });
+  });
 })();
+
 /* ---------- Reviews carousel ---------- */
 (() => {
   const track = document.getElementById("revTrack");

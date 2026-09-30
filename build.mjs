@@ -4,7 +4,7 @@ import { readFileSync, writeFileSync, mkdirSync, cpSync, rmSync, existsSync } fr
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { dirname, join } from "node:path";
-import { SITE_URL, FLAGS } from "./site.config.js";
+import { SITE_URL, FLAGS, HERO_IMAGE, REVIEWS } from "./site.config.js";
 import { renderPage, fillTokens, canonicalFor } from "./src/layout.mjs";
 import { buildPages, SERVICES, CITIES } from "./src/content/pages.mjs";
 import { shot } from "./src/templates/image.mjs";
@@ -32,6 +32,7 @@ const partials = {
   footer: read("src/partials/footer.html"),
   mobileBar: read("src/partials/mobile-bar.html"),
   lightbox: read("src/partials/lightbox.html"),
+  quoteModal: read("src/partials/quote-modal.html"),
 };
 
 function read(p) {
@@ -112,8 +113,26 @@ const comparisons = [
   }),
 ].join("\n        ");
 
+// Hero photo: srcset at both widths, explicit box, no preload so the
+// headline stays the lead paint.
+const heroSets = (ext) => HERO_IMAGE.widths.map((w) => `/images/hero/${HERO_IMAGE.name}-${w}.${ext} ${w}w`).join(", ");
+const heroSizes = "(max-width: 900px) 100vw, 50vw";
+const heroImage = `<picture>
+      <source srcset="${heroSets("avif")}" sizes="${heroSizes}" type="image/avif">
+      <source srcset="${heroSets("webp")}" sizes="${heroSizes}" type="image/webp">
+      <img src="/images/hero/${HERO_IMAGE.name}-${HERO_IMAGE.widths[0]}.jpg" srcset="${heroSets("jpg")}" sizes="${heroSizes}" alt="${HERO_IMAGE.alt}"${HERO_IMAGE.alt ? "" : ' aria-hidden="true"'} width="${HERO_IMAGE.intrinsic.width}" height="${HERO_IMAGE.intrinsic.height}" style="object-position:${HERO_IMAGE.focal}" decoding="async" fetchpriority="low">
+    </picture>`;
+
 const tokens = {
   GALLERY_COMPARE: comparisons,
+  HERO_IMAGE: heroImage,
+  TRUST_RATING:
+    REVIEWS.rating && REVIEWS.count
+      ? `<span class="trust-item"><span class="g-stars" role="img" aria-label="Google rating, ${REVIEWS.rating} stars"></span>${REVIEWS.rating} from ${REVIEWS.count} ${REVIEWS.label}</span>`
+      : "",
+  TRUST_WOMAN_OWNED: FLAGS.WOMAN_OWNED_TRUST
+    ? '<span class="trust-item"><svg><use href="#i-people"/></svg>Woman-Owned</span>'
+    : "",
   FOOTER_SERVICES: footerColumn("Services", liveServices.map((s) => ({ route: "/" + s.slug, label: s.label }))),
   FOOTER_CITIES: footerColumn(
     "Service Area",

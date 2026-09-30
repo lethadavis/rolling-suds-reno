@@ -9,6 +9,8 @@ export const FLAGS = {
   // When true, the Why Us card reveals an empty slot for a certification
   // badge image. No certification is claimed anywhere while this is false.
   WBE_CERTIFIED: false,
+  // Woman owned appears in the trust strip only once Francine approves it.
+  WOMAN_OWNED_TRUST: false,
 };
 
 export const CONTACT = {
@@ -53,6 +55,16 @@ export const AREA_SERVED = [
   "Churchill County, NV",
   "Lake Tahoe, CA",
 ];
+
+// Hero photo. Files live at images/hero/<name>-<width>.{avif,webp,jpg}.
+// Swap name for a job photo later and give it real alt text.
+export const HERO_IMAGE = {
+  name: "reno-skyline",
+  widths: [1600, 2000],
+  intrinsic: { width: 2000, height: 1189 },
+  focal: "55% 40%",
+  alt: "", // decorative regional scenery, so no alt text
+};
 
 export const BRAND = {
   navy: "#0f2a44",
