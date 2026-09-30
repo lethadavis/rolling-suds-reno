@@ -21,7 +21,7 @@ export const CONTACT = {
   mapSearchUrl:
     "https://www.google.com/maps/search/?api=1&query=5635+Riggins+Court+Unit+8+Reno+NV+89502",
   mapEmbedUrl:
-    "https://www.google.com/maps?q=5635+Riggins+Court+Unit+8,+Reno,+NV+89502&output=embed",
+    "https://www.google.com/maps?q=5635+Riggins+Court+Unit+8,+Reno,+NV+89502&z=9&output=embed",
   reviewUrl:
     "https://search.google.com/local/writereview?placeid=ChIJYV1x5w9wnCoR5FHwIPjkhG8",
   corporateUrl: "https://www.rollingsuds.com/",

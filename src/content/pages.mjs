@@ -44,7 +44,14 @@ export function buildPages({ flags }) {
       breadcrumbs: [HOME_CRUMB, { name: s.label, route: "/" + s.slug }],
       body: contentPage({
         hero: { eyebrow: s.eyebrow, h1: s.h1, lede: s.lede },
-        body: sections(s.sections),
+        body: (s.offer
+          ? `<div class="offer-box">
+        <span class="offer-tag">${s.offer.tag}</span>
+        <p>${s.offer.text}</p>
+        <span class="offer-deal">${s.offer.deal}</span>
+        <span class="offer-until">${s.offer.until}</span>
+      </div>\n\n      `
+          : "") + sections(s.sections),
         aside: {
           heading: "Free quote, same business day",
           text: "Tell us about the property and we will come back to you with a no obligation estimate.",

@@ -670,6 +670,12 @@ export const SERVICES = [
       "Wildfire ash and soot cleanup in Reno, Sparks and Tahoe. Roofs, siding, decks, windows and solar panels washed down after smoke season. Book a free quote.",
     eyebrow: "Seasonal Service",
     h1: "Wildfire ash and soot cleanup in Reno and Tahoe",
+    offer: {
+      tag: "Now booking: Reno & Tahoe",
+      text: "Smoke season leaves a film on every outside surface. We are washing it off across the valley and the basin right now.",
+      deal: "$75 off a full residential exterior wash",
+      until: "through October 31",
+    },
     lede:
       "It has been settling on our houses all summer, same as yours. We wash it off your roof, siding, deck, windows and solar panels.",
     sections: [
