@@ -1,5 +1,5 @@
 // Page shell: head tags, nav, body, footer. Every page is rendered through here.
-import { SITE_URL, CONTACT, BRAND } from "../site.config.js";
+import { SITE_URL, CONTACT, BRAND, REVIEWS } from "../site.config.js";
 
 export const esc = (v) =>
   String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -17,6 +17,8 @@ export function fillTokens(html, extra = {}) {
     MAP_EMBED_URL: CONTACT.mapEmbedUrl.replace(/&/g, "&amp;"),
     REVIEW_URL: CONTACT.reviewUrl,
     CORPORATE_URL: CONTACT.corporateUrl,
+    REVIEW_RATING: REVIEWS.rating,
+    REVIEW_COUNT: String(REVIEWS.count),
   };
   return html.replace(/\{\{([A-Z_]+)\}\}/g, (m, key) => (key in map ? map[key] : m));
 }
