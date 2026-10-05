@@ -7,7 +7,7 @@ import { dirname, join } from "node:path";
 import { SITE_URL, FLAGS, HERO_IMAGE, HERO_VIDEO, HERO_PROMO, REVIEWS } from "./site.config.js";
 import { renderPage, fillTokens, canonicalFor } from "./src/layout.mjs";
 import { buildPages, SERVICES, CITIES } from "./src/content/pages.mjs";
-import { shot } from "./src/templates/image.mjs";
+import { shot, resolveShot } from "./src/templates/image.mjs";
 import { beforeAfter } from "./src/templates/before-after.mjs";
 
 const OUT = "dist";
@@ -173,13 +173,11 @@ const tokens = {
   ),
   // Empty slot, revealed only when a certification is actually held.
   WBE_BADGE_SLOT: FLAGS.WBE_CERTIFIED ? '<div class="cert-slot" data-slot="certification-badge"></div>' : "",
-  WHY_US_SHOT: shot({
-    group: "why-us",
-    name: "crew",
-    alt: "Our crew and truck on a job in the Truckee Meadows",
-    width: 1600,
-    height: 700,
-  }),
+  // The crew photo slot appears only when a real file exists. No empty block.
+  WHY_GRID_CLASS: resolveShot("why-us", "crew") ? "why-grid has-photo" : "why-grid",
+  WHY_US_PHOTO: resolveShot("why-us", "crew")
+    ? shot({ group: "why-us", name: "crew", alt: "Our crew washing a property in the Truckee Meadows", width: 900, height: 1100 })
+    : "",
   HOOD_VENT_LINK: FLAGS.HOOD_VENT_ENABLED
     ? '<a class="svc-link" href="/hood-vent-cleaning/">See hood vent cleaning &rarr;</a>'
     : '<a class="svc-link" href="/#quote">Ask about hood vent cleaning &rarr;</a>',

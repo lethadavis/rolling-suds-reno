@@ -118,25 +118,63 @@
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">Why Rolling Suds</span>
-      <h2>Built for the<br><span>High Desert</span></h2>
+      <h2>Experts Who Know the <span>High Desert</span></h2>
+      <p>Reno, Sparks, Carson City and Tahoe each have their own dust, hard water, intense sun and freeze-thaw winters. We wash for all of it.</p>
     </div>
-    <div class="why-grid">
-      <div class="steps">
-        <h3>How It Works</h3>
-        <div class="step"><div class="step-num">1</div><div><h4>Free Estimate</h4><p>Call, text or send the form and we'll get you a quote fast.</p></div></div>
-        <div class="step"><div class="step-num">2</div><div><h4>On-Time Arrival</h4><p>A uniformed crew arrives with truck-mounted equipment, right when we said we would.</p></div></div>
-        <div class="step"><div class="step-num">3</div><div><h4>The Right Clean</h4><p>Pressure, water temperature and detergent are matched to each surface.</p></div></div>
-        <div class="step"><div class="step-num">4</div><div><h4>Guaranteed Results</h4><p>If you're not 100% satisfied, we come back and make it right.</p></div></div>
+
+    <div class="{{WHY_GRID_CLASS}}">
+      <div class="why-tiles">
+        <!-- TODO: Francine to approve the woman-owned wording. No certification claims. -->
+        <article class="tile">
+          <div class="svc-icon"><svg><use href="#i-people"/></svg></div>
+          <h3>Woman-Owned, Locally Run</h3>
+          <p>A family-run crew based in Reno, backed by the national Rolling Suds network.</p>
+        </article>
+        <article class="tile">
+          <div class="svc-icon"><svg><use href="#i-sun"/></svg></div>
+          <h3>Northern Nevada Know-How</h3>
+          <p>We match the method and pressure to each surface, so dust, hard water and winter wear come off without damage.</p>
+        </article>
+        <!-- TODO: Jesse to verify the equipment claim. -->
+        <article class="tile">
+          <div class="svc-icon"><svg><use href="#i-gauge"/></svg></div>
+          <h3>Professional-Grade Equipment</h3>
+          <p>Commercial-grade equipment sized for big properties and delicate surfaces alike.</p>
+        </article>
+        <!-- TODO: Jesse and Francine to verify the plant-safe claim before launch. -->
+        <article class="tile">
+          <div class="svc-icon"><svg><use href="#i-leaf"/></svg></div>
+          <h3>Plant-Safe Detergents</h3>
+          <p>Gentle on landscaping, tough on buildup.</p>
+        </article>
       </div>
-      <div class="features">
-        <div class="feature"><div class="svc-icon"><svg><use href="#i-handshake"/></svg></div><div><h4>Locally Owned, Nationally Backed</h4><p>You get personal service from neighbors who live and work in Reno, backed by the training, equipment and proven cleaning methods of the national Rolling Suds brand.</p></div></div>
-        <div class="feature"><div class="svc-icon"><svg><use href="#i-gauge"/></svg></div><div><h4>Professional-Grade Equipment</h4><p>Our trucks carry their own water supply, multiple wash units and specialty cleaning products, so we work efficiently and pass the savings on to you.</p></div></div>
-        <div class="feature"><div class="svc-icon"><svg><use href="#i-leaf"/></svg></div><div><h4>Eco-Friendly Detergents</h4><p>Our biodegradable cleaners break down grime without harming your landscaping, pets or local waterways.</p></div></div>
-        <div class="feature"><div class="svc-icon"><svg><use href="#i-people"/></svg></div><div><h4>Woman-Owned, Locally Run</h4><p>We are a woman-owned, family-run Rolling Suds franchise serving Reno, Sparks, Carson City and Lake Tahoe. The same family that answers the phone walks the property and stands behind the work.</p>{{WBE_BADGE_SLOT}}</div></div>
-                <div class="feature"><div class="svc-icon"><svg><use href="#i-sun"/></svg></div><div><h4>Northern Nevada Know-How</h4><p>Intense sun, wind-blown dust, hard water, smoke season and freeze-thaw winters each leave their own mark here. We know how to handle every one.</p></div></div>
-      </div>
+      {{WHY_US_PHOTO}}
     </div>
-    {{WHY_US_SHOT}}
+
+    <ol class="howto">
+      <li>
+        <span class="howto-num">1</span>
+        <h3>Free Estimate</h3>
+        <p>Tell us about your property and we send a no-obligation quote.</p>
+      </li>
+      <!-- TODO: Jesse to confirm the arrival window is a promise we can keep. -->
+      <li>
+        <span class="howto-num">2</span>
+        <h3>On-Time Arrival</h3>
+        <p>We confirm a window and show up in it.</p>
+      </li>
+      <li>
+        <span class="howto-num">3</span>
+        <h3>The Right Clean</h3>
+        <p>Soft wash or pressure, chosen for each surface.</p>
+      </li>
+      <!-- TODO: confirm this matches the satisfaction guarantee terms. -->
+      <li>
+        <span class="howto-num">4</span>
+        <h3>Guaranteed Results</h3>
+        <p>If it is not right, we make it right.</p>
+      </li>
+    </ol>
   </div>
 </section>
 

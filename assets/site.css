@@ -95,7 +95,7 @@ nav.top.is-compact .logo img{height:74px}
 .form-foot a{color:var(--blue);font-weight:700}
 
 /* ---------- Wildfire card ---------- */
-.promo{--fire:#ef3b2d;position:relative;display:flex;align-items:flex-start;gap:20px;max-width:560px;padding:22px 24px;border-radius:12px;color:#fff;
+.promo{--fire:#ef3b2d;position:relative;display:flex;align-items:flex-start;gap:20px;max-width:560px;padding:22px 24px;border-radius:12px;color:#fff;text-decoration:none;
   background:linear-gradient(135deg,#143a5e 0%,#0f2a44 100%);border:1px solid rgba(255,255,255,.14);border-left:5px solid var(--fire);
   box-shadow:0 16px 36px rgba(15,42,68,.26)}
 .promo-hero{max-width:560px}
@@ -107,7 +107,7 @@ nav.top.is-compact .logo img{height:74px}
 .promo-title{font-family:var(--display);font-size:22px;font-weight:800;letter-spacing:-.01em;line-height:1.2}
 .promo-text{font-size:14px;line-height:1.5;color:rgba(255,255,255,.84)}
 .promo-actions{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:14px}
-.promo-link{color:var(--sky);font-weight:600;font-size:15px}
+.promo-link{color:var(--sky);font-weight:600;font-size:15px;text-decoration:underline}
 .promo-link:hover{color:#fff}
 .promo-offer{align-self:flex-start;margin-top:12px;padding:8px 14px;border:1.5px solid #fff;border-radius:8px;color:#fff;font-weight:800;font-size:15px;line-height:1.35;letter-spacing:.6px;text-transform:uppercase}
 .promo-until{font-size:13px;color:rgba(255,255,255,.75);margin-top:6px}
@@ -151,27 +151,31 @@ section{padding:96px 0}
 .svc a:hover{color:var(--navy)}
 
 /* Why us */
-/* Reno skyline behind the section heading, fading out toward the cards.
-   The PNG (fade baked in) is used as a mask: change --skyline to recolor,
-   --skyline-opacity to make it lighter or stronger. */
-#why-us{--skyline:var(--blue);--skyline-opacity:.13;position:relative;overflow:hidden}
+/* Shorter than the sections around it, and the mountains stay faint. */
+#why-us{--skyline:var(--blue);--skyline-opacity:.05;position:relative;overflow:hidden;padding:64px 0 72px}
 #why-us::before{content:"";position:absolute;left:50%;top:10px;transform:translateX(-50%);width:max(100%,860px);aspect-ratio:2000/741;background:var(--skyline);opacity:var(--skyline-opacity);-webkit-mask:url("/images/reno-skyline-fade.png") center top/100% auto no-repeat;mask:url("/images/reno-skyline-fade.png") center top/100% auto no-repeat;pointer-events:none}
 #why-us .wrap{position:relative;z-index:1}
-.why-grid{display:grid;grid-template-columns:1fr 1.15fr;gap:56px;align-items:start}
-.steps{background:var(--navy);color:#fff;border-radius:20px;padding:36px}
-.steps h3{font-family:var(--display);font-weight:800;font-size:26px;letter-spacing:-.02em;text-transform:uppercase;margin-bottom:22px;color:var(--sky)}
-.step{display:flex;gap:18px;padding:16px 0;border-top:1px solid rgba(255,255,255,.1)}
-.step:first-of-type{border-top:0}
-.step-num{flex:none;width:44px;height:44px;border-radius:50%;background:var(--accent);display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:19px}
-.step h4{font-size:17px;margin-bottom:2px}
-.step p{font-size:14px;color:rgba(255,255,255,.75)}
-.features{display:grid;gap:18px}
-.feature{display:flex;gap:18px;padding:24px;border:1px solid var(--border);border-radius:var(--radius);background:var(--off)}
-.feature .svc-icon{flex:none;margin:0;background:#fff}
-.feature h4{font-size:18px;margin-bottom:4px}
-.feature p{font-size:15px;color:var(--gray)}
-.cert-slot{margin-top:14px;min-height:64px;display:flex;align-items:center;gap:12px}
-.cert-slot img{max-height:64px;width:auto}
+#why-us .section-head{margin-bottom:34px}
+#why-us .section-head h2{margin-bottom:12px}
+
+.why-grid{display:grid;grid-template-columns:1fr;gap:28px;align-items:start}
+.why-grid.has-photo{grid-template-columns:60% 1fr;gap:32px}
+.why-tiles{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.tile{background:var(--off);border:1px solid var(--border);border-radius:var(--radius);padding:22px 22px 20px}
+.tile .svc-icon{width:44px;height:44px;margin-bottom:12px}
+.tile .svc-icon svg{width:24px;height:24px}
+.tile h3{font-size:17px;margin-bottom:6px}
+.tile p{font-size:14px;color:var(--gray);line-height:1.5}
+.why-grid .shot{margin:0;height:100%}
+.why-grid .shot img{height:100%;object-fit:cover}
+
+/* How it works: one row of four, joined by a thin line */
+.howto{position:relative;list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-top:40px}
+.howto::before{content:"";position:absolute;top:21px;left:12.5%;right:12.5%;height:2px;background:var(--border)}
+.howto li{position:relative;text-align:center}
+.howto-num{position:relative;z-index:1;display:grid;place-items:center;width:44px;height:44px;margin:0 auto 12px;border-radius:50%;background:var(--navy);color:#fff;font-family:var(--display);font-weight:800;font-size:20px}
+.howto h3{font-size:16px;margin-bottom:4px}
+.howto p{font-size:14px;color:var(--gray);line-height:1.5}
 
 /* Gallery */
 .review-cta{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:20px 26px;margin-bottom:28px}
@@ -299,7 +303,9 @@ footer a:hover{color:#fff}
   nav.top.open .nav-links{display:flex;flex-direction:column;gap:0;position:absolute;top:100%;left:0;right:0;background:var(--navy);padding:8px 24px 20px;box-shadow:0 14px 30px rgba(15,42,68,.3)}
   nav.top.open .nav-links a{display:block;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.08)}
   .hero-grid{grid-template-columns:1fr;gap:28px;min-height:0}
-      .why-grid,.area-grid{grid-template-columns:1fr}
+      .why-grid.has-photo{grid-template-columns:1fr}
+  .area-grid{grid-template-columns:1fr}
+  .howto{gap:16px}
   .rev{flex-basis:calc((100% - 22px) / 2)}
   .rev-prev{left:-8px}
   .rev-next{right:-8px}
@@ -326,6 +332,12 @@ footer a:hover{color:#fff}
   .form-grid{grid-template-columns:1fr}
   .trust{padding-top:56px}
   .gallery-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  #why-us{padding:48px 0 52px}
+  .why-tiles{grid-template-columns:1fr}
+  .howto{grid-template-columns:1fr;gap:16px;margin-top:30px}
+  .howto::before{top:12px;bottom:12px;left:21px;right:auto;width:2px;height:auto}
+  .howto li{display:grid;grid-template-columns:44px 1fr;grid-template-rows:auto auto;column-gap:14px;text-align:left}
+  .howto-num{grid-row:span 2;margin:0}
   .rev{flex-basis:88%;padding:24px}
   .field label,.eyebrow,.g-tag,.tag{font-size:12px}
   .hero-proof .dot{display:none}

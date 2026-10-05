@@ -23,8 +23,8 @@ add(
   "Homepage, Why Us",
   "why-us",
   "crew",
-  "1600x700",
-  "Crew and truck on site, people visible and in uniform.",
+  "900x1100",
+  "Crew at work on a property, people visible and in uniform. Portrait or square crops best: it sits in a rounded slot beside the Why Us tiles and stays hidden until this file exists.",
   "Our crew and truck on a job in the Truckee Meadows",
   "Real job photography"
 );
