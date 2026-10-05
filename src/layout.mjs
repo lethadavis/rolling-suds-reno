@@ -63,7 +63,7 @@ export function renderPage(page, parts, opts) {
 <title>${esc(page.title)}</title>
 <meta name="description" content="${esc(page.description)}">
 <link rel="canonical" href="${canonical}">
-${noindex ? '<meta name="robots" content="noindex, nofollow">' : '<meta name="robots" content="index, follow, max-image-preview:large">'}
+${page.robots ? `<meta name="robots" content="${page.robots}">` : noindex ? '<meta name="robots" content="noindex, nofollow">' : '<meta name="robots" content="index, follow, max-image-preview:large">'}
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="${esc(CONTACT.name)}">
 <meta property="og:title" content="${esc(page.ogTitle || page.title)}">

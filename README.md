@@ -68,6 +68,26 @@ ffmpeg -ss 229 -to 265 -i source.mp4 -an -vf "scale=-2:1080" \
 Aim for 6 to 15 seconds and 2 to 4 MB. Check the result with
 `ls -lh video/` before committing.
 
+## Driveway Makeover Contest (/driveway-makeover)
+
+Postcard landing page, built from `src/content/contest.mjs`. It is noindex,
+left out of the sitemap and the nav, and reached through the QR code, the
+printed URL and the `/driveway`, `/spa` and `/makeover` redirects.
+
+- Entries go to **Netlify Forms** under the form name `driveway-contest`
+  (Netlify > Forms). Form detection must be switched on for the site, and the
+  notification email for the inbox is set there too.
+- Each entry carries `lead_source` ("Direct Mail: Driveway Postcard", or the
+  utm_source when the link has one), the three UTM fields, the page URL and a
+  timestamp.
+- Photos arrive as `photo1` to `photo4`, already scaled down in the browser so
+  the whole entry stays under Netlify's 8 MB limit. Open a submission in the
+  Netlify app to view or download them; the links also appear in notification
+  emails and CSV exports.
+- `FLAGS.CONTEST_ACTIVE` false swaps the form for a "contest has ended" note.
+  `FLAGS.CONTEST_PROMO_LINK` adds a footer link. `SERVICE_ZIPS` turns on the
+  ZIP check once it has entries.
+
 ## Domain redirect plan
 
 1. Add both `rollingsudsreno.com` and `rollingsudsrenotahoe.com` as custom

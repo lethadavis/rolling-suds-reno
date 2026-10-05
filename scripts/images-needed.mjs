@@ -28,6 +28,33 @@ add(
   "Our crew and truck on a job in the Truckee Meadows",
   "Real job photography"
 );
+add(
+  "Driveway Makeover Contest, hero",
+  "contest",
+  "spa-driveway",
+  "1000x1250 (4:5)",
+  "The spa driveway mascot from the postcard, on its own: no contest badge baked in (the badge sits on top as its own file) and no dark navy fade, so it sits on the light hero.",
+  "A driveway in a towel and cucumber slices enjoying a spa day",
+  "Campaign artwork"
+);
+add(
+  "Driveway Makeover Contest, badge",
+  "contest",
+  "driveway-makeover-badge",
+  "360x360, shown at 180px",
+  "The round contest badge on a transparent background.",
+  "Decorative, no alt needed (the eyebrow carries the same words)",
+  "Campaign artwork"
+);
+add(
+  "Driveway Makeover Contest, social share",
+  "contest",
+  "og-contest",
+  "1200x630 (.jpg)",
+  "Open Graph image for shares and link previews.",
+  "Not shown on the page",
+  "Campaign artwork"
+);
 for (const s of SERVICES) {
   add(
     `Service: ${s.label}`,

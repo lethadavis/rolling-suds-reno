@@ -453,3 +453,142 @@ footer a:hover{color:#fff}
   .page-body{padding:48px 0}
   .foot-links{grid-template-columns:1fr}
 }
+
+/* ---------- Driveway Makeover Contest (/driveway-makeover) ----------
+   Postcard landing page. Bright sections like the rest of the site, navy only
+   for the header, the slim trust row and the footer. Lime buttons carry navy
+   text here: white on lime does not reach AA. */
+.contest-page [hidden]{display:none!important}
+.contest-page main .btn-green,.contest-page main .btn-green:hover{color:var(--navy)}
+.contest-page main a:focus-visible,.contest-page main button:focus-visible,.contest-page main summary:focus-visible{outline:3px solid var(--navy);outline-offset:3px}
+.btn-light{background:#fff;color:var(--navy);border:1.5px solid var(--border)}
+.btn-light:hover{border-color:var(--blue)}
+.contest-page main > section{padding:56px 0}
+.contest-h2{font-family:var(--display);font-weight:800;font-size:clamp(26px,3vw,36px);line-height:1.08;letter-spacing:-.025em;text-transform:uppercase;text-align:center;margin-bottom:32px}
+
+.contest-page main > .contest-hero{background:linear-gradient(180deg,var(--off) 0%,#fff 100%);padding:48px 0 56px}
+.contest-hero-grid{display:grid;grid-template-columns:1fr minmax(0,400px);gap:64px;align-items:center}
+.contest-copy .pill{border-radius:14px;line-height:1.35}
+.contest-copy h1{font-family:var(--display);font-weight:800;font-size:clamp(32px,4vw,50px);line-height:1.05;letter-spacing:-.03em;text-transform:uppercase;margin:18px 0 16px;text-wrap:balance}
+.contest-copy h1 span{text-wrap:balance}
+.contest-copy h1 span{display:block;color:var(--blue)}
+.contest-lede{font-size:18px;color:var(--gray);max-width:560px;margin-bottom:26px}
+.contest-art{position:relative;padding:28px 0 0 28px}
+.contest-shot{margin:0;border-radius:20px;overflow:hidden;box-shadow:var(--shadow)}
+.contest-badge{position:absolute;top:0;left:0;width:180px;height:180px;border-radius:50%;filter:drop-shadow(0 10px 18px rgba(15,42,68,.25))}
+.contest-badge-empty{background:var(--foam);border:2px dashed var(--sky)}
+
+.contest-howto{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:24px;counter-reset:none}
+.contest-howto li{text-align:center}
+.contest-num{display:grid;place-items:center;width:48px;height:48px;margin:0 auto 14px;border-radius:50%;background:var(--sky);color:var(--navy);font-family:var(--display);font-weight:800;font-size:21px}
+.contest-howto p{font-size:16px;line-height:1.5;color:var(--text)}
+
+.perk-grid{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.perk{display:flex;flex-direction:column;gap:14px;background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:24px}
+.perk-icon{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:var(--foam);color:var(--blue);flex:none}
+.perk-icon svg{width:24px;height:24px}
+.perk p{font-weight:600;font-size:16px;line-height:1.45}
+
+.contest-card{max-width:760px;margin:0 auto;box-shadow:0 18px 40px rgba(15,42,68,.12),0 1px 3px rgba(15,42,68,.06)}
+.contest-card > h2{margin:0 0 22px}
+.contest-card .field label,.contest-card .photo-field legend{font-size:13px}
+.contest-card .field input,.contest-card .field textarea{font-size:16px;min-height:48px}
+.contest-card .field input[aria-invalid="true"],.contest-card .photo-add.is-invalid{border-color:#b42318;background:#fff}
+.field-err{margin:2px 0 0;font-size:14px;font-weight:600;color:#b42318}
+.field-err a{color:inherit}
+.check-row{display:flex;align-items:center;gap:12px;min-height:44px}
+.check-row input{width:24px;height:24px;flex:none;accent-color:var(--navy);cursor:pointer}
+.contest-card .check-row label{font-size:16px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--text);cursor:pointer}
+.photo-field{border:0;padding:0;min-width:0}
+.photo-field legend{font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gray);margin-bottom:6px;line-height:1.4}
+.photo-picker{position:relative;display:grid;gap:12px}
+.contest-card .field .photo-pick{position:absolute;left:0;top:0;width:1px;height:1px;min-height:0;padding:0;border:0;opacity:0}
+.photo-add{display:flex;align-items:center;justify-content:center;gap:10px;min-height:64px;padding:12px 16px;border:2px dashed var(--blue);border-radius:12px;background:#fff;color:var(--navy);font-weight:700;font-size:16px;cursor:pointer}
+.photo-add:hover{background:var(--off)}
+.photo-add svg{width:24px;height:24px;color:var(--blue)}
+.photo-pick:focus-visible + .photo-add{outline:3px solid var(--navy);outline-offset:3px}
+.photo-picker.is-full .photo-add{display:none}
+.photo-thumbs{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.photo-thumbs:empty{display:none}
+.photo-thumbs li{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--off);border:1px solid var(--border)}
+.photo-thumbs img{width:100%;height:100%;object-fit:cover}
+.photo-remove{position:absolute;top:0;right:0;width:44px;height:44px;display:grid;place-items:center;background:transparent;border:0;cursor:pointer}
+.photo-remove span{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:rgba(15,42,68,.88);color:#fff;font-size:20px;line-height:1}
+.photo-fallback{display:grid;gap:10px}
+.photo-fallback label{display:flex;flex-direction:column;gap:4px;font-size:14px;font-weight:600}
+.hint{font-size:14px;color:var(--gray)}
+.contest-card .btn-lg{margin-top:22px}
+.contest-card .form-msg{background:#fdecea;color:#7a1c12}
+.contest-card .form-msg a{color:inherit;font-weight:700}
+.consent{margin-top:14px;font-size:13px;line-height:1.55;color:var(--gray)}
+.consent a{color:var(--blue);font-weight:600}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.contest-success{text-align:center;padding:8px 0}
+.contest-success:focus{outline:none}
+.success-icon{display:grid;place-items:center;width:64px;height:64px;margin:0 auto 14px;border-radius:50%;background:var(--accent);color:var(--navy)}
+.success-icon svg{width:34px;height:34px}
+.contest-success h2{font-family:var(--display);font-weight:800;font-size:30px;text-transform:uppercase;letter-spacing:-.025em;margin-bottom:8px}
+.contest-success p{font-size:17px}
+.contest-ended{text-align:center}
+.contest-ended .hero-ctas{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:20px}
+.contest-ended .btn{width:auto}
+
+.contest-page main > .contest-rules{padding:0 0 56px}
+.contest-page main > .contest-form-section{padding-bottom:56px}
+.contest-page main > .contest-form-section + .contest-rules{padding-top:56px}
+.rules-box{max-width:760px;margin:0 auto;background:#fff;border:1px solid var(--border);border-radius:12px;padding:6px 20px}
+.rules-box summary{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:52px;cursor:pointer;list-style:none}
+.rules-box summary::-webkit-details-marker{display:none}
+.rules-box summary::after{content:"+";color:var(--blue);font-weight:800;font-size:24px;line-height:1}
+.rules-box[open] summary::after{content:"\2013"}
+.rules-box summary h2{font-family:var(--display);font-weight:800;font-size:20px;text-transform:uppercase;letter-spacing:-.01em}
+.rules-box ul{margin:6px 0 16px 20px;display:grid;gap:8px;color:#33505b}
+
+.trust-slim{background:var(--navy);color:#fff}
+.trust-slim-row{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;padding-top:18px;padding-bottom:18px}
+.trust-slim .trust-item{padding:0 28px;line-height:1.4;font-size:15px}
+.trust-slim .trust-item + .trust-item{border-left:1px solid var(--sky)}
+.contest-more-inner{text-align:center}
+.contest-more .contest-h2{margin-bottom:22px}
+.contest-more .hero-ctas{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+
+@media (max-width:1100px){
+  .contest-hero-grid{grid-template-columns:1fr 300px;gap:40px}
+  .contest-badge{width:140px;height:140px}
+  .perk-grid{grid-template-columns:1fr 1fr}
+}
+@media (max-width:900px){
+  .contest-howto{grid-template-columns:1fr 1fr;gap:28px 24px}
+}
+@media (max-width:720px){
+  .contest-hero-grid{grid-template-columns:1fr;gap:20px}
+  .contest-art{width:min(230px,64vw);margin:0 auto;padding:18px 0 0 18px}
+  .contest-badge{width:92px;height:92px}
+}
+@media (max-width:640px){
+  .contest-page main > section{padding:32px 0}
+  .contest-page main > .contest-hero{padding:20px 0 24px}
+  .contest-page main > .contest-form-section + .contest-rules{padding-top:32px}
+  .contest-page main > .contest-rules{padding-bottom:32px}
+  .contest-art{width:150px;padding:14px 0 0 14px}
+  .contest-badge{width:72px;height:72px}
+  .contest-shot .shot-empty-label{font-size:11px;letter-spacing:1px;text-align:center;padding:0 10px 0 16px}
+  .contest-copy h1{font-size:30px;margin:14px 0 12px}
+  .contest-lede{font-size:16px;margin-bottom:20px}
+  .contest-copy .btn{width:100%}
+  .contest-h2{font-size:24px;margin-bottom:16px}
+  .contest-howto{grid-template-columns:1fr;gap:14px}
+  .contest-howto li{display:grid;grid-template-columns:40px 1fr;gap:14px;align-items:center;text-align:left}
+  .contest-num{width:40px;height:40px;margin:0;font-size:18px}
+  .contest-howto p{font-size:15px}
+  .perk-grid{grid-template-columns:1fr;gap:10px}
+  .perk{flex-direction:row;align-items:center;padding:12px 14px;gap:12px}
+  .perk-icon{width:36px;height:36px}
+  .perk-icon svg{width:20px;height:20px}
+  .perk p{font-size:15px}
+  .photo-thumbs{grid-template-columns:1fr 1fr}
+  .trust-slim-row{padding-top:10px;padding-bottom:10px;gap:4px 0}
+  .trust-slim .trust-item{font-size:13px;padding:0 10px}
+  .trust-slim .trust-item svg{width:15px;height:15px}
+  .contest-more .btn{width:100%}
+}

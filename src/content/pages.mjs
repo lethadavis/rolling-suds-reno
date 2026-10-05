@@ -7,6 +7,7 @@ import { localBusiness, serviceSchema, faqSchema, breadcrumbSchema, BUSINESS_ID 
 import { SITE_URL } from "../../site.config.js";
 import { contentPage, pageHero, sections, faqBlock, linkCloud, ctaBand, sideCard } from "../templates/page.mjs";
 import { shot, resolveShot } from "../templates/image.mjs";
+import { contestBody } from "./contest.mjs";
 
 const read = (p) => readFileSync(p, "utf8").trimEnd();
 const HOME_CRUMB = { name: "Home", route: "/" };
@@ -271,6 +272,23 @@ ${ctaBand({ heading: "Questions about your property?", text: "Send us the detail
         breadcrumbSchema(crumbs),
       ],
     });
+  });
+
+  /* ---------- Driveway Makeover Contest (postcard landing page) ---------- */
+  // noindex, follow on every deploy, kept out of the sitemap and the nav, and
+  // no schema: no LocalBusiness changes and no review markup on this page.
+  pages.push({
+    route: "/driveway-makeover",
+    sourceFile: "src/content/contest.mjs",
+    title: "Great Driveway Makeover Contest | Rolling Suds Reno-Tahoe",
+    description:
+      "Enter your home for a free driveway cleaning and a chance to win a free house wash from Rolling Suds Reno-Tahoe.",
+    robots: "noindex, follow",
+    excludeFromSitemap: true,
+    bodyClass: "contest-page",
+    ogImage: resolveShot("contest", "og-contest") || undefined,
+    body: contestBody(),
+    schema: [],
   });
 
   /* ---------- 404 ---------- */

@@ -158,6 +158,9 @@ const tokens = {
     "Service Area",
     CITIES.map((c) => ({ route: "/" + c.slug, label: c.label })).concat([{ route: "/service-area", label: "All areas" }, { route: "/blog", label: "Blog" }])
   ),
+  // Off by default: the contest page is reached by the postcard, not the site.
+  FOOTER_CONTEST_LINK:
+    FLAGS.CONTEST_PROMO_LINK && FLAGS.CONTEST_ACTIVE ? '          <li><a href="/driveway-makeover/">Driveway Makeover Contest</a></li>' : "",
   // Empty slot, revealed only when a certification is actually held.
   WBE_BADGE_SLOT: FLAGS.WBE_CERTIFIED ? '<div class="cert-slot" data-slot="certification-badge"></div>' : "",
   // The crew photo slot appears only when a real file exists. No empty block.

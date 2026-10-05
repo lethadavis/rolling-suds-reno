@@ -13,6 +13,12 @@ export const FLAGS = {
   // Off by default so the hero reads evenly for commercial buyers. When true
   // the offer line shows under the wildfire button until HERO_PROMO.until.
   SHOW_HERO_PROMO: false,
+  // Driveway Makeover Contest landing page (/driveway-makeover). When false the
+  // page stays up but shows a "contest has ended" note and the quote CTA.
+  CONTEST_ACTIVE: true,
+  // Small link to the contest in the footer. Off: the page is meant to be
+  // reached by the postcard QR code, its printed URL and the short redirects.
+  CONTEST_PROMO_LINK: false,
 };
 
 export const CONTACT = {
@@ -45,6 +51,21 @@ export const REVIEWS = {
   rating: "5.0", // verified on the Google listing, 2026-09-30
   count: "9",
   label: "Google reviews",
+};
+
+// ZIP codes the contest form accepts. Left empty, the ZIP check is skipped and
+// every ZIP is accepted.
+// TODO: fill from the confirmed franchise territory. The homepage "Zip Codes
+// Served" list is a starting point but is itself still marked unconfirmed.
+export const SERVICE_ZIPS = [];
+
+// Driveway Makeover Contest form settings.
+export const CONTEST = {
+  // Stored with every entry unless the visit carries a utm_source.
+  leadSource: "Direct Mail: Driveway Postcard",
+  // TODO: there is no privacy policy page yet. Add its path here (for example
+  // "/privacy/") and the consent line links to it.
+  privacyUrl: "",
 };
 
 // Counties and areas the crews cover, used by LocalBusiness schema and the service area page.

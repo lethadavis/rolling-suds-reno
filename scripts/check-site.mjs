@@ -91,6 +91,12 @@ for (const file of files) {
     const inSitemap = sitemap.includes(`<loc>${expected}</loc>`);
     if (!inSitemap) note(route, "missing from sitemap.xml");
   }
+
+  // Pages that are noindex on every deploy (the contest landing page) must
+  // stay out of the sitemap.
+  if (html.includes('name="robots" content="noindex, follow"') && sitemap.includes(`<loc>${expected}</loc>`)) {
+    note(route, "noindex page is listed in sitemap.xml");
+  }
 }
 
 // Sitemap must not list pages we did not build
