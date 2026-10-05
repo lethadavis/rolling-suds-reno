@@ -55,27 +55,20 @@ nav.top.is-compact .logo img{height:74px}
 .menu-btn{display:none;background:none;border:0;color:#fff;cursor:pointer;padding:8px;min-width:46px;min-height:46px;align-items:center;justify-content:center}
 .menu-btn svg{width:28px;height:28px}
 
-/* ---------- Hero: faded video behind the copy and the quote card ---------- */
+/* ---------- Hero: faded Reno skyline behind the copy and the quote card ---------- */
 .hero{position:relative;background:var(--off);color:var(--text);padding:60px 0 72px;overflow:hidden;isolation:isolate}
-/* Background layer: video fitted to the hero, never wider than the page. */
+/* Background layer: the Reno skyline, fitted to the hero and never wider than
+   the page. A one-time slow settle from 1.04 to 1.0 on load, compositor only,
+   and none at all for reduced motion. */
 .hero-bg{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none}
 .hero-media{position:absolute;inset:0;background:var(--off)}
 .hero-poster{position:absolute;inset:0;display:block}
-.hero-poster img{width:100%;height:100%;object-fit:cover;object-position:55% 40%;display:block}
-.hero-video,.hero-yt{position:absolute;inset:0;opacity:0;transition:opacity .45s ease}
-.hero-media.is-playing .hero-video,.hero-media.is-playing .hero-yt{opacity:1}
-.hero-media.is-dipping .hero-video,.hero-media.is-dipping .hero-yt{opacity:0;transition:opacity .3s ease}
-.hero-video{width:100%;height:100%;object-fit:cover}
-.hero-yt{overflow:hidden}
-.hero-yt iframe{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(1.42);width:max(100%,177.78vh);height:max(100%,56.25vw);border:0;pointer-events:none}
-/* The veil knocks the footage back to a ghosted texture. Motion still reads. */
+.hero-poster img{width:100%;height:100%;object-fit:cover;object-position:55% 40%;display:block;animation:hero-settle 18s cubic-bezier(.22,.61,.36,1) both}
+@keyframes hero-settle{from{transform:scale(1.04)}to{transform:scale(1)}}
+@media (max-width:640px){.hero-poster img{object-position:50% 45%!important}}
+/* The veil knocks the photo back to a ghosted texture so the copy stays AA. */
 .hero-veil{position:absolute;inset:0;background:rgba(233,243,248,.88)}
 .hero-foot{position:absolute;left:0;right:0;bottom:0;height:140px;background:linear-gradient(to bottom,rgba(15,42,68,0) 0%,rgba(15,42,68,.22) 100%)}
-.hero-media-toggle{position:absolute;left:18px;bottom:18px;z-index:4;width:44px;height:44px;border-radius:50%;border:1.5px solid rgba(255,255,255,.75);background:rgba(15,42,68,.72);color:#fff;cursor:pointer;display:grid;place-items:center;pointer-events:auto}
-.hero-media-toggle:hover{background:rgba(15,42,68,.88)}
-.hero-media-toggle:focus-visible{outline:3px solid var(--sky);outline-offset:3px}
-.hero-media-icon{display:block;width:14px;height:14px;border-left:4px solid #fff;border-right:4px solid #fff}
-.hero-media-toggle[data-state="paused"] .hero-media-icon{width:0;height:0;border:7px solid transparent;border-left:12px solid #fff;margin-left:4px}
 
 .hero-grid{position:relative;z-index:2;display:grid;grid-template-columns:1fr 45%;gap:48px;align-items:center}
 .pill{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);background:rgba(255,255,255,.92);border:1px solid var(--border);border-radius:999px;padding:7px 14px}
@@ -99,7 +92,6 @@ nav.top.is-compact .logo img{height:74px}
   background:linear-gradient(135deg,#143a5e 0%,#0f2a44 100%);border:1px solid rgba(255,255,255,.14);border-left:5px solid var(--fire);
   box-shadow:0 16px 36px rgba(15,42,68,.26)}
 .promo-hero{max-width:560px}
-.promo-wide{max-width:none;margin-top:26px}
 .promo-icon{flex:none;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;color:var(--fire);background:#fff;box-shadow:0 4px 12px rgba(0,0,0,.25)}
 .promo-icon svg{width:28px;height:28px}
 .promo-body{display:flex;flex-direction:column;gap:4px}
@@ -109,8 +101,6 @@ nav.top.is-compact .logo img{height:74px}
 .promo-actions{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:14px}
 .promo-link{color:var(--sky);font-weight:600;font-size:15px;text-decoration:underline}
 .promo-link:hover{color:#fff}
-.promo-offer{align-self:flex-start;margin-top:12px;padding:8px 14px;border:1.5px solid #fff;border-radius:8px;color:#fff;font-weight:800;font-size:15px;line-height:1.35;letter-spacing:.6px;text-transform:uppercase}
-.promo-until{font-size:13px;color:rgba(255,255,255,.75);margin-top:6px}
 
 /* ---------- Trust strip ---------- */
 .trust{background:var(--navy);color:#fff;padding:68px 0 0}
@@ -120,7 +110,6 @@ nav.top.is-compact .logo img{height:74px}
 .trust-item .g-stars{height:16px}
 
 /* ---------- Free quote modal ---------- */
-/* The hero scrim covers the video side, so the backdrop stays clear. */
 .tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:1.5px;color:#0d6478;background:var(--foam);border-radius:999px;padding:5px 12px;text-transform:uppercase}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .field{display:flex;flex-direction:column;gap:6px}
@@ -454,7 +443,7 @@ footer a:hover{color:#fff}
   .foot-links{grid-template-columns:1fr}
 }
 
-/* ---------- Driveway Makeover Contest (/driveway-makeover) ----------
+/* ---------- Driveway Makeover Contest (/driveway) ----------
    Postcard landing page. Bright sections like the rest of the site, navy only
    for the header, the slim trust row and the footer. Lime buttons carry navy
    text here: white on lime does not reach AA. */
@@ -466,17 +455,25 @@ footer a:hover{color:#fff}
 .contest-page main > section{padding:56px 0}
 .contest-h2{font-family:var(--display);font-weight:800;font-size:clamp(26px,3vw,36px);line-height:1.08;letter-spacing:-.025em;text-transform:uppercase;text-align:center;margin-bottom:32px}
 
-.contest-page main > .contest-hero{background:linear-gradient(180deg,var(--off) 0%,#fff 100%);padding:48px 0 56px}
-.contest-hero-grid{display:grid;grid-template-columns:1fr minmax(0,400px);gap:64px;align-items:center}
+.contest-page main > .contest-hero{position:relative;overflow:hidden;isolation:isolate;background:linear-gradient(180deg,#f5fafd 0%,#fff 62%,var(--off) 100%);padding:72px 0 88px;min-height:560px}
+.contest-hero-grid{position:relative;z-index:2}
+.contest-copy{max-width:min(540px,46%)}
+/* Ridgelines: full width, low behind the copy, faded out toward the sky. */
+.contest-ridges{position:absolute;left:0;right:0;bottom:0;width:100%;height:62%;z-index:0;pointer-events:none;-webkit-mask-image:linear-gradient(to top,#000 35%,transparent 92%);mask-image:linear-gradient(to top,#000 35%,transparent 92%)}
 .contest-copy .pill{border-radius:14px;line-height:1.35}
 .contest-copy h1{font-family:var(--display);font-weight:800;font-size:clamp(32px,4vw,50px);line-height:1.05;letter-spacing:-.03em;text-transform:uppercase;margin:18px 0 16px;text-wrap:balance}
 .contest-copy h1 span{text-wrap:balance}
 .contest-copy h1 span{display:block;color:var(--blue)}
-.contest-lede{font-size:18px;color:var(--gray);max-width:560px;margin-bottom:26px}
-.contest-art{position:relative;padding:28px 0 0 28px}
-.contest-shot{margin:0;border-radius:20px;overflow:hidden;box-shadow:var(--shadow)}
-.contest-badge{position:absolute;top:0;left:0;width:180px;height:180px;border-radius:50%;filter:drop-shadow(0 10px 18px rgba(15,42,68,.25))}
-.contest-badge-empty{background:var(--foam);border:2px dashed var(--sky)}
+.contest-lede{font-size:18px;color:#33505b;max-width:560px;margin-bottom:26px}
+/* Photo: right half, full hero height, left edge melted into the page. */
+.contest-art{position:absolute;top:0;right:0;bottom:0;width:50%;z-index:1}
+.contest-photo{position:absolute;inset:0;display:block;
+  -webkit-mask-image:linear-gradient(to right,transparent 0,#000 28%),linear-gradient(to top,transparent 0,#000 14%);-webkit-mask-composite:source-in;
+  mask-image:linear-gradient(to right,transparent 0,#000 28%),linear-gradient(to top,transparent 0,#000 14%);mask-composite:intersect}
+.contest-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 42%}
+.contest-photo-empty{display:grid;place-items:center;background:linear-gradient(135deg,#d7ebf4,#b9d9e8)}
+.contest-photo-empty .shot-empty-label{color:var(--blue)}
+.contest-badge{position:absolute;top:32px;left:7%;width:180px;height:180px;border-radius:50%;z-index:2;filter:drop-shadow(0 10px 18px rgba(15,42,68,.25))}
 
 .contest-howto{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:24px;counter-reset:none}
 .contest-howto li{text-align:center}
@@ -553,7 +550,6 @@ footer a:hover{color:#fff}
 .contest-more .hero-ctas{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
 
 @media (max-width:1100px){
-  .contest-hero-grid{grid-template-columns:1fr 300px;gap:40px}
   .contest-badge{width:140px;height:140px}
   .perk-grid{grid-template-columns:1fr 1fr}
 }
@@ -561,18 +557,22 @@ footer a:hover{color:#fff}
   .contest-howto{grid-template-columns:1fr 1fr;gap:28px 24px}
 }
 @media (max-width:720px){
-  .contest-hero-grid{grid-template-columns:1fr;gap:20px}
-  .contest-art{width:min(230px,64vw);margin:0 auto;padding:18px 0 0 18px}
-  .contest-badge{width:92px;height:92px}
+  /* Phones: the photo becomes a short faded strip under the button. */
+  .contest-page main > .contest-hero{min-height:0;padding-bottom:0}
+  .contest-copy{max-width:none}
+  .contest-art{position:relative;width:auto;height:220px;margin-top:20px}
+  .contest-photo{-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 22%,#000 78%,transparent 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 22%,#000 78%,transparent 100%);-webkit-mask-composite:add;mask-composite:add}
+  .contest-photo img{object-position:50% 44%}
+  .contest-badge{width:92px;height:92px;top:14px;left:16px}
+  .contest-ridges{height:46%}
 }
 @media (max-width:640px){
   .contest-page main > section{padding:32px 0}
-  .contest-page main > .contest-hero{padding:20px 0 24px}
+  .contest-page main > .contest-hero{padding:20px 0 0}
   .contest-page main > .contest-form-section + .contest-rules{padding-top:32px}
   .contest-page main > .contest-rules{padding-bottom:32px}
-  .contest-art{width:150px;padding:14px 0 0 14px}
-  .contest-badge{width:72px;height:72px}
-  .contest-shot .shot-empty-label{font-size:11px;letter-spacing:1px;text-align:center;padding:0 10px 0 16px}
+  .contest-art{height:190px;margin-top:12px}
+  .contest-badge{width:76px;height:76px;top:10px;left:12px}
   .contest-copy h1{font-size:30px;margin:14px 0 12px}
   .contest-lede{font-size:16px;margin-bottom:20px}
   .contest-copy .btn{width:100%}
@@ -592,3 +592,44 @@ footer a:hover{color:#fff}
   .trust-slim .trust-item svg{width:15px;height:15px}
   .contest-more .btn{width:100%}
 }
+
+/* Driveway glow-ups row (contest page) */
+.contest-drives{padding-top:56px}
+.drive-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.drive-tile{position:relative;margin:0;aspect-ratio:4/3;border-radius:14px;overflow:hidden;box-shadow:0 10px 26px rgba(15,42,68,.12);background:var(--off)}
+.drive-tile img{width:100%;height:100%;object-fit:cover;display:block}
+.drive-tile .compare-label{left:10px;top:10px}
+.drive-tile-empty{display:grid;place-items:center;border:1px dashed var(--border)}
+.drive-tile-empty .shot-empty-label{color:var(--blue);font-size:12px}
+.drive-pair{grid-column:span 2}
+.drive-pair .g-compare{height:100%}
+@media (max-width:1100px){.drive-grid{grid-template-columns:1fr 1fr}}
+@media (max-width:640px){.drive-grid{gap:10px}.drive-tile .compare-label{font-size:10px;padding:4px 9px;left:8px;top:8px}}
+
+/* Preferred method of contact (all lead forms) */
+.contact-pref{border:0;padding:0;margin:18px 0 0;min-width:0}
+.contact-pref legend{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gray);margin-bottom:8px}
+.contest-card .contact-pref legend{font-size:13px}
+.contact-hint{font-weight:600;letter-spacing:0;text-transform:none;margin-left:4px}
+.contact-options{display:flex;flex-wrap:wrap;gap:8px}
+.contact-opt{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:8px 14px;border:1.5px solid var(--border);border-radius:10px;background:var(--off);font-size:15px;font-weight:600;color:var(--text);cursor:pointer;letter-spacing:0;text-transform:none}
+.contact-opt input{width:20px;height:20px;flex:none;accent-color:var(--navy);cursor:pointer}
+.contact-opt:has(input:checked){border-color:var(--blue);background:#fff}
+.contact-opt:focus-within{outline:3px solid var(--navy);outline-offset:2px}
+.contact-pref.is-invalid .contact-opt{border-color:#b42318}
+.sms-consent{margin:8px 0 0;font-size:13px;line-height:1.5;color:var(--gray)}
+.contact-pref .field-err{margin-top:6px}
+
+/* Wildfire offer (WILDFIRE_OFFER in site.config.js) */
+.offer-pill{align-self:flex-start;display:inline-block;background:#e0912f;color:var(--navy);font-size:11px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;line-height:1.35;padding:2px 9px;border-radius:999px}
+@media (max-width:640px){.offer-pill{font-size:12px;letter-spacing:0;text-transform:none}}
+.offer-terms{max-width:560px;margin-top:4px;font-size:13px;color:var(--gray)}
+.offer-terms summary{display:inline-flex;align-items:center;min-height:24px;cursor:pointer;color:var(--blue);font-weight:600;text-decoration:underline;list-style:none}
+.offer-terms summary::-webkit-details-marker{display:none}
+.offer-terms summary:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
+.offer-terms p{margin:2px 0 0}
+.offer-applied[hidden]{display:none}
+.offer-applied{display:flex;align-items:center;gap:6px;margin:6px 0 0;font-size:13px;font-weight:700;color:#7a4a0c}
+.offer-applied svg{width:16px;height:16px;color:#b86e14;flex:none}
+.offer-box a.offer-deal{text-decoration:none;color:#fff}
+.offer-box a.offer-deal:hover{background:rgba(255,255,255,.1)}

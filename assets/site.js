@@ -5,6 +5,44 @@ function track(event, detail = {}) {
   (window.dataLayer = window.dataLayer || []).push({ event, ...detail });
 }
 
+/* ---------- Preferred method of contact ----------
+   Shared by every lead form. Keeps the hidden preferred_contact field in step
+   with the ticked boxes ("phone, email"), shows the text consent line while
+   Text is ticked, and requires at least one choice. */
+function contactPref(form) {
+  const group = form.querySelector("[data-contact-group]");
+  if (!group) return null;
+  const boxes = [...group.querySelectorAll('input[type="checkbox"]')];
+  const consent = group.querySelector(".sms-consent");
+  const err = group.querySelector(".field-err");
+  const hidden = form.querySelector('input[name="preferred_contact"]');
+  const value = () => boxes.filter((b) => b.checked).map((b) => b.value).join(", ");
+  const setError = (text) => {
+    err.textContent = text;
+    err.hidden = !text;
+    group.classList.toggle("is-invalid", Boolean(text));
+    boxes.forEach((b) => b.setAttribute("aria-invalid", text ? "true" : "false"));
+  };
+  const sync = () => {
+    consent.hidden = !boxes.some((b) => b.value === "text" && b.checked);
+    hidden.value = value();
+    if (hidden.value) setError("");
+  };
+  boxes.forEach((b) => b.addEventListener("change", sync));
+  sync();
+  return {
+    value,
+    focus: () => boxes[0].focus(),
+    reset: () => { boxes.forEach((b) => { b.checked = false; }); sync(); },
+    validate() {
+      sync();
+      if (hidden.value) return true;
+      setError("Please choose at least one way for us to contact you.");
+      return false;
+    },
+  };
+}
+
 /* ---------- SETTINGS ---------- */
 // Where quote requests are sent. Paste a Formspree/Netlify/etc. URL here.
 // Left empty, the form opens the visitor's email app instead.
@@ -257,21 +295,27 @@ syncHeader();
   const form = document.getElementById("quoteForm");
   if (!form) return;
   const msg = document.getElementById("formMsg");
+  const pref = contactPref(form);
   form.addEventListener("submit", async e => {
     e.preventDefault();
+    if (pref && !pref.validate()) { pref.focus(); return; }
+    // preferred_contact is the form's first field, so it leads the email body.
     const data = new FormData(form);
     if (!FORM_ENDPOINT) {
       const body = [...data.entries()].map(([k, v]) => `${k}: ${v}`).join("\n");
       location.href = `mailto:${FALLBACK_EMAIL}?subject=${encodeURIComponent("Free Quote Request")}&body=${encodeURIComponent(body)}`;
       return;
     }
-    track("quote_submit");
+    track("quote_submit", { preferred_contact: pref ? pref.value() : "", offer: form.offer?.value || "" });
     msg.style.display = "block";
     msg.textContent = "Sending…";
     try {
       const res = await fetch(FORM_ENDPOINT, { method: "POST", body: data, headers: { Accept: "application/json" } });
       if (!res.ok) throw new Error();
       form.reset();
+      pref?.reset();
+      const applied = document.getElementById("offerApplied");
+      if (applied) applied.hidden = true;
       // TODO: Jesse to confirm the same business day promise.
       msg.textContent = "Thanks, we have your details. We will get back to you the same business day.";
       track("quote_success");
@@ -284,175 +328,39 @@ syncHeader();
 const yearEl = document.getElementById("yr");
 if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-/* ---------- Hero background video ---------- */
-(() => {
-  const media = document.querySelector(".hero-media");
-  if (!media || media.dataset.heroMode === "poster") return;
-  const toggle = document.querySelector(".hero-media-toggle");
-
-  // Checked when we are about to load, not at parse time: Chrome often reports
-  // a slower effectiveType for the first moments of a page load.
-  function shouldSkip() {
-    const conn = navigator.connection || {};
-    // Phones keep the poster: cheaper on data and easier to read over.
-    if (window.innerWidth < 768) return "small-screen";
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return "reduced-motion";
-    if (conn.saveData === true) return "save-data";
-    if (["slow-2g", "2g", "3g"].includes(conn.effectiveType)) return "slow-connection";
-    return null;
-  }
-
-  let api = null;
-  let userPaused = false;
-  let onScreen = true;
-  const setPlaying = (on) => media.classList.toggle("is-playing", on);
-
-  function loadFile() {
-    const video = media.querySelector(".hero-video");
-    for (const [type, key] of [["video/webm", "srcWebm"], ["video/mp4", "srcMp4"]]) {
-      const src = video.dataset[key];
-      if (!src) continue;
-      const source = document.createElement("source");
-      source.src = src;
-      source.type = type;
-      video.appendChild(source);
-    }
-    video.load();
-    video.addEventListener("playing", () => setPlaying(true), { once: true });
-    video.play().catch(() => {});
-    api = { play: () => video.play().catch(() => {}), pause: () => video.pause() };
-  }
-
-  function loadYouTube() {
-    const host = media.querySelector(".hero-yt");
-    const id = host.dataset.yt;
-    const from = Number(host.dataset.start) || 0;
-    const to = Number(host.dataset.end) || 0;
-    const mount = document.createElement("div");
-    host.appendChild(mount);
-
-    const tag = document.createElement("script");
-    tag.src = "https://www.youtube.com/iframe_api";
-    document.head.appendChild(tag);
-
-    window.onYouTubeIframeAPIReady = () => {
-      const player = new YT.Player(mount, {
-        host: "https://www.youtube-nocookie.com",
-        videoId: id,
-        playerVars: { autoplay: 1, mute: 1, controls: 0, playsinline: 1, rel: 0, modestbranding: 1, iv_load_policy: 3, disablekb: 1, fs: 0, start: from },
-        events: {
-          onReady: (e) => { e.target.mute(); e.target.seekTo(from, true); e.target.playVideo(); },
-          onStateChange: (e) => { if (e.data === YT.PlayerState.PLAYING) setPlaying(true); },
-        },
-      });
-      api = { play: () => player.playVideo(), pause: () => player.pauseVideo() };
-      // The poster stays until playback is confirmed, whichever signal arrives first.
-      const confirm = setInterval(() => {
-        const state = player.getPlayerState ? player.getPlayerState() : null;
-        if (state === 1) { setPlaying(true); clearInterval(confirm); }
-        // Autoplay can be refused on the first gesture-less load; nudge it once.
-        if (state === 5 || state === -1) player.playVideo();
-      }, 300);
-      setTimeout(() => clearInterval(confirm), 15000);
-
-      // Loop the approved segment only, dipping to the poster so the jump back
-      // is hidden and no end screen or related videos can appear.
-      // Some embeds report a frozen currentTime, so wall clock time is used as
-      // the fallback once playback has started.
-      if (to > from) {
-        let anchorTime = from;
-        let anchorAt = performance.now();
-        let lastReported = from;
-        let dipping = false;
-
-        const resetAnchor = (seconds) => { anchorTime = seconds; anchorAt = performance.now(); };
-
-        setInterval(() => {
-          if (userPaused || !onScreen || dipping) return;
-          // Only stand down when the player is genuinely paused or ended.
-          const state = player.getPlayerState ? player.getPlayerState() : 1;
-          if (state === 2 || state === 0) return;
-
-          const reported = player.getCurrentTime ? player.getCurrentTime() : 0;
-          if (reported > lastReported + 0.05) {
-            lastReported = reported;
-            resetAnchor(reported);
-          }
-          const elapsed = (performance.now() - anchorAt) / 1000;
-          const position = anchorTime + elapsed;
-
-          if (position >= to - 0.35 || position < from - 1) {
-            dipping = true;
-            media.classList.add("is-dipping");
-            setTimeout(() => {
-              player.seekTo(from, true);
-              player.playVideo();
-              lastReported = from;
-              resetAnchor(from);
-              media.classList.remove("is-dipping");
-              dipping = false;
-            }, 300);
-          }
-        }, 250);
-      }
-    };
-  }
-
-  const begin = () => {
-    // Reduced motion, Save-Data or a slow connection: the poster is the whole hero.
-    const skip = shouldSkip();
-    if (skip) {
-      media.dataset.heroSkipped = skip;
-      return;
-    }
-    if (toggle) toggle.hidden = false;
-    media.dataset.heroMode === "youtube" ? loadYouTube() : loadFile();
-  };
-  const kick = () => ("requestIdleCallback" in window ? requestIdleCallback(begin, { timeout: 2500 }) : setTimeout(begin, 300));
-  if (document.readyState === "complete") kick();
-  else addEventListener("load", kick, { once: true });
-
-  if (toggle) {
-    toggle.addEventListener("click", () => {
-      userPaused = !userPaused;
-      toggle.dataset.state = userPaused ? "paused" : "playing";
-      toggle.setAttribute("aria-label", userPaused ? "Play the background video" : "Pause the background video");
-      if (!api) return;
-      userPaused ? api.pause() : api.play();
-    });
-  }
-
-  // Stop burning CPU when the tab is hidden or the hero is scrolled away.
-  document.addEventListener("visibilitychange", () => {
-    if (!api) return;
-    if (document.hidden) api.pause();
-    else if (!userPaused && onScreen) api.play();
-  });
-  new IntersectionObserver(([entry]) => {
-    onScreen = entry.isIntersecting;
-    if (!api) return;
-    if (onScreen && !userPaused) api.play();
-    else api.pause();
-  }, { threshold: 0.15 }).observe(media);
-})();
-
 /* ---------- Quote buttons: scroll to the hero form and focus it ---------- */
 (() => {
   const form = document.getElementById("quoteForm");
   const hero = document.getElementById("quote");
   const smooth = !matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  function focusForm(service) {
+  // Wildfire offer: only a code the form was built with (data-offer-code)
+  // is accepted. It rides along as the hidden "offer" field.
+  function applyOffer(code) {
+    if (!form || !form.offer) return;
+    const ok = Boolean(code) && form.dataset.offerCode === code;
+    form.offer.value = ok ? code : "";
+    const line = document.getElementById("offerApplied");
+    if (line) line.hidden = !ok;
+    if (ok) track("quote_offer_applied", { offer: code });
+  }
+  // Switching away from the wildfire service drops the offer.
+  document.getElementById("f-svc")?.addEventListener("change", (e) => {
+    if (form.offer?.value && !/wildfire/i.test(e.target.value)) applyOffer(null);
+  });
+
+  function focusForm(service, offer) {
     if (!form || !hero) return false;
     if (service) {
       const select = document.getElementById("f-svc");
       const option = [...select.options].find((o) => o.text === service);
       if (option) select.value = option.value;
     }
+    applyOffer(offer);
     hero.scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "start" });
     // Focus after the scroll settles, without yanking the page back.
     setTimeout(() => document.getElementById("f-name")?.focus({ preventScroll: true }), smooth ? 500 : 0);
-    track("quote_focus", { service: service || "none" });
+    track("quote_focus", { service: service || "none", offer: offer || "" });
     return true;
   }
 
@@ -462,12 +370,20 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
     const link = e.target.closest('a.js-quote, a[href="#quote"], a[href="/#quote"]');
     if (!link || !form) return;
     e.preventDefault();
-    focusForm(link.dataset.service);
+    // Keep ?service and ?offer in the address bar, as on a direct visit.
+    if (link.dataset.offer) history.replaceState(null, "", link.getAttribute("href"));
+    focusForm(link.dataset.service, link.dataset.offer);
   });
 
+  // Runs after load, once the browser has restored any form values from a
+  // reload, so a restored selection cannot undo the link's preselect.
   const params = new URLSearchParams(location.search);
-  if (params.get("service") === "wildfire") setTimeout(() => focusForm("Wildfire Ash & Soot Cleanup"), 250);
-  else if (location.hash === "#quote") setTimeout(() => focusForm(), 250);
+  const arrive = () => {
+    if (params.get("service") === "wildfire") setTimeout(() => focusForm("Wildfire Ash & Soot Cleanup", params.get("offer")), 50);
+    else if (location.hash === "#quote") setTimeout(() => focusForm(), 50);
+  };
+  if (document.readyState === "complete") arrive();
+  else addEventListener("load", arrive, { once: true });
 })();
 
 /* ---------- Reviews carousel ---------- */
@@ -526,6 +442,7 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
   const success = document.getElementById("contestSuccess");
   const submitBtn = form.querySelector('button[type="submit"]');
   const zips = (form.dataset.zips || "").split(/\s+/).filter(Boolean);
+  const pref = contactPref(form);
 
   /* ---- Tracking fields ---- */
   const params = new URLSearchParams(location.search);
@@ -677,9 +594,12 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
     msg.style.display = "none";
     const results = fields.map(checkField);
     const photosOk = checkPhotos();
-    if (results.includes(false) || !photosOk) {
-      const first = fields.find((f, i) => !results[i]) || pick;
-      first.focus();
+    const contactOk = pref.validate();
+    if (results.includes(false) || !photosOk || !contactOk) {
+      const first = fields.find((f, i) => !results[i]);
+      if (first) first.focus();
+      else if (!photosOk) pick.focus();
+      else pref.focus();
       return;
     }
 
@@ -690,7 +610,7 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
       return;
     }
 
-    track("contest_submit", { photo_count: photos.length, lead_source: form.lead_source.value });
+    track("contest_submit", { photo_count: photos.length, lead_source: form.lead_source.value, preferred_contact: pref.value() });
     submitBtn.disabled = true;
     submitBtn.textContent = "Sending your entry…";
 

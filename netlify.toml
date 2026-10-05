@@ -37,23 +37,30 @@
   status = 301
   force = true
 
-# Driveway Makeover Contest: short URLs for the postcard. Netlify passes the
-# query string through, so UTM tags on the QR code survive the redirect.
+# Driveway Makeover Contest lives at /driveway. The old path and the short
+# URLs point at it. Netlify passes the query string through, so UTM tags on
+# the QR code survive the redirect. /driveway itself is never redirected.
 [[redirects]]
-  from = "/driveway"
-  to = "/driveway-makeover/"
+  from = "/driveway-makeover"
+  to = "/driveway/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/driveway-makeover/*"
+  to = "/driveway/"
   status = 301
   force = true
 
 [[redirects]]
   from = "/spa"
-  to = "/driveway-makeover/"
+  to = "/driveway/"
   status = 301
   force = true
 
 [[redirects]]
   from = "/makeover"
-  to = "/driveway-makeover/"
+  to = "/driveway/"
   status = 301
   force = true
 

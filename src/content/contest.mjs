@@ -1,6 +1,6 @@
-// The Great Driveway Makeover Contest landing page (/driveway-makeover).
+// The Great Driveway Makeover Contest landing page (/driveway).
 // Destination for the direct mail postcard: QR code, printed URL and the
-// /driveway, /spa and /makeover redirects in netlify.toml. Not in the nav or
+// /driveway-makeover, /spa and /makeover redirects in netlify.toml. Not in the nav or
 // the sitemap, and noindex.
 //
 // Entries go to Netlify Forms as "driveway-contest". Netlify reads the form
@@ -9,8 +9,12 @@
 // present in the markup below.
 //
 // Wording must match the postcard. Rules text is the postcard's own.
+import { existsSync } from "node:fs";
 import { FLAGS, SERVICE_ZIPS, CONTEST } from "../../site.config.js";
-import { shot, resolveShot } from "../templates/image.mjs";
+import { resolveShot } from "../templates/image.mjs";
+import { beforeAfter, pairIsComplete } from "../templates/before-after.mjs";
+import { contactPref, contactPrefHidden } from "../templates/contact-pref.mjs";
+import { isProduction } from "../env.mjs";
 
 const STEPS = [
   "Fill out the form below and add photos of your driveway.",
@@ -49,24 +53,92 @@ const privacyLink = CONTEST.privacyUrl
   ? `<a href="${CONTEST.privacyUrl}">Privacy Policy</a>`
   : `<span class="tbd">Privacy Policy (TODO: no privacy page yet, add CONTEST.privacyUrl)</span>`;
 
+// Hero photo: a background on the right half with its left edge faded into
+// the page. Missing photo: a soft placeholder on staging, nothing in production.
+export const HERO_PHOTO = "/images/contest/spa-driveway.webp";
+
 function heroArt() {
+  const webp = resolveShot("contest", "spa-driveway");
+  const jpg = ["jpg", "jpeg", "png"].map((e) => `images/contest/spa-driveway.${e}`).find((f) => existsSync(f));
   const badgeSrc = resolveShot("contest", "driveway-makeover-badge");
   // The badge repeats the eyebrow text, so it is decorative.
   const badge = badgeSrc
-    ? `<img class="contest-badge" src="${badgeSrc}" alt="" width="180" height="180" decoding="async">`
-    : `<span class="contest-badge contest-badge-empty" aria-hidden="true" data-slot="contest/driveway-makeover-badge"></span>`;
+    ? `<img class="contest-badge" src="${badgeSrc}" alt="" width="180" height="180" decoding="async" fetchpriority="high">`
+    : "";
+  let photo = "";
+  if (webp || jpg) {
+    photo = `<picture class="contest-photo">
+        ${webp && webp.endsWith(".webp") ? `<source srcset="${webp}" type="image/webp">` : ""}
+        <img src="/${jpg || webp.slice(1)}" alt="A driveway in a towel and cucumber slices enjoying a spa day" width="1010" height="1536" decoding="async" fetchpriority="high">
+      </picture>`;
+  } else if (!isProduction) {
+    photo = `<div class="contest-photo contest-photo-empty" data-slot="contest/spa-driveway"><span class="shot-empty-label">Photo coming soon</span></div>`;
+  }
+  if (!photo && !badge) return "";
   return `<div class="contest-art">
-        ${shot({
-          group: "contest",
-          name: "spa-driveway",
-          alt: "A driveway in a towel and cucumber slices enjoying a spa day",
-          width: 1000,
-          height: 1250,
-          lazy: false,
-          className: "contest-shot",
-        })}
-        ${badge}
-      </div>`;
+      ${photo}
+      ${badge}
+    </div>`;
+}
+
+// Layered ridgelines: the Sierra crest behind, Peavine's broad dome in the
+// middle, low foothills in front. Faded out toward the top in CSS.
+const RIDGES = `<svg class="contest-ridges" viewBox="0 0 1440 360" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <path fill="#8dbdd6" fill-opacity=".08" d="M0 170 60 150 110 162 170 120 215 140 260 105 300 128 350 96 400 122 450 110 520 140 600 128 680 150 760 135 840 160 920 140 1000 155 1080 130 1150 148 1220 118 1280 136 1340 112 1400 130 1440 120V360H0Z"/>
+      <path fill="#6aa9c9" fill-opacity=".11" d="M0 212C120 182 200 192 300 172S480 202 560 192 760 177 860 197 1060 172 1160 187 1360 177 1440 192V360H0Z"/>
+      <path fill="#4b97bd" fill-opacity=".15" d="M0 252C100 242 180 204 300 178 380 162 460 167 540 202 620 234 700 242 820 238 960 234 1100 222 1240 230 1330 235 1400 238 1440 240V360H0Z"/>
+      <path fill="#19b5d9" fill-opacity=".22" d="M0 302C140 282 260 294 400 286S660 264 800 282 1080 302 1220 288 1380 278 1440 284V360H0Z"/>
+    </svg>`;
+
+// Driveway tiles after How it works. Existing gallery files are referenced in
+// place, never copied. A driveway before and after pair, once both photos are
+// in images/gallery/compare, replaces the two empty slots with the
+// BeforeAfter card. Missing photos show a placeholder on staging only, and the
+// row disappears when fewer than 2 real photos exist.
+const DRIVEWAY_TILES = [
+  { src: "images/gallery/crew-driveway-cleaning.webp", label: "On the job", alt: "Technician surface cleaning a driveway beside the Rolling Suds truck" },
+  { src: "images/gallery/truck-driveway-cleaning.webp", label: "On the job", alt: "Rolling Suds truck parked at a home while a technician cleans the driveway" },
+];
+const DRIVEWAY_PAIR = {
+  id: "driveway",
+  beforeName: "driveway-before",
+  afterName: "driveway-after",
+  beforeLabel: "Before",
+  afterLabel: "After",
+  caption: "Driveway cleaning",
+  alts: {
+    before: "Stained concrete driveway before cleaning",
+    after: "The same driveway after cleaning",
+  },
+};
+
+function drivewayRow() {
+  const tile = (t) => `<figure class="drive-tile">
+        <img src="/${t.src}" alt="${t.alt}" width="1200" height="900" loading="lazy" decoding="async">
+        <span class="compare-label">${t.label}</span>
+      </figure>`;
+  const empty = (name, label) => `<figure class="drive-tile drive-tile-empty" data-slot="gallery/compare/${name}">
+        <span class="shot-empty-label">Photo coming soon</span>
+        <span class="compare-label">${label}</span>
+      </figure>`;
+
+  const real = DRIVEWAY_TILES.filter((t) => existsSync(t.src));
+  const pair = pairIsComplete(DRIVEWAY_PAIR);
+  const count = real.length + (pair ? 2 : 0);
+  if (count < 2) return "";
+
+  const items = real.map(tile);
+  if (pair) items.push(`<div class="drive-pair">${beforeAfter(DRIVEWAY_PAIR)}</div>`);
+  else if (!isProduction) items.push(empty("driveway-before", "Before"), empty("driveway-after", "After"));
+
+  return `<section class="contest-drives" aria-labelledby="drives-heading">
+  <div class="wrap">
+    <h2 class="contest-h2" id="drives-heading">Driveway glow-ups</h2>
+    <div class="drive-grid">
+      ${items.join("\n      ")}
+    </div>
+  </div>
+</section>`;
 }
 
 const field = ({ id, name, label, type = "text", autocomplete, inputmode, extra = "", full = false, placeholder = "" }) =>
@@ -78,8 +150,9 @@ const field = ({ id, name, label, type = "text", autocomplete, inputmode, extra 
 
 function entryForm() {
   const zips = SERVICE_ZIPS.length ? ` data-zips="${SERVICE_ZIPS.join(" ")}"` : "";
-  return `<form id="contestForm" name="driveway-contest" method="POST" action="/driveway-makeover/?entered=1" enctype="multipart/form-data" data-netlify="true" netlify-honeypot="bot-field" data-lead-source="${CONTEST.leadSource}"${zips} novalidate>
+  return `<form id="contestForm" name="driveway-contest" method="POST" action="/driveway/?entered=1" enctype="multipart/form-data" data-netlify="true" netlify-honeypot="bot-field" data-lead-source="${CONTEST.leadSource}"${zips} novalidate>
         <input type="hidden" name="form-name" value="driveway-contest">
+        ${contactPrefHidden}
         <input type="hidden" name="lead_source" value="${CONTEST.leadSource}">
         <input type="hidden" name="utm_source" value="direct">
         <input type="hidden" name="utm_medium" value="">
@@ -123,6 +196,8 @@ function entryForm() {
             <textarea id="c-notes" name="notes" rows="3"></textarea>
           </div>
         </div>
+
+        ${contactPref("c")}
 
         <button class="btn btn-green btn-lg" type="submit">Enter the Makeover Contest</button>
         <p class="form-msg" id="contestMsg" role="alert"></p>
@@ -171,6 +246,7 @@ const softCta = `<section class="contest-more bg-off">
 export function contestBody() {
   const active = FLAGS.CONTEST_ACTIVE;
   const hero = `<section class="contest-hero">
+  ${RIDGES}
   <div class="wrap contest-hero-grid">
     <div class="contest-copy">
       <span class="pill">The Great Driveway Makeover Contest, Reno-Tahoe</span>
@@ -183,8 +259,8 @@ export function contestBody() {
       <a class="btn btn-green btn-lg" href="/#quote">Get a Free Quote</a>`
       }
     </div>
-    ${heroArt()}
   </div>
+  ${heroArt()}
 </section>`;
 
   if (!active) {
@@ -218,6 +294,8 @@ ${trustRow}`;
     </ol>
   </div>
 </section>
+
+${drivewayRow()}
 
 <section class="contest-perks" aria-labelledby="perks-heading">
   <div class="wrap">

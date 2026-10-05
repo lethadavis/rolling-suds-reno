@@ -4,12 +4,15 @@ import { readFileSync, writeFileSync, mkdirSync, cpSync, rmSync, existsSync } fr
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { dirname, join } from "node:path";
-import { SITE_URL, FLAGS, HERO_IMAGE, HERO_VIDEO, HERO_PROMO, REVIEWS } from "./site.config.js";
+import { SITE_URL, FLAGS, HERO_IMAGE, REVIEWS } from "./site.config.js";
 import { renderPage, fillTokens, canonicalFor } from "./src/layout.mjs";
+import { context, isProduction } from "./src/env.mjs";
 import { buildPages, SERVICES, CITIES } from "./src/content/pages.mjs";
 import { shot, resolveShot } from "./src/templates/image.mjs";
 import { beforeAfter, pairIsComplete } from "./src/templates/before-after.mjs";
 import { COMPARISONS, FEATURED_VIDEO } from "./src/content/gallery.mjs";
+import { contactPref, contactPrefHidden } from "./src/templates/contact-pref.mjs";
+import * as offer from "./src/templates/offer.mjs";
 
 const OUT = "dist";
 // Assets are cached for a week, so the query string has to change whenever
@@ -22,9 +25,6 @@ const buildStamp = hash("assets/site.css") + hash("assets/site.js");
    site whose primary URL is SITE_URL. Everything else (netlify.app, deploy
    previews, branch deploys, localhost) is treated as staging: those pages get
    a noindex meta tag, and dist/_headers adds X-Robots-Tag: noindex.          */
-const context = process.env.CONTEXT || "local";
-const deployUrl = process.env.URL || "";
-const isProduction = context === "production" && deployUrl.includes(new URL(SITE_URL).host);
 const noindex = !isProduction;
 
 const partials = {
@@ -87,44 +87,28 @@ const footerColumn = (heading, links) =>
 
 const liveServices = SERVICES.filter((s) => !s.flag || FLAGS[s.flag]);
 
-// Hero photo: srcset at both widths, explicit box, no preload so the
-// headline stays the lead paint.
-const heroSets = (ext) => HERO_IMAGE.widths.map((w) => `/images/hero/${HERO_IMAGE.name}-${w}.${ext} ${w}w`).join(", ");
-const heroSizes = "100vw";
-const heroImage = `<picture>
-      <source srcset="${heroSets("avif")}" sizes="${heroSizes}" type="image/avif">
-      <source srcset="${heroSets("webp")}" sizes="${heroSizes}" type="image/webp">
-      <img src="/images/hero/${HERO_IMAGE.name}-${HERO_IMAGE.widths[0]}.jpg" srcset="${heroSets("jpg")}" sizes="${heroSizes}" alt="${HERO_IMAGE.alt}"${HERO_IMAGE.alt ? "" : ' aria-hidden="true"'} width="${HERO_IMAGE.intrinsic.width}" height="${HERO_IMAGE.intrinsic.height}" style="object-position:${HERO_IMAGE.focal}" decoding="async" fetchpriority="low">
-    </picture>`;
-
-// Hero media: self hosted video, else YouTube, else the poster alone.
-const hasSelfHosted = existsSync("." + HERO_VIDEO.mp4) && existsSync("." + HERO_VIDEO.webm);
-const hasYouTube = Boolean(HERO_VIDEO.youtubeId);
-const heroMode = hasSelfHosted ? "file" : hasYouTube ? "youtube" : "poster";
-
-const posterFile = ["jpg", "webp", "avif", "png"].map((e) => `images/hero/${HERO_VIDEO.poster}.${e}`).find((p) => existsSync(p));
-const posterHtml = posterFile
-  ? `<picture class="hero-poster"><img src="/${posterFile}" alt="" aria-hidden="true" width="${HERO_IMAGE.intrinsic.width}" height="${HERO_IMAGE.intrinsic.height}" decoding="async" fetchpriority="high"></picture>`
-  : heroImage.replace("<picture>", '<picture class="hero-poster">'); // TODO: swap for a frame from the clip
-
-const pauseButton = `<button class="hero-media-toggle hero-media-toggle-left" type="button" aria-label="Pause the background video" data-state="playing" hidden>
-        <span class="hero-media-icon" aria-hidden="true"></span>
-      </button>`;
-
-const videoEl =
-  heroMode === "file"
-    ? `<video class="hero-video" muted loop playsinline autoplay preload="metadata" aria-hidden="true" tabindex="-1"
-        ${posterFile ? `poster="/${posterFile}"` : ""}
-        data-src-webm="${HERO_VIDEO.webm}" data-src-mp4="${HERO_VIDEO.mp4}"></video>`
-    : heroMode === "youtube"
-    ? `<div class="hero-yt" aria-hidden="true" data-yt="${HERO_VIDEO.youtubeId}" data-start="${HERO_VIDEO.start}" data-end="${HERO_VIDEO.end}"></div>`
-    : "";
-
-const heroMedia = `<div class="hero-media" data-hero-mode="${heroMode}" aria-hidden="true">
-      ${posterHtml}
-      ${videoEl}
-    </div>
-    ${heroMode === "poster" ? "" : pauseButton}`;
+// Hero background: the Reno skyline, decorative, behind a pale veil. Phones get
+// a 4:5 crop around downtown so the skyline stays readable.
+const heroSet = (name, widths, ext) => widths.map((w) => `/images/hero/${name}-${w}.${ext} ${w}w`).join(", ");
+const PHONE = "(max-width: 640px)";
+const heroSources = (name, widths, media) =>
+  [["avif", "image/avif"], ["webp", "image/webp"], ["jpg", "image/jpeg"]]
+    .map(([ext, type]) => `<source${media ? ` media="${media}"` : ""} srcset="${heroSet(name, widths, ext)}" sizes="100vw" type="${type}">`)
+    .join("\n        ");
+const heroMedia = `<div class="hero-media" aria-hidden="true">
+      <picture class="hero-poster">
+        ${heroSources(HERO_IMAGE.mobile.name, HERO_IMAGE.mobile.widths, PHONE)}
+        ${heroSources(HERO_IMAGE.name, HERO_IMAGE.widths)}
+        <img src="/images/hero/${HERO_IMAGE.name}-1600.jpg" alt="" width="${HERO_IMAGE.intrinsic.width}" height="${HERO_IMAGE.intrinsic.height}" style="object-position:${HERO_IMAGE.focal}" decoding="async" fetchpriority="low">
+      </picture>
+    </div>`;
+// Preloaded at high priority on tablets and desktops, where it is the largest
+// paint. Phones skip the preload: there the photo covers the whole viewport,
+// so Chrome does not count it for LCP (the headline is), and fetching it early
+// held the headline back by about 0.8s in Lighthouse mobile runs. The <img>
+// itself stays low priority for the same reason; desktops get the image early
+// through the preload regardless.
+const heroPreload = `<link rel="preload" as="image" media="(min-width: 641px)" imagesrcset="${heroSet(HERO_IMAGE.name, HERO_IMAGE.widths, "avif")}" imagesizes="100vw" type="image/avif" fetchpriority="high">`;
 
 // Gallery top row: the featured video beside whatever pairs have both photos.
 const livePairs = COMPARISONS.filter(pairIsComplete);
@@ -139,13 +123,17 @@ const galleryTop = `<div class="gallery-top${livePairs.length ? "" : " no-pairs"
     </div>`;
 
 const tokens = {
+  HERO_PRELOAD: heroPreload,
+  CONTACT_PREF_HIDDEN: contactPrefHidden,
+  CONTACT_PREF_QUOTE: contactPref("q"),
   GALLERY_TOP: galleryTop,
-  HERO_IMAGE: heroImage,
   HERO_MEDIA: heroMedia,
-  HERO_PROMO_LINE:
-    FLAGS.SHOW_HERO_PROMO && new Date() <= new Date(HERO_PROMO.until + "T23:59:59")
-      ? `<span class="promo-offer">${HERO_PROMO.text}</span>\n          <span class="promo-until">through ${new Date(HERO_PROMO.until + "T12:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric" })}</span>`
-      : "",
+  WILDFIRE_EYEBROW: offer.heroEyebrow,
+  WILDFIRE_CTA_HREF: offer.offerHref,
+  WILDFIRE_CTA_OFFER: offer.offerOn ? ` data-offer="${offer.offerCode}"` : "",
+  WILDFIRE_TERMS: offer.heroTerms,
+  WILDFIRE_FORM_ATTR: offer.formAttr,
+  WILDFIRE_APPLIED: offer.appliedLine,
   TRUST_RATING:
     REVIEWS.rating && REVIEWS.count
       ? `<span class="trust-item"><span class="g-stars" role="img" aria-label="Google rating, ${REVIEWS.rating} stars"></span>${REVIEWS.rating} from ${REVIEWS.count} ${REVIEWS.label}</span>`
@@ -160,7 +148,7 @@ const tokens = {
   ),
   // Off by default: the contest page is reached by the postcard, not the site.
   FOOTER_CONTEST_LINK:
-    FLAGS.CONTEST_PROMO_LINK && FLAGS.CONTEST_ACTIVE ? '          <li><a href="/driveway-makeover/">Driveway Makeover Contest</a></li>' : "",
+    FLAGS.CONTEST_PROMO_LINK && FLAGS.CONTEST_ACTIVE ? '          <li><a href="/driveway/">Driveway Makeover Contest</a></li>' : "",
   // Empty slot, revealed only when a certification is actually held.
   WBE_BADGE_SLOT: FLAGS.WBE_CERTIFIED ? '<div class="cert-slot" data-slot="certification-badge"></div>' : "",
   // The crew photo slot appears only when a real file exists. No empty block.
@@ -209,6 +197,6 @@ if (noindex) {
 }
 
 console.log(
-  `Built ${pages.length} pages into ${OUT}/ (${sitemapPages.length} in sitemap, hero mode: ${heroMode}). ` +
+  `Built ${pages.length} pages into ${OUT}/ (${sitemapPages.length} in sitemap). ` +
     `context=${context} production=${isProduction} noindex=${noindex}`
 );

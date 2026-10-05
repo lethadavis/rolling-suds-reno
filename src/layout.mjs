@@ -80,7 +80,7 @@ ${page.robots ? `<meta name="robots" content="${page.robots}">` : noindex ? '<me
 <link rel="icon" href="/images/favicon.png" type="image/png">
 <link rel="apple-touch-icon" href="/images/favicon.png">
 <link rel="stylesheet" href="/assets/site.css?v=${buildStamp}">
-${page.preloadHero ? `<link rel="preload" as="image" href="${page.preloadHero}" fetchpriority="high">` : ""}
+${page.preloadHero ? `<link rel="preload" as="image" href="${page.preloadHero}"${page.preloadHero.endsWith(".webp") ? ' type="image/webp"' : ""} fetchpriority="high">` : ""}
 ${page.headExtra || ""}
 <script src="/assets/site.js?v=${buildStamp}" defer></script>
 ${schema}

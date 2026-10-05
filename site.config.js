@@ -10,10 +10,7 @@ export const FLAGS = {
   WBE_CERTIFIED: false,
   // Woman owned appears in the trust strip only once Francine approves it.
   WOMAN_OWNED_TRUST: false,
-  // Off by default so the hero reads evenly for commercial buyers. When true
-  // the offer line shows under the wildfire button until HERO_PROMO.until.
-  SHOW_HERO_PROMO: false,
-  // Driveway Makeover Contest landing page (/driveway-makeover). When false the
+  // Driveway Makeover Contest landing page (/driveway). When false the
   // page stays up but shows a "contest has ended" note and the quote CTA.
   CONTEST_ACTIVE: true,
   // Small link to the contest in the footer. Off: the page is meant to be
@@ -79,36 +76,29 @@ export const AREA_SERVED = [
   "Lake Tahoe, CA",
 ];
 
-// Hero photo. Files live at images/hero/<name>-<width>.{avif,webp,jpg}.
-// Swap name for a job photo later and give it real alt text.
+// Hero background photo, decorative. Files live at
+// images/hero/<name>-<width>.{avif,webp,jpg}; phones use the 4:5 crop in
+// mobile. Swap name for a job photo later and give it real alt text.
 export const HERO_IMAGE = {
   name: "reno-skyline",
-  widths: [1600, 2000],
+  widths: [640, 1024, 1600, 2000],
   intrinsic: { width: 2000, height: 1189 },
   focal: "55% 40%",
+  mobile: { name: "reno-skyline-mobile", widths: [640, 960] },
   alt: "", // decorative regional scenery, so no alt text
 };
 
-// Hero video. Self hosted wins when both files exist, otherwise the YouTube
-// id is used, otherwise the hero shows the poster on its own.
-// Corporate has approved use of this clip on this site.
-// TODO: replace with a self hosted file at video/hero.mp4 and video/hero.webm
-// and the mode switches over on its own.
-// TODO: place a poster frame from 3:49 at images/hero/hero-poster.jpg.
-export const HERO_VIDEO = {
-  mp4: "/video/hero.mp4",
-  webm: "/video/hero.webm",
-  poster: "hero-poster", // images/hero/hero-poster.*, falls back to the skyline set
-  youtubeId: "pDbqotygNrI",
-  start: 229, // 3:49
-  end: 265, // 4:25
-};
-
-// Hero offer line, shown only when FLAGS.SHOW_HERO_PROMO is true and today is
-// on or before the end date.
-export const HERO_PROMO = {
-  text: "$75 off a full residential exterior wash",
-  until: "2026-10-31",
+// Wildfire ash and soot cleanup offer. The hero card pill, the service page
+// offer box, the quote form's "applied" line and the offer=wildfire75 tag on
+// leads all read from here. active: false removes it everywhere.
+// Terms stay hidden in production while they still start with "TODO".
+export const WILDFIRE_OFFER = {
+  active: true,
+  amountOff: 75,
+  text: "$75 off",
+  appliesTo: "homes and businesses",
+  terms: "TODO: confirm terms with Francine and Jesse",
+  expires: null,
 };
 
 export const BRAND = {

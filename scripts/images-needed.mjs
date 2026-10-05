@@ -32,8 +32,8 @@ add(
   "Driveway Makeover Contest, hero",
   "contest",
   "spa-driveway",
-  "1000x1250 (4:5)",
-  "The spa driveway mascot from the postcard, on its own: no contest badge baked in (the badge sits on top as its own file) and no dark navy fade, so it sits on the light hero.",
+  "1010x1536 or larger, portrait (.webp plus a .jpg fallback)",
+  "The spa driveway mascot from the postcard, on its own: no contest badge baked in (the badge sits on top as its own file) and no dark navy fade. It fills the right half of the hero, faded at its left edge.",
   "A driveway in a towel and cucumber slices enjoying a spa day",
   "Campaign artwork"
 );
@@ -45,6 +45,24 @@ add(
   "The round contest badge on a transparent background.",
   "Decorative, no alt needed (the eyebrow carries the same words)",
   "Campaign artwork"
+);
+add(
+  "Driveway Makeover Contest, Driveway glow-ups row (before)",
+  "gallery/compare",
+  "driveway-before",
+  "1200x900 (4:3 landscape, .webp)",
+  "A real customer driveway in our service area before cleaning: oil, tire marks or de-icer film clearly visible. Shot from the same spot as the after photo.",
+  "Stained concrete driveway before cleaning",
+  "Real job photography"
+);
+add(
+  "Driveway Makeover Contest, Driveway glow-ups row (after)",
+  "gallery/compare",
+  "driveway-after",
+  "1200x900 (4:3 landscape, .webp)",
+  "The same driveway after cleaning, same angle and framing as the before. Once both exist they show as one before and after card in the row.",
+  "The same driveway after cleaning",
+  "Real job photography"
 );
 add(
   "Driveway Makeover Contest, social share",

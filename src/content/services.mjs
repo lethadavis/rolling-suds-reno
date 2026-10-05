@@ -14,12 +14,12 @@ export const SERVICES = [
     eyebrow: "Commercial Services",
     h1: "Commercial pressure washing in Reno and Sparks",
     lede:
-      "We clean the parts of your property customers judge first: the entry, the sidewalk, the storefront glass line, the parking area and the back of house.",
+      "We clean the parts of your property customers judge first: the entry, the sidewalk, the storefront glass line, the parking area and the service areas out back.",
     sections: [
       {
         h2: "Exterior cleaning that fits around your business",
         blocks: [
-          "Commercial exteriors in northern Nevada take a beating from a specific mix: construction and playa dust carried on the wind, hard water spotting from irrigation, summer wildfire smoke, and winter road treatments tracked in from the street. Left alone, that mix turns into a grey film on stucco and metal panel, dark traffic lanes on concrete, and grease shadows around service doors.",
+          "Commercial exteriors in the Reno-Tahoe area take a beating from a specific mix: construction and playa dust carried on the wind, hard water spotting from irrigation, summer wildfire smoke, and winter road treatments tracked in from the street. Left alone, that mix turns into a grey film on stucco and metal panel, dark traffic lanes on concrete, and grease shadows around service doors.",
           "Our crews work on commercial buildings across the Truckee Meadows, from single storefronts on South Virginia Street to warehouse and flex space near Longley Lane and the Sparks industrial corridor. We schedule around your hours, which usually means early mornings, evenings or weekends so your entrances stay open and your staff is not working around hoses.",
           "Every truck carries its own water supply, hot water capability and a full set of specialty detergents, so we are not tied to your spigot and we are not guessing at the right mix for a given surface.",
         ],
@@ -155,7 +155,7 @@ export const SERVICES = [
       {
         h2: "Common area cleaning that holds up to a drive through",
         blocks: [
-          "In a northern Nevada community, the shared surfaces collect everything the wind carries. Monument signs go chalky with dust, sidewalk panels darken along the walking route, mailbox kiosks pick up grime at hand height, and the clubhouse entry shows every footprint from the pool deck.",
+          "In a Reno-Tahoe community, the shared surfaces collect everything the wind carries. Monument signs go chalky with dust, sidewalk panels darken along the walking route, mailbox kiosks pick up grime at hand height, and the clubhouse entry shows every footprint from the pool deck.",
           "We clean the full list of shared surfaces so the community reads as maintained from the entry monument all the way through to the back gate. Our crews work in mapped sections and keep sidewalks passable, which matters in communities where walking the loop is a daily routine.",
         ],
       },
@@ -209,7 +209,7 @@ export const SERVICES = [
     slug: "restaurant-exterior-cleaning",
     shotAlt: "Restaurant patio and entry concrete being cleaned in Reno, NV",
     label: "Restaurant Exterior Cleaning",
-    cardTitle: "Restaurant Cleaning",
+    cardTitle: "Restaurant Exteriors",
     keyword: "restaurant exterior cleaning Reno",
     title: "Restaurant Exterior Cleaning in Reno NV | Rolling Suds",
     description:
@@ -217,12 +217,12 @@ export const SERVICES = [
     eyebrow: "Food Service",
     h1: "Restaurant exterior cleaning in Reno and Sparks",
     lede:
-      "Grease migrates. It leaves the kitchen through the back door, the mop sink and the dumpster, and it ends up on the concrete your guests walk across.",
+      "Grease migrates. It tracks out the back door and drips around the dumpster, and it ends up on the concrete your guests walk across.",
     sections: [
       {
         h2: "Cleaning the areas grease and traffic reach",
         blocks: [
-          "Restaurant exteriors get dirty in a pattern. There is a dark halo around the back door, a slick lane from the kitchen to the dumpster, gum and drink spills on the patio, and a grey film on the glass line where dust meets moisture from the mister or the misting fan in summer.",
+          "Restaurant exteriors get dirty in a pattern. There is a dark halo around the back door, a slick lane from the back door to the dumpster, gum and drink spills on the patio, and a grey film on the glass line where dust meets moisture from the mister or the misting fan in summer.",
           "We clean that pattern with hot water and degreasers matched to the surface, then rinse so the residue leaves the property instead of spreading. For patios we work early, before setup, so tables are back in place for service.",
         ],
       },
@@ -234,7 +234,7 @@ export const SERVICES = [
               "Patios, seating areas and railings",
               "Entry concrete, sidewalks and curb lines",
               "Drive thru lanes and order points",
-              "Dumpster pads, grease bin areas and back of house concrete",
+              "Dumpster pads, grease bin areas and the concrete behind the building",
               "Exterior walls, service doors and awnings",
               "Exterior glass and frames",
             ],
@@ -244,7 +244,7 @@ export const SERVICES = [
       {
         h2: "Scheduled cleaning keeps inspections uneventful",
         blocks: [
-          "Most restaurants we quote end up on a monthly or every other month cycle for back of house concrete and patios, because grease and foot traffic rebuild quickly. Between visits the surfaces stay light enough that each cleaning is quick, which keeps the recurring cost lower than a periodic emergency deep clean.",
+          "Most restaurants we quote end up on a monthly or every other month cycle for rear service concrete and patios, because grease and foot traffic rebuild quickly. Between visits the surfaces stay light enough that each cleaning is quick, which keeps the recurring cost lower than a periodic emergency deep clean.",
           "We work around your hours: before open, after close, or on your slowest morning. If you are part of a group with several locations, we can run the same scope across all of them on one schedule.",
         ],
       },
@@ -256,7 +256,7 @@ export const SERVICES = [
       },
       {
         q: "Do you handle the grease around the dumpster pad?",
-        a: "Yes. Pads, grease bin areas and the path between the kitchen door and the bin are cleaned with hot water and a degreaser.",
+        a: "Yes. Pads, grease bin areas and the path between the back door and the bin are cleaned with hot water and a degreaser.",
       },
       {
         q: "Can you clean the drive thru without closing it?",
@@ -264,7 +264,7 @@ export const SERVICES = [
       },
       {
         q: "How often do restaurants need exterior cleaning?",
-        a: "Monthly to every other month for back of house and patios is typical here, with entries and glass on a similar or slightly longer cycle.",
+        a: "Monthly to every other month for rear service areas and patios is typical here, with entries and glass on a similar or slightly longer cycle.",
       },
     ],
     related: ["commercial-pressure-washing", "driveway-and-concrete-cleaning", "window-cleaning", "fleet-washing"],
@@ -328,7 +328,7 @@ export const SERVICES = [
         a: "Yes. Wrapped vehicles are washed with lower pressure and detergents chosen to protect the vinyl and the edges of the graphics.",
       },
       {
-        q: "How often should a fleet be washed in northern Nevada?",
+        q: "How often should a fleet be washed in the Reno-Tahoe area?",
         a: "Every week or two is common for high mileage or heavily branded fleets, and monthly works for lower mileage vehicles. Winter road treatment usually calls for a tighter schedule.",
       },
     ],
@@ -671,7 +671,7 @@ export const SERVICES = [
 
   {
     slug: "wildfire-ash-and-soot-cleanup",
-    shotAlt: "Wildfire ash being washed off a home exterior in Reno, NV",
+    shotAlt: "Wildfire ash being washed off a building exterior in Reno, NV",
     label: "Wildfire Ash & Soot Cleanup",
     cardTitle: "Wildfire Ash & Soot Cleanup",
     keyword: "wildfire ash cleanup Reno",
@@ -683,17 +683,15 @@ export const SERVICES = [
     offer: {
       tag: "Now booking: Reno & Tahoe",
       text: "Smoke season leaves a film on every outside surface. We are washing it off across the valley and the basin right now.",
-      deal: "$75 off a full residential exterior wash",
-      until: "through October 31",
     },
     lede:
-      "It has been settling on our houses all summer, same as yours. We wash it off your roof, siding, deck, windows and solar panels.",
+      "It has been settling on homes, businesses and commercial properties all summer. We wash it off roofs, siding, decks, windows and solar panels.",
     sections: [
       {
         h2: "What smoke season leaves behind",
         blocks: [
           "Ash does not stay on the roof. It works its way into gutters, settles on window ledges and screens, films over solar panels, and sits in the grain of a wood deck. Once it gets damp it stops being dust and becomes a sticky, slightly caustic film that dries onto the surface.",
-          "On glass and panels it shows up as a haze that wipes into streaks. On stucco and siding it reads as a dulling of the color rather than obvious dirt, which is why houses look tired at the end of a smoky summer even when nothing is visibly dirty.",
+          "On glass and panels it shows up as a haze that wipes into streaks. On stucco and siding it reads as a dulling of the color rather than obvious dirt, which is why buildings look tired at the end of a smoky summer even when nothing is visibly dirty.",
           "Our approach is a full exterior rinse with soft wash detergents: roof first where access allows, then walls, then hard surfaces, so nothing gets recontaminated by the runoff above it.",
         ],
       },
@@ -716,14 +714,14 @@ export const SERVICES = [
       {
         h2: "Why solar panels are worth including",
         blocks: [
-          "A film of ash on a panel is shade, and shade is lost production. Panels are also the surface homeowners are least likely to clean themselves, because they are on a roof and because the wrong approach can scratch the glass or stress the seals. We rinse panels with a purified water system, which leaves no mineral spotting behind as it dries.",
+          "A film of ash on a panel is shade, and shade is lost production. Panels are also the surface property owners are least likely to clean themselves, because they are on a roof and because the wrong approach can scratch the glass or stress the seals. We rinse panels with a purified water system, which leaves no mineral spotting behind as it dries.",
           "Hard water is a real factor here. Rinsing panels or windows with a garden hose leaves mineral spots as the water evaporates, which is its own kind of shading and its own kind of streaking.",
         ],
       },
     ],
     faqs: [
       {
-        q: "How soon after a fire event should we wash the house?",
+        q: "How soon after a fire event should we wash the property?",
         a: "Once air quality allows crews to work safely outdoors. The sooner ash comes off, the less time it has to bond to surfaces with dew and humidity.",
       },
       {
