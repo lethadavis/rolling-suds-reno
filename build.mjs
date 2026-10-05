@@ -4,7 +4,7 @@ import { readFileSync, writeFileSync, mkdirSync, cpSync, rmSync, existsSync } fr
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { dirname, join } from "node:path";
-import { SITE_URL, FLAGS, HERO_IMAGE, HERO_VIDEO, REVIEWS } from "./site.config.js";
+import { SITE_URL, FLAGS, HERO_IMAGE, HERO_VIDEO, HERO_PROMO, REVIEWS } from "./site.config.js";
 import { renderPage, fillTokens, canonicalFor } from "./src/layout.mjs";
 import { buildPages, SERVICES, CITIES } from "./src/content/pages.mjs";
 import { shot } from "./src/templates/image.mjs";
@@ -32,7 +32,6 @@ const partials = {
   footer: read("src/partials/footer.html"),
   mobileBar: read("src/partials/mobile-bar.html"),
   lightbox: read("src/partials/lightbox.html"),
-  quoteModal: read("src/partials/quote-modal.html"),
 };
 
 function read(p) {
@@ -133,7 +132,7 @@ const posterHtml = posterFile
   ? `<picture class="hero-poster"><img src="/${posterFile}" alt="" aria-hidden="true" width="${HERO_IMAGE.intrinsic.width}" height="${HERO_IMAGE.intrinsic.height}" decoding="async" fetchpriority="high"></picture>`
   : heroImage.replace("<picture>", '<picture class="hero-poster">'); // TODO: swap for a frame from the clip
 
-const pauseButton = `<button class="hero-media-toggle" type="button" aria-label="Pause the background video" data-state="playing" hidden>
+const pauseButton = `<button class="hero-media-toggle hero-media-toggle-left" type="button" aria-label="Pause the background video" data-state="playing" hidden>
         <span class="hero-media-icon" aria-hidden="true"></span>
       </button>`;
 
@@ -146,16 +145,20 @@ const videoEl =
     ? `<div class="hero-yt" aria-hidden="true" data-yt="${HERO_VIDEO.youtubeId}" data-start="${HERO_VIDEO.start}" data-end="${HERO_VIDEO.end}"></div>`
     : "";
 
-const heroMedia = `<div class="hero-media" data-hero-mode="${heroMode}">
+const heroMedia = `<div class="hero-media" data-hero-mode="${heroMode}" aria-hidden="true">
       ${posterHtml}
       ${videoEl}
-      ${heroMode === "poster" ? "" : pauseButton}
-    </div>`;
+    </div>
+    ${heroMode === "poster" ? "" : pauseButton}`;
 
 const tokens = {
   GALLERY_COMPARE: comparisons,
   HERO_IMAGE: heroImage,
   HERO_MEDIA: heroMedia,
+  HERO_PROMO_LINE:
+    FLAGS.SHOW_HERO_PROMO && new Date() <= new Date(HERO_PROMO.until + "T23:59:59")
+      ? `<span class="promo-offer">${HERO_PROMO.text}</span>\n          <span class="promo-until">through ${new Date(HERO_PROMO.until + "T12:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric" })}</span>`
+      : "",
   TRUST_RATING:
     REVIEWS.rating && REVIEWS.count
       ? `<span class="trust-item"><span class="g-stars" role="img" aria-label="Google rating, ${REVIEWS.rating} stars"></span>${REVIEWS.rating} from ${REVIEWS.count} ${REVIEWS.label}</span>`

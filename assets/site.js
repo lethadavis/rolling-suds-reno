@@ -186,10 +186,8 @@ syncHeader();
       const res = await fetch(FORM_ENDPOINT, { method: "POST", body: data, headers: { Accept: "application/json" } });
       if (!res.ok) throw new Error();
       form.reset();
-      msg.textContent = "";
-      msg.style.display = "none";
-      // Swap the card over to the success state.
-      document.getElementById("quoteModal")?.classList.add("is-sent");
+      // TODO: Jesse to confirm the same business day promise.
+      msg.textContent = "Thanks, we have your details. We will get back to you the same business day.";
       track("quote_success");
     } catch {
       msg.textContent = "Something went wrong. Please call us at {{PHONE}}.";
@@ -204,12 +202,14 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
 (() => {
   const media = document.querySelector(".hero-media");
   if (!media || media.dataset.heroMode === "poster") return;
-  const toggle = media.querySelector(".hero-media-toggle");
+  const toggle = document.querySelector(".hero-media-toggle");
 
   // Checked when we are about to load, not at parse time: Chrome often reports
   // a slower effectiveType for the first moments of a page load.
   function shouldSkip() {
     const conn = navigator.connection || {};
+    // Phones keep the poster: cheaper on data and easier to read over.
+    if (window.innerWidth < 768) return "small-screen";
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return "reduced-motion";
     if (conn.saveData === true) return "save-data";
     if (["slow-2g", "2g", "3g"].includes(conn.effectiveType)) return "slow-connection";
@@ -350,69 +350,38 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
   }, { threshold: 0.15 }).observe(media);
 })();
 
-/* ---------- Free quote modal ---------- */
+/* ---------- Quote buttons: scroll to the hero form and focus it ---------- */
 (() => {
-  const modal = document.getElementById("quoteModal");
-  if (!modal) return;
-  const supportsDialog = typeof modal.showModal === "function";
-  let lastFocus = null;
+  const form = document.getElementById("quoteForm");
+  const hero = document.getElementById("quote");
+  const smooth = !matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  function lockScroll() {
-    // Reserve the scrollbar width so locking does not shift the layout.
-    const gap = window.innerWidth - document.documentElement.clientWidth;
-    document.body.style.paddingRight = gap > 0 ? gap + "px" : "";
-    document.body.classList.add("quote-open");
-  }
-  function unlockScroll() {
-    document.body.classList.remove("quote-open");
-    document.body.style.paddingRight = "";
-  }
-
-  function openQuote(prefill = {}) {
-    if (modal.open) return;
-    lastFocus = document.activeElement;
-    for (const [id, value] of Object.entries(prefill)) {
-      const el = document.getElementById(id);
-      if (el && value) el.value = value;
+  function focusForm(service) {
+    if (!form || !hero) return false;
+    if (service) {
+      const select = document.getElementById("f-svc");
+      const option = [...select.options].find((o) => o.text === service);
+      if (option) select.value = option.value;
     }
-    // <dialog> gives us the focus trap and Escape for free.
-    if (supportsDialog) modal.showModal();
-    else modal.setAttribute("open", "");
-    lockScroll();
-    const firstEmpty = [...modal.querySelectorAll("input, select, textarea")].find(el => !el.value);
-    (firstEmpty || modal.querySelector("input, select")).focus();
-    track("quote_open", { source: prefill.source || "button" });
-  }
-  function closeQuote() {
-    if (supportsDialog) modal.close();
-    else modal.removeAttribute("open");
-    unlockScroll();
-    lastFocus?.focus();
-    if (location.hash === "#quote") history.replaceState(null, "", location.pathname);
-  }
-  window.openQuote = openQuote;
-
-  document.getElementById("quoteModalClose")?.addEventListener("click", closeQuote);
-  modal.addEventListener("close", () => { unlockScroll(); lastFocus?.focus(); });
-  // Clicking the backdrop closes it
-  modal.addEventListener("click", e => { if (e.target === modal) closeQuote(); });
-  if (!supportsDialog) {
-    document.addEventListener("keydown", e => { if (e.key === "Escape" && modal.hasAttribute("open")) closeQuote(); });
+    hero.scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "start" });
+    // Focus after the scroll settles, without yanking the page back.
+    setTimeout(() => document.getElementById("f-name")?.focus({ preventScroll: true }), smooth ? 500 : 0);
+    track("quote_focus", { service: service || "none" });
+    return true;
   }
 
-  // Any Free Quote link opens the modal. Without scripting they still land on
-  // the hero quote bar, which posts on its own.
-  document.addEventListener("click", e => {
-    const link = e.target.closest('a.js-quote, a[href="#quote"], a[href="/#quote"], a[href="#quote-form"]');
-    if (!link) return;
+  // On the homepage these scroll to the form. Elsewhere the href carries the
+  // visitor to /#quote and the hash handler below picks it up on arrival.
+  document.addEventListener("click", (e) => {
+    const link = e.target.closest('a.js-quote, a[href="#quote"], a[href="/#quote"]');
+    if (!link || !form) return;
     e.preventDefault();
-    openQuote(link.dataset.service ? { "f-svc": link.dataset.service } : {});
+    focusForm(link.dataset.service);
   });
 
-  // A #quote link or a shared URL opens the card straight away.
-  const openFromHash = () => { if (location.hash === "#quote") openQuote({ source: "hash" }); };
-  addEventListener("hashchange", openFromHash);
-  openFromHash();
+  const params = new URLSearchParams(location.search);
+  if (params.get("service") === "wildfire") setTimeout(() => focusForm("Wildfire Ash & Soot Cleanup"), 250);
+  else if (location.hash === "#quote") setTimeout(() => focusForm(), 250);
 })();
 
 /* ---------- Reviews carousel ---------- */

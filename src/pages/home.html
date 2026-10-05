@@ -1,19 +1,68 @@
 <!-- ================= HERO + QUOTE ================= -->
 <section class="hero" id="quote">
+  <div class="hero-bg">
+    {{HERO_MEDIA}}
+    <div class="hero-veil" aria-hidden="true"></div>
+    <div class="hero-foot" aria-hidden="true"></div>
+  </div>
   <div class="wrap hero-grid">
     <div class="hero-copy">
       <span class="pill">Reno, Sparks &amp; Northern Nevada</span>
       <h1>Commercial &amp; Residential Pressure Washing <span>in Reno &amp; Tahoe</span></h1>
-      <!-- TODO: Francine to approve this subline. -->
-      <p class="hero-lede">One crew, one visit, and the whole property looks cared for again, from the roof line down to the driveway.</p>
-      <div class="hero-actions">
-        <a class="btn btn-green btn-lg js-quote" href="#quote-form">Get a Free Quote</a>
-        <a class="hero-call" href="tel:{{PHONE_HREF}}">or call {{PHONE}}</a>
+      <!-- TODO: Francine to verify the plant-safe detergents and 100% satisfaction guarantee claims. -->
+      <p class="hero-lede">Locally owned residential and commercial power washing for the Truckee Meadows. Professional-grade equipment, plant-safe detergents, and a 100% satisfaction guarantee.</p>
+
+      <div class="promo promo-hero">
+        <span class="promo-icon" aria-hidden="true"><svg><use href="#i-flame"/></svg></span>
+        <div class="promo-body">
+          <span class="promo-eyebrow">Now Booking: Reno &amp; Tahoe</span>
+          <span class="promo-title">Wildfire ash and soot cleanup</span>
+          <span class="promo-text">It&rsquo;s been settling on our houses all summer, same as yours. We&rsquo;ll wash it off your roof, siding, deck, windows and solar panels.</span>
+          <div class="promo-actions">
+            <a class="btn btn-green js-quote" href="#quote" data-service="Wildfire Ash &amp; Soot Cleanup">Get Ash &amp; Soot Help</a>
+            <a class="promo-link" href="/wildfire-ash-and-soot-cleanup/" >Learn more about ash and soot cleanup</a>
+          </div>
+          {{HERO_PROMO_LINE}}
+        </div>
       </div>
     </div>
-    <div class="hero-photo">{{HERO_MEDIA}}<div class="hero-scrim" aria-hidden="true"></div></div>
-  </div>
 
+    <div class="quote-card">
+      <span class="tag">Free &middot; No Obligation</span>
+      <h2>Get Your <span>Free</span> Quote</h2>
+      <p>Tell us about your property and we&rsquo;ll get back to you the same business day with a no-obligation estimate.</p>
+    <form id="quoteForm">
+      <div class="form-grid">
+        <div class="field"><label for="f-name">Full Name *</label><input id="f-name" name="name" required placeholder="Jane Smith" autocomplete="name"></div>
+        <div class="field"><label for="f-phone">Phone Number *</label><input id="f-phone" name="phone" type="tel" required placeholder="(775) 000-0000" autocomplete="tel"></div>
+        <div class="field"><label for="f-email">Email Address *</label><input id="f-email" name="email" type="email" required placeholder="you@example.com" autocomplete="email"></div>
+        <div class="field"><label for="f-addr">Service Address *</label><input id="f-addr" name="address" required placeholder="123 Main St, Reno" autocomplete="street-address"></div>
+        <div class="field full"><label for="f-svc">Requested Service *</label>
+          <select id="f-svc" name="service" required>
+            <option value="">Select a service…</option>
+            <option>House Washing</option>
+            <option>Roof Cleaning</option>
+            <option>Driveway &amp; Concrete</option>
+            <option>Deck &amp; Fence Cleaning</option>
+            <option>Gutter Cleaning</option>
+            <option>Commercial Washing</option>
+            <option>Window Cleaning</option>
+            <option>Fleet Washing</option>
+            <option>Hood Vent Cleaning</option>
+            <option>Restaurant Cleaning Services</option>
+            <option>Wildfire Ash &amp; Soot Cleanup</option>
+            <option>Multiple Services</option>
+            <option>Not Sure: Need a Consultation</option>
+          </select>
+        </div>
+        <div class="field full"><label for="f-notes">Additional Notes</label><textarea id="f-notes" name="notes" placeholder="Property size, problem areas, preferred timing…"></textarea></div>
+      </div>
+      <button class="btn btn-green" type="submit">Request My Free Quote →</button>
+      <div class="form-msg" id="formMsg" role="status"></div>
+    </form>
+      <p class="form-foot">Rather talk it through? Call <a href="tel:{{PHONE_HREF}}">{{PHONE}}</a></p>
+    </div>
+  </div>
 </section>
 
 <!-- ================= TRUST STRIP ================= -->

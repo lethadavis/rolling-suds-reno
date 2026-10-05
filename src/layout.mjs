@@ -97,7 +97,6 @@ ${page.body}
 ${parts.footer}
 ${parts.mobileBar}
 ${page.needsLightbox ? parts.lightbox : ""}
-${parts.quoteModal}
 </body>
 </html>
 `,

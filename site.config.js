@@ -11,6 +11,9 @@ export const FLAGS = {
   WBE_CERTIFIED: false,
   // Woman owned appears in the trust strip only once Francine approves it.
   WOMAN_OWNED_TRUST: false,
+  // Off by default so the hero reads evenly for commercial buyers. When true
+  // the offer line shows under the wildfire button until HERO_PROMO.until.
+  SHOW_HERO_PROMO: false,
 };
 
 export const CONTACT = {
@@ -79,6 +82,13 @@ export const HERO_VIDEO = {
   youtubeId: "pDbqotygNrI",
   start: 229, // 3:49
   end: 265, // 4:25
+};
+
+// Hero offer line, shown only when FLAGS.SHOW_HERO_PROMO is true and today is
+// on or before the end date.
+export const HERO_PROMO = {
+  text: "$75 off a full residential exterior wash",
+  until: "2026-10-31",
 };
 
 export const BRAND = {
