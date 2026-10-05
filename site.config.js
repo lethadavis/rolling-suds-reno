@@ -66,6 +66,21 @@ export const HERO_IMAGE = {
   alt: "", // decorative regional scenery, so no alt text
 };
 
+// Hero video. Self hosted wins when both files exist, otherwise the YouTube
+// id is used, otherwise the hero shows the poster on its own.
+// Corporate has approved use of this clip on this site.
+// TODO: replace with a self hosted file at video/hero.mp4 and video/hero.webm
+// and the mode switches over on its own.
+// TODO: place a poster frame from 3:49 at images/hero/hero-poster.jpg.
+export const HERO_VIDEO = {
+  mp4: "/video/hero.mp4",
+  webm: "/video/hero.webm",
+  poster: "hero-poster", // images/hero/hero-poster.*, falls back to the skyline set
+  youtubeId: "pDbqotygNrI",
+  start: 229, // 3:49
+  end: 265, // 4:25
+};
+
 export const BRAND = {
   navy: "#0f2a44",
   aqua: "#19b5d9",

@@ -1,3 +1,10 @@
+/* ---------- Analytics ----------
+   No analytics product is installed yet. Events are pushed to dataLayer so a
+   GA4 or GTM tag can pick them up the day one is added. */
+function track(event, detail = {}) {
+  (window.dataLayer = window.dataLayer || []).push({ event, ...detail });
+}
+
 /* ---------- SETTINGS ---------- */
 // Where quote requests are sent. Paste a Formspree/Netlify/etc. URL here.
 // Left empty, the form opens the visitor's email app instead.
@@ -172,13 +179,18 @@ syncHeader();
       location.href = `mailto:${FALLBACK_EMAIL}?subject=${encodeURIComponent("Free Quote Request")}&body=${encodeURIComponent(body)}`;
       return;
     }
+    track("quote_submit");
     msg.style.display = "block";
     msg.textContent = "Sending…";
     try {
       const res = await fetch(FORM_ENDPOINT, { method: "POST", body: data, headers: { Accept: "application/json" } });
       if (!res.ok) throw new Error();
       form.reset();
-      msg.textContent = "Thanks! We got your request and will be in touch the same business day.";
+      msg.textContent = "";
+      msg.style.display = "none";
+      // Swap the card over to the success state.
+      document.getElementById("quoteModal")?.classList.add("is-sent");
+      track("quote_success");
     } catch {
       msg.textContent = "Something went wrong. Please call us at {{PHONE}}.";
     }
@@ -188,6 +200,156 @@ syncHeader();
 const yearEl = document.getElementById("yr");
 if (yearEl) yearEl.textContent = new Date().getFullYear();
 
+/* ---------- Hero background video ---------- */
+(() => {
+  const media = document.querySelector(".hero-media");
+  if (!media || media.dataset.heroMode === "poster") return;
+  const toggle = media.querySelector(".hero-media-toggle");
+
+  // Checked when we are about to load, not at parse time: Chrome often reports
+  // a slower effectiveType for the first moments of a page load.
+  function shouldSkip() {
+    const conn = navigator.connection || {};
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return "reduced-motion";
+    if (conn.saveData === true) return "save-data";
+    if (["slow-2g", "2g", "3g"].includes(conn.effectiveType)) return "slow-connection";
+    return null;
+  }
+
+  let api = null;
+  let userPaused = false;
+  let onScreen = true;
+  const setPlaying = (on) => media.classList.toggle("is-playing", on);
+
+  function loadFile() {
+    const video = media.querySelector(".hero-video");
+    for (const [type, key] of [["video/webm", "srcWebm"], ["video/mp4", "srcMp4"]]) {
+      const src = video.dataset[key];
+      if (!src) continue;
+      const source = document.createElement("source");
+      source.src = src;
+      source.type = type;
+      video.appendChild(source);
+    }
+    video.load();
+    video.addEventListener("playing", () => setPlaying(true), { once: true });
+    video.play().catch(() => {});
+    api = { play: () => video.play().catch(() => {}), pause: () => video.pause() };
+  }
+
+  function loadYouTube() {
+    const host = media.querySelector(".hero-yt");
+    const id = host.dataset.yt;
+    const from = Number(host.dataset.start) || 0;
+    const to = Number(host.dataset.end) || 0;
+    const mount = document.createElement("div");
+    host.appendChild(mount);
+
+    const tag = document.createElement("script");
+    tag.src = "https://www.youtube.com/iframe_api";
+    document.head.appendChild(tag);
+
+    window.onYouTubeIframeAPIReady = () => {
+      const player = new YT.Player(mount, {
+        host: "https://www.youtube-nocookie.com",
+        videoId: id,
+        playerVars: { autoplay: 1, mute: 1, controls: 0, playsinline: 1, rel: 0, modestbranding: 1, iv_load_policy: 3, disablekb: 1, fs: 0, start: from },
+        events: {
+          onReady: (e) => { e.target.mute(); e.target.seekTo(from, true); e.target.playVideo(); },
+          onStateChange: (e) => { if (e.data === YT.PlayerState.PLAYING) setPlaying(true); },
+        },
+      });
+      api = { play: () => player.playVideo(), pause: () => player.pauseVideo() };
+      // The poster stays until playback is confirmed, whichever signal arrives first.
+      const confirm = setInterval(() => {
+        const state = player.getPlayerState ? player.getPlayerState() : null;
+        if (state === 1) { setPlaying(true); clearInterval(confirm); }
+        // Autoplay can be refused on the first gesture-less load; nudge it once.
+        if (state === 5 || state === -1) player.playVideo();
+      }, 300);
+      setTimeout(() => clearInterval(confirm), 15000);
+
+      // Loop the approved segment only, dipping to the poster so the jump back
+      // is hidden and no end screen or related videos can appear.
+      // Some embeds report a frozen currentTime, so wall clock time is used as
+      // the fallback once playback has started.
+      if (to > from) {
+        let anchorTime = from;
+        let anchorAt = performance.now();
+        let lastReported = from;
+        let dipping = false;
+
+        const resetAnchor = (seconds) => { anchorTime = seconds; anchorAt = performance.now(); };
+
+        setInterval(() => {
+          if (userPaused || !onScreen || dipping) return;
+          // Only stand down when the player is genuinely paused or ended.
+          const state = player.getPlayerState ? player.getPlayerState() : 1;
+          if (state === 2 || state === 0) return;
+
+          const reported = player.getCurrentTime ? player.getCurrentTime() : 0;
+          if (reported > lastReported + 0.05) {
+            lastReported = reported;
+            resetAnchor(reported);
+          }
+          const elapsed = (performance.now() - anchorAt) / 1000;
+          const position = anchorTime + elapsed;
+
+          if (position >= to - 0.35 || position < from - 1) {
+            dipping = true;
+            media.classList.add("is-dipping");
+            setTimeout(() => {
+              player.seekTo(from, true);
+              player.playVideo();
+              lastReported = from;
+              resetAnchor(from);
+              media.classList.remove("is-dipping");
+              dipping = false;
+            }, 300);
+          }
+        }, 250);
+      }
+    };
+  }
+
+  const begin = () => {
+    // Reduced motion, Save-Data or a slow connection: the poster is the whole hero.
+    const skip = shouldSkip();
+    if (skip) {
+      media.dataset.heroSkipped = skip;
+      return;
+    }
+    if (toggle) toggle.hidden = false;
+    media.dataset.heroMode === "youtube" ? loadYouTube() : loadFile();
+  };
+  const kick = () => ("requestIdleCallback" in window ? requestIdleCallback(begin, { timeout: 2500 }) : setTimeout(begin, 300));
+  if (document.readyState === "complete") kick();
+  else addEventListener("load", kick, { once: true });
+
+  if (toggle) {
+    toggle.addEventListener("click", () => {
+      userPaused = !userPaused;
+      toggle.dataset.state = userPaused ? "paused" : "playing";
+      toggle.setAttribute("aria-label", userPaused ? "Play the background video" : "Pause the background video");
+      if (!api) return;
+      userPaused ? api.pause() : api.play();
+    });
+  }
+
+  // Stop burning CPU when the tab is hidden or the hero is scrolled away.
+  document.addEventListener("visibilitychange", () => {
+    if (!api) return;
+    if (document.hidden) api.pause();
+    else if (!userPaused && onScreen) api.play();
+  });
+  new IntersectionObserver(([entry]) => {
+    onScreen = entry.isIntersecting;
+    if (!api) return;
+    if (onScreen && !userPaused) api.play();
+    else api.pause();
+  }, { threshold: 0.15 }).observe(media);
+})();
+
 /* ---------- Free quote modal ---------- */
 (() => {
   const modal = document.getElementById("quoteModal");
@@ -195,7 +357,19 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
   const supportsDialog = typeof modal.showModal === "function";
   let lastFocus = null;
 
+  function lockScroll() {
+    // Reserve the scrollbar width so locking does not shift the layout.
+    const gap = window.innerWidth - document.documentElement.clientWidth;
+    document.body.style.paddingRight = gap > 0 ? gap + "px" : "";
+    document.body.classList.add("quote-open");
+  }
+  function unlockScroll() {
+    document.body.classList.remove("quote-open");
+    document.body.style.paddingRight = "";
+  }
+
   function openQuote(prefill = {}) {
+    if (modal.open) return;
     lastFocus = document.activeElement;
     for (const [id, value] of Object.entries(prefill)) {
       const el = document.getElementById(id);
@@ -204,18 +378,22 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
     // <dialog> gives us the focus trap and Escape for free.
     if (supportsDialog) modal.showModal();
     else modal.setAttribute("open", "");
+    lockScroll();
     const firstEmpty = [...modal.querySelectorAll("input, select, textarea")].find(el => !el.value);
     (firstEmpty || modal.querySelector("input, select")).focus();
+    track("quote_open", { source: prefill.source || "button" });
   }
   function closeQuote() {
     if (supportsDialog) modal.close();
     else modal.removeAttribute("open");
+    unlockScroll();
     lastFocus?.focus();
+    if (location.hash === "#quote") history.replaceState(null, "", location.pathname);
   }
   window.openQuote = openQuote;
 
   document.getElementById("quoteModalClose")?.addEventListener("click", closeQuote);
-  modal.addEventListener("close", () => lastFocus?.focus());
+  modal.addEventListener("close", () => { unlockScroll(); lastFocus?.focus(); });
   // Clicking the backdrop closes it
   modal.addEventListener("click", e => { if (e.target === modal) closeQuote(); });
   if (!supportsDialog) {
@@ -231,17 +409,10 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
     openQuote(link.dataset.service ? { "f-svc": link.dataset.service } : {});
   });
 
-  // The slim hero bar carries its three answers into the full form.
-  const bar = document.getElementById("quoteBar");
-  bar?.addEventListener("submit", e => {
-    e.preventDefault();
-    if (!bar.reportValidity()) return;
-    openQuote({
-      "f-svc": document.getElementById("qb-svc").value,
-      "f-addr": document.getElementById("qb-zip").value,
-      "f-phone": document.getElementById("qb-phone").value,
-    });
-  });
+  // A #quote link or a shared URL opens the card straight away.
+  const openFromHash = () => { if (location.hash === "#quote") openQuote({ source: "hash" }); };
+  addEventListener("hashchange", openFromHash);
+  openFromHash();
 })();
 
 /* ---------- Reviews carousel ---------- */
