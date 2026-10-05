@@ -1,8 +1,8 @@
-<!-- Lightbox -->
-<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Gallery viewer">
-  <button class="lb-btn lb-close" id="lbClose" aria-label="Close">×</button>
-  <button class="lb-btn lb-prev" id="lbPrev" aria-label="Previous">‹</button>
+<!-- Lightbox: the native dialog gives the focus trap and Escape -->
+<dialog class="lightbox" id="lightbox" aria-label="Gallery viewer">
+  <button class="lb-btn lb-close" id="lbClose" aria-label="Close">&times;</button>
+  <button class="lb-btn lb-prev" id="lbPrev" aria-label="Previous">&lsaquo;</button>
   <div class="lb-media" id="lbContent"></div>
   <p class="lb-cap" id="lbCap"></p>
-  <button class="lb-btn lb-next" id="lbNext" aria-label="Next">›</button>
-</div>
+  <button class="lb-btn lb-next" id="lbNext" aria-label="Next">&rsaquo;</button>
+</dialog>

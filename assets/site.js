@@ -16,7 +16,6 @@ const FALLBACK_EMAIL = "{{EMAIL}}";
 // cat: "before-after", "on-the-job" or "video". featured: true = big tile.
 const GALLERY_CATEGORIES = { "before-after": "Before & After", "on-the-job": "On the Job", "video": "Videos" };
 const GALLERY = [
-  { type: "video", cat: "video", youtube: "pDbqotygNrI", featured: true, title: "6 Minutes of Pure Power Washing Satisfaction" },
   { type: "photo", cat: "before-after", src: "images/gallery/stone-building-before-after.webp", title: "Commercial Building Wash", alt: "Before and after commercial building washing: dirt and mildew removed from a stone office building" },
   { type: "photo", cat: "before-after", src: "images/gallery/house-wash-siding.webp", title: "House Washing", alt: "Before and after soft wash house washing: mildew-streaked vinyl siding cleaned" },
   { type: "video", cat: "video", youtube: "ooFJGDmO_xA", short: true, title: "You Forgot What Color Your Driveway Actually Is" },
@@ -40,55 +39,101 @@ const GALLERY = [
   const lb = document.getElementById("lightbox");
   const lbContent = document.getElementById("lbContent");
   const lbCap = document.getElementById("lbCap");
-  const escAttr = v => String(v ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  const ytThumb = item => `https://i.ytimg.com/vi/${item.youtube}/${item.short ? "oar2" : "maxresdefault"}.jpg`;
-  const ytWatch = item => item.short ? `https://www.youtube.com/shorts/${item.youtube}` : `https://www.youtube.com/watch?v=${item.youtube}`;
+  const feature = document.querySelector(".g-feature");
+  const pairs = [...document.querySelectorAll(".g-compare")];
+  const escAttr = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const ytThumb = (item) => `https://i.ytimg.com/vi/${item.youtube}/${item.short ? "oar2" : "maxresdefault"}.jpg`;
+  const ytWatch = (item) => (item.short ? `https://www.youtube.com/shorts/${item.youtube}` : `https://www.youtube.com/watch?v=${item.youtube}`);
 
-  const tiles = GALLERY.map((item, i) => {
+  // The featured video is rendered server side, so it is not a thumbnail.
+  const items = GALLERY.filter((g) => !g.featured);
+
+  const tiles = items.map((item, i) => {
     const btn = document.createElement("button");
-    btn.className = "g-item" + (item.featured ? " featured" : "");
+    btn.className = "g-item";
     btn.dataset.cat = item.cat;
-
     const thumb = item.type === "video" ? ytThumb(item) : item.src;
-    btn.innerHTML = `<img src="${escAttr(thumb)}" alt="${escAttr(item.alt || item.title)}" loading="lazy">
+    btn.innerHTML = `<img src="${escAttr(thumb)}" alt="${escAttr(item.alt || item.title)}" width="800" height="600" loading="lazy" decoding="async">
       <span class="g-tag">${GALLERY_CATEGORIES[item.cat] || ""}</span>
       ${item.type === "video" ? '<span class="g-play" aria-hidden="true"></span>' : ""}
       <span class="g-cap">${escAttr(item.title)}</span>
-    <span class="sr-only">${item.type === "video" ? "play video" : "view photo"}</span>`;
+      <span class="sr-only">${item.type === "video" ? "play video" : "view photo"}</span>`;
     btn.addEventListener("click", () => openLb(i));
     grid.appendChild(btn);
     return btn;
   });
 
-  // Comparison cards sit at the top of the right column, after the featured tile.
-  const compareTpl = document.getElementById("galleryCompare");
-  const compareCards = compareTpl ? [...compareTpl.content.children] : [];
-  if (compareCards.length && tiles.length) {
-    compareCards.reduce((prev, card) => { prev.after(card); return card; }, tiles[0]);
+  /* ---- Only ever show complete rows, with the rest behind View more ---- */
+  const moreBtn = document.getElementById("galleryMore");
+  let expanded = false;
+  const columnCount = () => getComputedStyle(grid).gridTemplateColumns.split(" ").filter(Boolean).length || 1;
+
+  function matchesFilter(el, cat) {
+    return cat === "all" || el.dataset.cat === cat;
   }
 
-  // Filter buttons (only categories that have items)
-  const cats = ["all", ...Object.keys(GALLERY_CATEGORIES).filter(c => GALLERY.some(g => g.cat === c))];
-  cats.forEach(c => {
-    const extra = compareCards.filter(x => c === "all" || x.dataset.cat === c).length;
-  const n = (c === "all" ? GALLERY.length : GALLERY.filter(g => g.cat === c).length) + extra;
+  function layout(cat) {
+    const matching = tiles.filter((t) => matchesFilter(t, cat));
+    tiles.forEach((t) => { t.hidden = true; });
+    const cols = columnCount();
+    const full = Math.floor(matching.length / cols) * cols;
+    const shown = expanded || full === 0 ? matching.length : full;
+    matching.slice(0, shown).forEach((t) => { t.hidden = false; });
+    const hiddenCount = matching.length - shown;
+    if (moreBtn) {
+      moreBtn.hidden = hiddenCount === 0 && !expanded;
+      moreBtn.textContent = expanded ? "Show fewer" : `View ${hiddenCount} more`;
+    }
+    pairs.forEach((p) => { p.hidden = !matchesFilter(p, cat); });
+    const top = document.querySelector(".gallery-top");
+    if (top) top.hidden = cat !== "all" && cat !== "before-after" && cat !== "video";
+  }
+
+  let activeCat = "all";
+  moreBtn?.addEventListener("click", () => {
+    expanded = !expanded;
+    layout(activeCat);
+  });
+  addEventListener("resize", () => layout(activeCat));
+
+  /* ---- Filters ---- */
+  const cats = ["all", ...Object.keys(GALLERY_CATEGORIES).filter((c) => items.some((g) => g.cat === c) || pairs.some((p) => p.dataset.cat === c))];
+  cats.forEach((c) => {
+    const extra = pairs.filter((p) => c === "all" || p.dataset.cat === c).length + (c === "all" || c === "video" ? 1 : 0);
+    const n = (c === "all" ? items.length : items.filter((g) => g.cat === c).length) + extra;
     const b = document.createElement("button");
     b.className = "g-filter";
     b.innerHTML = `${c === "all" ? "All" : GALLERY_CATEGORIES[c]}<span>${n}</span>`;
     b.setAttribute("aria-pressed", c === "all");
     b.addEventListener("click", () => {
-      filters.querySelectorAll(".g-filter").forEach(x => x.setAttribute("aria-pressed", x === b));
-      [...tiles, ...compareCards].forEach(t => t.hidden = c !== "all" && t.dataset.cat !== c);
+      filters.querySelectorAll(".g-filter").forEach((x) => x.setAttribute("aria-pressed", x === b));
+      activeCat = c;
+      expanded = false;
+      layout(c);
     });
     filters.appendChild(b);
   });
+  layout("all");
 
-  // Pop-up viewer
-  let current = -1, lastFocus = null;
-  const visible = () => tiles.map((t, i) => t.hidden ? -1 : i).filter(i => i >= 0);
+  /* ---- Lightbox, built on the native dialog ---- */
+  let current = -1;
+  let lastFocus = null;
+  const supportsDialog = typeof lb.showModal === "function";
+  const visible = () => tiles.map((t, i) => (t.hidden ? -1 : i)).filter((i) => i >= 0);
+
+  function lockScroll() {
+    const gap = window.innerWidth - document.documentElement.clientWidth;
+    document.body.style.paddingRight = gap > 0 ? gap + "px" : "";
+    document.body.style.overflow = "hidden";
+  }
+  function unlockScroll() {
+    document.body.style.paddingRight = "";
+    document.body.style.overflow = "";
+  }
+
   function showLb(i) {
     current = i;
-    const item = GALLERY[i];
+    const item = items[i];
     if (item.type === "video") {
       lbContent.innerHTML = `<div class="lb-video${item.short ? " short" : ""}"><iframe src="https://www.youtube-nocookie.com/embed/${escAttr(item.youtube)}?autoplay=1&rel=0&playsinline=1" title="${escAttr(item.title)}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>`;
       lbCap.innerHTML = `${escAttr(item.title)}<small>Video won't play? <a href="${ytWatch(item)}" target="_blank" rel="noopener">Watch on YouTube</a></small>`;
@@ -99,42 +144,83 @@ const GALLERY = [
     const v = visible();
     document.getElementById("lbPrev").hidden = document.getElementById("lbNext").hidden = v.length < 2;
   }
+
+  function openDialog() {
+    lockScroll();
+    if (supportsDialog) lb.showModal();
+    else lb.setAttribute("open", "");
+    requestAnimationFrame(() => document.getElementById("lbClose").focus());
+  }
+
   function openLb(i) {
     lastFocus = document.activeElement;
     showLb(i);
-    lb.classList.add("open");
-    document.body.style.overflow = "hidden";
-    document.getElementById("lbClose").focus();
+    openDialog();
   }
-  function step(d) {
-    const v = visible(); if (v.length < 2) return;
-    showLb(v[(v.indexOf(current) + d + v.length) % v.length]);
+
+  // The featured card plays in the lightbox rather than inside the card.
+  function openFeatured() {
+    lastFocus = document.activeElement;
+    current = -1;
+    const id = feature.dataset.yt;
+    const title = feature.querySelector(".g-feature-cap")?.textContent || "";
+    lbContent.innerHTML = `<div class="lb-video"><iframe src="https://www.youtube-nocookie.com/embed/${escAttr(id)}?autoplay=1&rel=0&playsinline=1" title="${escAttr(title)}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>`;
+    lbCap.innerHTML = `${escAttr(title)}<small>Video won't play? <a href="https://www.youtube.com/watch?v=${escAttr(id)}" target="_blank" rel="noopener">Watch on YouTube</a></small>`;
+    document.getElementById("lbPrev").hidden = document.getElementById("lbNext").hidden = true;
+    openDialog();
   }
+
+  if (feature) {
+    feature.addEventListener("click", openFeatured);
+    feature.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        openFeatured();
+      }
+    });
+  }
+
   function closeLb() {
-    lb.classList.remove("open");
-    lbContent.innerHTML = "";   // stops video playback
-    document.body.style.overflow = "";
+    if (supportsDialog) lb.close();
+    else lb.removeAttribute("open");
+    lbContent.innerHTML = ""; // stops playback
+    unlockScroll();
     lastFocus?.focus();
   }
+  function step(d) {
+    const v = visible();
+    if (v.length < 2 || current < 0) return;
+    showLb(v[(v.indexOf(current) + d + v.length) % v.length]);
+  }
+
   document.getElementById("lbClose").addEventListener("click", closeLb);
   document.getElementById("lbPrev").addEventListener("click", () => step(-1));
   document.getElementById("lbNext").addEventListener("click", () => step(1));
-  lb.addEventListener("click", e => { if (e.target === lb || e.target === lbContent) closeLb(); });
-  document.addEventListener("keydown", e => {
-    if (!lb.classList.contains("open")) return;
-    if (e.key === "Escape") closeLb();
+  lb.addEventListener("cancel", (e) => { e.preventDefault(); closeLb(); });
+  // Whatever closes the dialog, the player stops and the page unlocks.
+  lb.addEventListener("close", () => {
+    lbContent.innerHTML = "";
+    unlockScroll();
+    lastFocus?.focus();
+  });
+  lb.addEventListener("click", (e) => { if (e.target === lb || e.target === lbContent) closeLb(); });
+  document.addEventListener("keydown", (e) => {
+    const open = supportsDialog ? lb.open : lb.hasAttribute("open");
+    if (!open) return;
     if (e.key === "ArrowLeft") step(-1);
     if (e.key === "ArrowRight") step(1);
+    if (e.key === "Escape" && !supportsDialog) closeLb();
   });
   let touchX = null;
-  lb.addEventListener("touchstart", e => { touchX = e.touches[0].clientX; }, { passive: true });
-  lb.addEventListener("touchend", e => {
+  lb.addEventListener("touchstart", (e) => { touchX = e.touches[0].clientX; }, { passive: true });
+  lb.addEventListener("touchend", (e) => {
     if (touchX === null) return;
-    const dx = e.changedTouches[0].clientX - touchX; touchX = null;
+    const dx = e.changedTouches[0].clientX - touchX;
+    touchX = null;
     if (Math.abs(dx) > 50) step(dx < 0 ? 1 : -1);
   });
-
 })();
+
 /* ---------- Mobile menu ---------- */
 const nav = document.getElementById("nav");
 const menuBtn = document.getElementById("menuBtn");

@@ -8,7 +8,8 @@ import { SITE_URL, FLAGS, HERO_IMAGE, HERO_VIDEO, HERO_PROMO, REVIEWS } from "./
 import { renderPage, fillTokens, canonicalFor } from "./src/layout.mjs";
 import { buildPages, SERVICES, CITIES } from "./src/content/pages.mjs";
 import { shot, resolveShot } from "./src/templates/image.mjs";
-import { beforeAfter } from "./src/templates/before-after.mjs";
+import { beforeAfter, pairIsComplete } from "./src/templates/before-after.mjs";
+import { COMPARISONS, FEATURED_VIDEO } from "./src/content/gallery.mjs";
 
 const OUT = "dist";
 // Assets are cached for a week, so the query string has to change whenever
@@ -86,36 +87,10 @@ const footerColumn = (heading, links) =>
 
 const liveServices = SERVICES.filter((s) => !s.flag || FLAGS[s.flag]);
 
-// Before and after pairs at the top of the gallery's right column.
-// TODO: confirm both captions.
-const comparisons = [
-  beforeAfter({
-    beforeName: "building-before",
-    afterName: "building-after",
-    caption: "Commercial Building Wash",
-    alts: {
-      before: "Commercial building wall with dark streaks below the light fixture before washing",
-      after: "The same building wall after washing, with the staining removed",
-    },
-  }),
-  beforeAfter({
-    beforeName: "garage-during",
-    afterName: "garage-after",
-    // The left photo is mid wash, so it is labelled DURING until a true
-    // before photo exists. Switch to "Before" here if one is supplied.
-    beforeLabel: "During",
-    caption: "Garage Door Wash",
-    alts: {
-      before: "Garage door partway through a wash, with cleaned and uncleaned panels side by side",
-      after: "The same garage door after washing, clean across every panel",
-    },
-  }),
-].join("\n        ");
-
 // Hero photo: srcset at both widths, explicit box, no preload so the
 // headline stays the lead paint.
 const heroSets = (ext) => HERO_IMAGE.widths.map((w) => `/images/hero/${HERO_IMAGE.name}-${w}.${ext} ${w}w`).join(", ");
-const heroSizes = "(max-width: 900px) 100vw, 50vw";
+const heroSizes = "100vw";
 const heroImage = `<picture>
       <source srcset="${heroSets("avif")}" sizes="${heroSizes}" type="image/avif">
       <source srcset="${heroSets("webp")}" sizes="${heroSizes}" type="image/webp">
@@ -151,8 +126,20 @@ const heroMedia = `<div class="hero-media" data-hero-mode="${heroMode}" aria-hid
     </div>
     ${heroMode === "poster" ? "" : pauseButton}`;
 
+// Gallery top row: the featured video beside whatever pairs have both photos.
+const livePairs = COMPARISONS.filter(pairIsComplete);
+const featuredCard = `<div class="g-feature" role="button" tabindex="0" data-yt="${FEATURED_VIDEO.youtubeId}" aria-label="Play video: ${FEATURED_VIDEO.title}">
+        <img src="https://i.ytimg.com/vi/${FEATURED_VIDEO.youtubeId}/maxresdefault.jpg" alt="" aria-hidden="true" width="1280" height="720" loading="lazy" decoding="async">
+        <span class="g-play" aria-hidden="true"></span>
+        <span class="g-feature-cap">${FEATURED_VIDEO.title}</span>
+      </div>`;
+const galleryTop = `<div class="gallery-top${livePairs.length ? "" : " no-pairs"}">
+      ${featuredCard}
+      ${livePairs.length ? `<div class="gallery-pairs">\n        ${livePairs.map((p) => beforeAfter(p)).join("\n        ")}\n      </div>` : ""}
+    </div>`;
+
 const tokens = {
-  GALLERY_COMPARE: comparisons,
+  GALLERY_TOP: galleryTop,
   HERO_IMAGE: heroImage,
   HERO_MEDIA: heroMedia,
   HERO_PROMO_LINE:
