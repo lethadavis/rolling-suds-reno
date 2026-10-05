@@ -7,7 +7,7 @@ preference: `.webp`, `.jpg`, `.jpeg`, `.png`. WebP is preferred for photographs.
 Nothing else needs changing: each slot picks up its file on the next build, and
 until then it shows a neutral placeholder at the right shape.
 
-**Status: 0 of 23 slots filled.**
+**Status: 0 of 22 slots filled.**
 
 ## Already covered
 
@@ -43,7 +43,6 @@ until then it shows a neutral placeholder at the right shape.
 | Service: Deck & Fence Cleaning | `images/services/deck-and-fence-cleaning.webp` | 1200x800 | Work in progress or a finished result for this service. Before and after pairs work well. | Real job photography | Wood deck being cleaned at a home in Reno, NV | no |
 | Service: Gutter Cleaning | `images/services/gutter-cleaning.webp` | 1200x800 | Work in progress or a finished result for this service. Before and after pairs work well. | Real job photography | Gutter being cleared and flushed on a home in Reno, NV | no |
 | Service: Wildfire Ash & Soot Cleanup | `images/services/wildfire-ash-and-soot-cleanup.webp` | 1200x800 | Work in progress or a finished result for this service. Before and after pairs work well. | Real job photography | Wildfire ash being washed off a home exterior in Reno, NV | no |
-| Service: Hood Vent Cleaning | `images/services/hood-vent-cleaning.webp` | 1200x800 | Work in progress or a finished result for this service. Before and after pairs work well. | Real job photography | Kitchen exhaust hood being cleaned at a restaurant in Reno, NV | no |
 | Service: Window Cleaning | `images/services/window-cleaning.webp` | 1200x800 | Work in progress or a finished result for this service. Before and after pairs work well. | Real job photography | Exterior window cleaning with a water fed pole in Reno, NV | no |
 | City: Reno | `images/cities/pressure-washing-reno.webp` | 1200x800 | Recognisable Reno property or streetscape, ideally with our crew or truck in frame. | Real job photography, or regional scenery if no job shot exists | Our crew washing a home exterior in Reno, NV | no |
 | City: Sparks | `images/cities/pressure-washing-sparks.webp` | 1200x800 | Recognisable Sparks property or streetscape, ideally with our crew or truck in frame. | Real job photography, or regional scenery if no job shot exists | Driveway cleaning at a home in Sparks, NV | no |

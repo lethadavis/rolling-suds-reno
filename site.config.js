@@ -3,9 +3,8 @@
 
 export const SITE_URL = "https://rollingsudsreno.com";
 
-// Feature flags. Hood vent cleaning is built but hidden until the service is confirmed.
+// Feature flags.
 export const FLAGS = {
-  HOOD_VENT_ENABLED: false,
   // When true, the Why Us card reveals an empty slot for a certification
   // badge image. No certification is claimed anywhere while this is false.
   WBE_CERTIFIED: false,

@@ -217,7 +217,7 @@ export const SERVICES = [
     eyebrow: "Food Service",
     h1: "Restaurant exterior cleaning in Reno and Sparks",
     lede:
-      "Grease migrates. It leaves the kitchen through the back door, the vent, the mop sink and the dumpster, and it ends up on the concrete your guests walk across.",
+      "Grease migrates. It leaves the kitchen through the back door, the mop sink and the dumpster, and it ends up on the concrete your guests walk across.",
     sections: [
       {
         h2: "Cleaning the areas grease and traffic reach",
@@ -239,7 +239,6 @@ export const SERVICES = [
               "Exterior glass and frames",
             ],
           },
-          "Kitchen exhaust hood and duct cleaning is a separate, specialised service. TODO: confirm whether the Reno franchise performs hood vent cleaning and inspection before we publish that page.",
         ],
       },
       {
@@ -741,60 +740,6 @@ export const SERVICES = [
       },
     ],
     related: ["roof-cleaning", "house-washing", "gutter-cleaning", "window-cleaning"],
-  },
-
-  {
-    slug: "hood-vent-cleaning",
-    shotAlt: "Kitchen exhaust hood being cleaned at a restaurant in Reno, NV",
-    label: "Hood Vent Cleaning",
-    cardTitle: "Hood Vent Cleaning & Inspection",
-    keyword: "hood vent cleaning Reno",
-    flag: "HOOD_VENT_ENABLED",
-    title: "Hood Vent Cleaning in Reno NV | Rolling Suds",
-    description:
-      "Kitchen hood vent cleaning and inspection for restaurants in Reno and Sparks. Hoods, ducts and fans cleaned with documentation. Ask about scheduling.",
-    eyebrow: "Food Service",
-    h1: "Hood vent cleaning in Reno and Sparks",
-    lede:
-      "Kitchen exhaust systems move grease from the line to the roof. Cleaning the whole path, not just the visible hood, is what keeps an inspection uneventful.",
-    sections: [
-      {
-        h2: "The full exhaust path",
-        blocks: [
-          "Grease builds along the entire run: the hood and filters, the horizontal duct, the vertical riser and the fan housing on the roof. Cleaning only what is visible from the kitchen leaves the majority of the deposit in place, which is both a fire risk and a failed inspection waiting to happen.",
-          "TODO: confirm the scope, certifications and documentation the Reno franchise provides for kitchen exhaust work before this page goes live. This page is written but hidden behind a flag until then.",
-        ],
-      },
-      {
-        h2: "What a service visit covers",
-        blocks: [
-          {
-            list: [
-              "Hood surfaces, baffles and filters",
-              "Duct runs and access panels",
-              "Exhaust fan housing and blades",
-              "Roof area around the fan, where grease drips collect",
-              "Documentation for your records and inspector",
-            ],
-          },
-        ],
-      },
-    ],
-    faqs: [
-      {
-        q: "How often does a kitchen exhaust system need cleaning?",
-        a: "Frequency depends on cooking volume and equipment type, and your local fire authority sets the expectation. High volume fryer and char broiler kitchens are cleaned most often.",
-      },
-      {
-        q: "Do you clean the rooftop fan as well as the hood?",
-        a: "Yes. Cleaning the full path, including the fan housing and the roof area beneath it, is the point of the service.",
-      },
-      {
-        q: "Do you provide documentation after the service?",
-        a: "Yes. TODO: confirm the exact documentation and certification wording before publishing.",
-      },
-    ],
-    related: ["restaurant-exterior-cleaning", "commercial-pressure-washing", "fleet-washing", "window-cleaning"],
   },
 
   {

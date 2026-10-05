@@ -24,6 +24,19 @@
   [headers.values]
     Cache-Control = "public, max-age=604800"
 
+# Retired service. Not offered, so the old route points at the service area.
+[[redirects]]
+  from = "/hood-vent-cleaning"
+  to = "/service-area/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/hood-vent-cleaning/*"
+  to = "/service-area/"
+  status = 301
+  force = true
+
 # Old domain to the new one, path preserved. These take effect once both
 # domains are pointed at this site in Netlify.
 [[redirects]]

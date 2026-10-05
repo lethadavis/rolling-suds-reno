@@ -41,8 +41,7 @@ for (const file of files) {
   const decode = (s) => s.replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
   const title = decode((html.match(/<title>([\s\S]*?)<\/title>/) || [])[1] || "");
   const desc = (html.match(/<meta name="description" content="([^"]*)"/) || [])[1] || "";
-  // The homepage title is the wording the client specified, 64 characters.
-  const titleLimit = route === "/" ? 64 : 60;
+  const titleLimit = 60;
   if (!title) note(route, "missing <title>");
   else if (title.length > titleLimit) note(route, `title is ${title.length} characters (max ${titleLimit}): ${title}`);
   if (!desc) note(route, "missing meta description");
@@ -90,8 +89,7 @@ for (const file of files) {
   const hasNoindexMeta = html.includes('content="noindex, nofollow"');
   if (!is404 && (indexable || hasNoindexMeta)) {
     const inSitemap = sitemap.includes(`<loc>${expected}</loc>`);
-    const shouldBeListed = !is404 && !html.includes("HOOD_VENT_PLACEHOLDER");
-    if (shouldBeListed && !inSitemap && !file.includes("hood-vent")) note(route, "missing from sitemap.xml");
+    if (!inSitemap) note(route, "missing from sitemap.xml");
   }
 }
 

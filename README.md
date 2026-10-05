@@ -68,12 +68,6 @@ ffmpeg -ss 229 -to 265 -i source.mp4 -an -vf "scale=-2:1080" \
 Aim for 6 to 15 seconds and 2 to 4 MB. Check the result with
 `ls -lh video/` before committing.
 
-## Feature flags
-
-`FLAGS.HOOD_VENT_ENABLED` is `false`. While it is off, `/hood-vent-cleaning`
-is still built but is left out of the sitemap, the footer and homepage links.
-Set it to `true` once the service is confirmed.
-
 ## Domain redirect plan
 
 1. Add both `rollingsudsreno.com` and `rollingsudsrenotahoe.com` as custom

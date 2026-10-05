@@ -27,9 +27,9 @@ export function buildPages({ flags }) {
   pages.push({
     route: "/",
     sourceFile: "src/pages/home.html",
-    title: "Pressure Washing Reno NV | Rolling Suds Commercial & Residential",
+    title: "Pressure Washing in Reno NV | Rolling Suds Reno-Tahoe",
     description:
-      "Commercial and residential exterior cleaning in Reno, Sparks, Carson City and Lake Tahoe. House washing, roofs, concrete, fleets. Get a free quote.",
+      "Commercial and residential pressure washing in Reno, Sparks, Carson City and Lake Tahoe: houses, roofs, concrete, fleets. Get a free quote today.",
     body: read("src/pages/home.html"),
     needsLightbox: true,
     schema: [localBusiness()],

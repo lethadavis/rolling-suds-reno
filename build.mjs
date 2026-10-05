@@ -165,9 +165,6 @@ const tokens = {
   WHY_US_PHOTO: resolveShot("why-us", "crew")
     ? shot({ group: "why-us", name: "crew", alt: "Our crew washing a property in the Truckee Meadows", width: 900, height: 1100 })
     : "",
-  HOOD_VENT_LINK: FLAGS.HOOD_VENT_ENABLED
-    ? '<a class="svc-link" href="/hood-vent-cleaning/">See hood vent cleaning &rarr;</a>'
-    : '<a class="svc-link" href="/#quote">Ask about hood vent cleaning &rarr;</a>',
 };
 
 for (const page of pages) {
