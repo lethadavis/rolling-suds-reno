@@ -13,7 +13,7 @@ import { existsSync } from "node:fs";
 import { FLAGS, SERVICE_ZIPS, CONTEST } from "../../site.config.js";
 import { resolveShot } from "../templates/image.mjs";
 import { beforeAfter, pairIsComplete } from "../templates/before-after.mjs";
-import { contactPref, contactPrefHidden } from "../templates/contact-pref.mjs";
+import { contactPref } from "../templates/contact-pref.mjs";
 import { isProduction } from "../env.mjs";
 
 const STEPS = [
@@ -152,7 +152,6 @@ function entryForm() {
   const zips = SERVICE_ZIPS.length ? ` data-zips="${SERVICE_ZIPS.join(" ")}"` : "";
   return `<form id="contestForm" name="driveway-contest" method="POST" action="/driveway/?entered=1" enctype="multipart/form-data" data-netlify="true" netlify-honeypot="bot-field" data-lead-source="${CONTEST.leadSource}"${zips} novalidate>
         <input type="hidden" name="form-name" value="driveway-contest">
-        ${contactPrefHidden}
         <input type="hidden" name="lead_source" value="${CONTEST.leadSource}">
         <input type="hidden" name="utm_source" value="direct">
         <input type="hidden" name="utm_medium" value="">
@@ -197,7 +196,7 @@ function entryForm() {
           </div>
         </div>
 
-        ${contactPref("c")}
+        ${contactPref("c", { single: true })}
 
         <button class="btn btn-green btn-lg" type="submit">Enter the Makeover Contest</button>
         <p class="form-msg" id="contestMsg" role="alert"></p>

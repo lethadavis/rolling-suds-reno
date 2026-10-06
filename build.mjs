@@ -155,9 +155,25 @@ const tokens = {
     : "",
 };
 
+/* ---------- No widows ----------
+   Joins the last two words of every paragraph, heading, list item, caption,
+   quote and summary with a non-breaking space, so no line of text ends with
+   one word on its own, in any browser, at any width. Inline closing tags
+   (a, span, strong, em) between the words and the block end are allowed.
+   Pairs longer than 26 characters are left alone so narrow screens can wrap. */
+const WIDOW = /([^\s<>]+) ([^\s<>]+)((?:<\/(?:a|span|strong|em|b)>)*\s*<\/(?:p|h[1-4]|li|figcaption|blockquote|summary|legend)>)/g;
+function noWidows(html) {
+  return html
+    .split(/(<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>)/)
+    .map((part, i) =>
+      i % 2 ? part : part.replace(WIDOW, (m, a, b, end) => (a.length + b.length > 26 ? m : `${a}&nbsp;${b}${end}`))
+    )
+    .join("");
+}
+
 for (const page of pages) {
   validateSchema(page);
-  const html = renderPage(page, partials, { noindex, buildStamp, tokens });
+  const html = noWidows(renderPage(page, partials, { noindex, buildStamp, tokens }));
   write(page.outputPath || (page.route === "/" ? "index.html" : `${page.route.slice(1)}/index.html`), html);
 }
 

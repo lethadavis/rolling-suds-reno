@@ -4,11 +4,16 @@
 // leads the submission and the notification email.
 export const contactPrefHidden = '<input type="hidden" name="preferred_contact" value="">';
 
-export function contactPref(prefix) {
+// single: true renders radio buttons named preferred_contact (one choice, no
+// hidden field); otherwise checkboxes feeding the hidden field above.
+export function contactPref(prefix, { single = false } = {}) {
   const opt = (value, label) =>
-    `<label class="contact-opt"><input type="checkbox" value="${value}" aria-describedby="${prefix}-contact-err"> ${label}</label>`;
-  return `<fieldset class="contact-pref" data-contact-group aria-describedby="${prefix}-contact-err">
-          <legend>Preferred method of contact <span aria-hidden="true">*</span> <span class="contact-hint">Choose any</span></legend>
+    single
+      ? `<label class="contact-opt"><input type="radio" name="preferred_contact" value="${value}" aria-describedby="${prefix}-contact-err"> ${label}</label>`
+      : `<label class="contact-opt"><input type="checkbox" value="${value}" aria-describedby="${prefix}-contact-err"> ${label}</label>`;
+  const hint = single ? "" : ' <span class="contact-hint">Choose any</span>';
+  return `<fieldset class="contact-pref" data-contact-group${single ? ' data-single=""' : ""} aria-describedby="${prefix}-contact-err">
+          <legend>Preferred method of contact <span aria-hidden="true">*</span>${hint}</legend>
           <div class="contact-options">
             ${opt("phone", "Phone call")}
             ${opt("text", "Text message")}

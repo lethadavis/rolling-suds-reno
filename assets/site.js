@@ -12,10 +12,12 @@ function track(event, detail = {}) {
 function contactPref(form) {
   const group = form.querySelector("[data-contact-group]");
   if (!group) return null;
-  const boxes = [...group.querySelectorAll('input[type="checkbox"]')];
+  const single = group.hasAttribute("data-single");
+  const boxes = [...group.querySelectorAll('input[type="checkbox"], input[type="radio"]')];
   const consent = group.querySelector(".sms-consent");
   const err = group.querySelector(".field-err");
-  const hidden = form.querySelector('input[name="preferred_contact"]');
+  // Checkbox forms only; on single-choice forms the radios carry the name.
+  const hidden = form.querySelector('input[type="hidden"][name="preferred_contact"]');
   const value = () => boxes.filter((b) => b.checked).map((b) => b.value).join(", ");
   const setError = (text) => {
     err.textContent = text;
@@ -25,8 +27,8 @@ function contactPref(form) {
   };
   const sync = () => {
     consent.hidden = !boxes.some((b) => b.value === "text" && b.checked);
-    hidden.value = value();
-    if (hidden.value) setError("");
+    if (hidden) hidden.value = value();
+    if (value()) setError("");
   };
   boxes.forEach((b) => b.addEventListener("change", sync));
   sync();
@@ -36,8 +38,8 @@ function contactPref(form) {
     reset: () => { boxes.forEach((b) => { b.checked = false; }); sync(); },
     validate() {
       sync();
-      if (hidden.value) return true;
-      setError("Please choose at least one way for us to contact you.");
+      if (value()) return true;
+      setError(single ? "Please choose how you would like us to contact you." : "Please choose at least one way for us to contact you.");
       return false;
     },
   };
@@ -624,8 +626,14 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
       }
 
       form.submitted_at.value = new Date().toISOString();
-      const data = new FormData(form);
-      for (let n = 1; n <= MAX_PHOTOS; n++) data.delete("photo" + n);
+      const fields = new FormData(form);
+      for (let n = 1; n <= MAX_PHOTOS; n++) fields.delete("photo" + n);
+      // preferred_contact goes first, right after form-name, so it leads the
+      // entry and the notification email.
+      const data = new FormData();
+      data.append("form-name", fields.get("form-name"));
+      data.append("preferred_contact", pref.value());
+      for (const [k, v] of fields.entries()) if (k !== "form-name" && k !== "preferred_contact") data.append(k, v);
       files.forEach((f, i) => data.append("photo" + (i + 1), f, f.name));
 
       const res = await fetch("/", { method: "POST", body: data });

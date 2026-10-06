@@ -14,6 +14,8 @@
 *{box-sizing:border-box;margin:0;padding:0}
 section[id],main[id]{scroll-margin-top:96px}
 html{scroll-behavior:smooth;scroll-padding-top:96px}
+/* Backstop for widows: browsers that support it avoid a lone last word. */
+p,li,h1,h2,h3,h4,figcaption,blockquote,summary,legend{text-wrap:pretty}
 body{font-family:var(--body);color:var(--text);background:var(--white);line-height:1.6;-webkit-font-smoothing:antialiased}
 img{max-width:100%;display:block}
 a{color:inherit}
@@ -285,6 +287,8 @@ section{padding:96px 0}
 .cta .wrap{position:relative}
 .cta h2{font-family:var(--display);font-weight:800;font-size:clamp(32px,4.5vw,50px);line-height:1.05;letter-spacing:-.03em;text-transform:uppercase}
 .cta p{color:rgba(255,255,255,.8);font-size:18px;margin:14px 0 30px}
+/* Button rows: side by side, equal heights, wrapping on narrow screens. */
+.hero-ctas{display:flex;flex-wrap:wrap;align-items:stretch;gap:12px}
 .cta .hero-ctas{justify-content:center}
 .cta small{display:block;margin-top:22px;color:rgba(255,255,255,.65);font-size:14px}
 .cta small a{color:var(--sky)}
