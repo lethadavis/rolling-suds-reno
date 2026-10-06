@@ -4,8 +4,8 @@ import { readFileSync, writeFileSync, mkdirSync, cpSync, rmSync, existsSync } fr
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { dirname, join } from "node:path";
-import { SITE_URL, FLAGS, HERO_IMAGE, REVIEWS } from "./site.config.js";
-import { renderPage, fillTokens, canonicalFor } from "./src/layout.mjs";
+import { SITE_URL, FLAGS, HERO_IMAGE } from "./site.config.js";
+import { renderPage, fillTokens, canonicalFor, networkRating } from "./src/layout.mjs";
 import { context, isProduction } from "./src/env.mjs";
 import { buildPages, SERVICES, CITIES } from "./src/content/pages.mjs";
 import { shot, resolveShot } from "./src/templates/image.mjs";
@@ -134,10 +134,7 @@ const tokens = {
   WILDFIRE_TERMS: offer.heroTerms,
   WILDFIRE_FORM_ATTR: offer.formAttr,
   WILDFIRE_APPLIED: offer.appliedLine,
-  TRUST_RATING:
-    REVIEWS.rating && REVIEWS.count
-      ? `<span class="trust-item"><span class="g-stars" role="img" aria-label="Google rating, ${REVIEWS.rating} stars"></span>${REVIEWS.rating} from ${REVIEWS.count} ${REVIEWS.label}</span>`
-      : "",
+  TRUST_RATING: networkRating("trust"),
   TRUST_WOMAN_OWNED: FLAGS.WOMAN_OWNED_TRUST
     ? '<span class="trust-item"><svg><use href="#i-people"/></svg>Woman-Owned</span>'
     : "",

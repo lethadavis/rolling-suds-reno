@@ -40,14 +40,19 @@ export const CONTACT = {
   sameAs: [],
 };
 
-// Local Google Business Profile rating only. The national Rolling Suds
-// aggregate must never appear on this site. Leave rating or count empty and
-// the rating line disappears everywhere.
-// TODO: confirm the current rating and count before launch.
-export const REVIEWS = {
-  rating: "5.0", // verified on the Google listing, 2026-09-30
-  count: "9",
-  label: "Google reviews",
+// Rolling Suds network rating, shown in the homepage trust strip and the
+// reviews section heading. Corporate approved displaying the network rating.
+// It is the whole Rolling Suds network, not Reno: wording must always say
+// "Rolling Suds reviews", and it never goes in JSON-LD (no aggregateRating or
+// Review markup for another entity's reviews). Leave rating or count empty
+// and the rating disappears everywhere.
+// TODO: refresh NETWORK_REVIEWS from rollingsuds.com monthly.
+export const NETWORK_REVIEWS = {
+  rating: 4.9,
+  count: 2987,
+  source: "rollingsuds.com (rollingsudspowerwashing.com)",
+  approvedByCorporate: true,
+  lastUpdated: "2026-10-05",
 };
 
 // ZIP codes the contest form accepts. Left empty, the ZIP check is skipped and
