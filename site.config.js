@@ -55,6 +55,17 @@ export const NETWORK_REVIEWS = {
   lastUpdated: "2026-10-05",
 };
 
+// ZIP codes listed under "Zip Codes Served" on the homepage, in numeric order.
+// 26 added from the client's "Missing Zipcodes" list on 2026-10-08 (89431 was
+// already here). The build warns about any duplicate entry.
+export const SERVED_ZIPS = [
+  "89402", "89403", "89406", "89408", "89410", "89413", "89423", "89424", "89428", "89429",
+  "89430", "89431", "89433", "89434", "89436", "89439", "89440", "89441", "89442", "89444",
+  "89448", "89449", "89451", "89460", "89501", "89502", "89503", "89506", "89507", "89508",
+  "89509", "89510", "89511", "89512", "89519", "89521", "89523", "89557", "89701", "89702",
+  "89703", "89704", "89705", "89706", "89711", "89712", "96142", "96143", "96145", "96150",
+];
+
 // ZIP codes the contest form accepts. Left empty, the ZIP check is skipped and
 // every ZIP is accepted.
 // TODO: fill from the confirmed franchise territory. The homepage "Zip Codes

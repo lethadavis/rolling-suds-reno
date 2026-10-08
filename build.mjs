@@ -4,7 +4,7 @@ import { readFileSync, writeFileSync, mkdirSync, cpSync, rmSync, existsSync } fr
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { dirname, join } from "node:path";
-import { SITE_URL, FLAGS, HERO_IMAGE } from "./site.config.js";
+import { SITE_URL, FLAGS, HERO_IMAGE, SERVED_ZIPS } from "./site.config.js";
 import { renderPage, fillTokens, canonicalFor, networkRating } from "./src/layout.mjs";
 import { context, isProduction } from "./src/env.mjs";
 import { buildPages, SERVICES, CITIES } from "./src/content/pages.mjs";
@@ -122,7 +122,13 @@ const galleryTop = `<div class="gallery-top${livePairs.length ? "" : " no-pairs"
       ${livePairs.length ? `<div class="gallery-pairs">\n        ${livePairs.map((p) => beforeAfter(p)).join("\n        ")}\n      </div>` : ""}
     </div>`;
 
+// Homepage "Zip Codes Served": numeric order, each ZIP once.
+const dupZips = SERVED_ZIPS.filter((z, i) => SERVED_ZIPS.indexOf(z) !== i);
+if (dupZips.length) console.warn(`SERVED_ZIPS has duplicates, shown once: ${[...new Set(dupZips)].join(", ")}`);
+const zipList = [...new Set(SERVED_ZIPS)].sort().map((z) => `<span>${z}</span>`).join("");
+
 const tokens = {
+  ZIP_LIST: zipList,
   HERO_PRELOAD: heroPreload,
   CONTACT_PREF_HIDDEN: contactPrefHidden,
   CONTACT_PREF_QUOTE: contactPref("q"),
