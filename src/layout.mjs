@@ -1,5 +1,5 @@
 // Page shell: head tags, nav, body, footer. Every page is rendered through here.
-import { SITE_URL, CONTACT, BRAND, NETWORK_REVIEWS } from "../site.config.js";
+import { SITE_URL, CONTACT, BRAND, NETWORK_REVIEWS, ANALYTICS } from "../site.config.js";
 
 export const esc = (v) =>
   String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -33,6 +33,10 @@ export function networkRating(kind) {
     ? `<span class="trust-item trust-rating">${STARS}<span>Rated ${rating}/5 across ${n} Rolling Suds reviews</span></span>`
     : `<p class="rating">${STARS}<span><strong>${rating} / 5</strong> across ${n} Rolling Suds reviews</span></p>`;
 }
+
+// GA4 tag, live site only (noindex builds are previews and local runs).
+const ga4Tag = (id) => `<script async src="https://www.googletagmanager.com/gtag/js?id=${id}"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","${id}");</script>`;
 
 export const canonicalFor = (route) => (route === "/" ? SITE_URL + "/" : SITE_URL + route + "/");
 
@@ -80,6 +84,7 @@ ${page.robots ? `<meta name="robots" content="${page.robots}">` : noindex ? '<me
 <meta name="theme-color" content="#0f2a44">
 <link rel="icon" href="/images/favicon.png" type="image/png">
 <link rel="apple-touch-icon" href="/images/favicon.png">
+${!noindex && ANALYTICS.ga4 ? ga4Tag(ANALYTICS.ga4) : ""}
 <link rel="stylesheet" href="/assets/site.css?v=${buildStamp}">
 ${page.preloadHero ? `<link rel="preload" as="image" href="${page.preloadHero}"${page.preloadHero.endsWith(".webp") ? ' type="image/webp"' : ""} fetchpriority="high">` : ""}
 ${page.headExtra || ""}

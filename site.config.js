@@ -117,6 +117,12 @@ export const WILDFIRE_OFFER = {
   expires: null,
 };
 
+// Google Analytics 4. Loads on the live domain only (production builds), so
+// local runs and Netlify previews never count as visits. Empty id = off.
+export const ANALYTICS = {
+  ga4: "G-N54PEXJYMK",
+};
+
 export const BRAND = {
   navy: "#0f2a44",
   aqua: "#19b5d9",

@@ -1,9 +1,22 @@
 /* ---------- Analytics ----------
-   No analytics product is installed yet. Events are pushed to dataLayer so a
-   GA4 or GTM tag can pick them up the day one is added. */
+   GA4 (gtag) is loaded on the live site only; events go to it as GA4 events.
+   Without it (local runs, previews) they are pushed to dataLayer instead, so
+   the same calls can be checked while testing. */
 function track(event, detail = {}) {
-  (window.dataLayer = window.dataLayer || []).push({ event, ...detail });
+  if (typeof window.gtag === "function") window.gtag("event", event, detail);
+  else (window.dataLayer = window.dataLayer || []).push({ event, ...detail });
 }
+
+// Calls and texts are leads too: count taps on every tel: and sms: link,
+// noting where on the page the link was.
+document.addEventListener("click", (e) => {
+  const a = e.target.closest('a[href^="tel:"], a[href^="sms:"]');
+  if (!a) return;
+  const where = a.closest("nav.top, .mobile-bar, footer, .contest-hero, .page-hero, .cta, .quote-card, .side-card, .contest-success, .contest-more");
+  track(a.getAttribute("href").startsWith("tel:") ? "phone_click" : "text_click", {
+    link_location: where ? (where.id || where.className.split(" ")[0] || where.tagName.toLowerCase()) : "page",
+  });
+});
 
 /* ---------- Preferred method of contact ----------
    Shared by every lead form. Keeps the hidden preferred_contact field in step
@@ -304,6 +317,8 @@ syncHeader();
     // preferred_contact is the form's first field, so it leads the email body.
     const data = new FormData(form);
     if (!FORM_ENDPOINT) {
+      // No form backend yet: the request goes out through the visitor's email app.
+      track("quote_submit", { method: "email_app", preferred_contact: pref ? pref.value() : "", offer: form.offer?.value || "" });
       const body = [...data.entries()].map(([k, v]) => `${k}: ${v}`).join("\n");
       location.href = `mailto:${FALLBACK_EMAIL}?subject=${encodeURIComponent("Free Quote Request")}&body=${encodeURIComponent(body)}`;
       return;
