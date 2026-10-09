@@ -47,8 +47,8 @@ nav.top.is-compact .logo img{height:74px}
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff}
 .logo img{height:92px;width:auto;transition:height .18s ease}
 .logo-area{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--sky);padding-left:12px;border-left:1px solid rgba(255,255,255,.18);line-height:1.45;white-space:nowrap}
-.logo-text{font-family:var(--display);font-weight:800;font-size:21px;letter-spacing:-.02em;line-height:1;text-transform:uppercase}
-.logo-text small{display:block;font-family:var(--body);font-size:10px;letter-spacing:2px;margin-top:3px;color:var(--sky);font-weight:600}
+/* Footer logo: the header logo file, a touch smaller. */
+.foot-logo img{height:80px}
 .nav-links{display:flex;gap:26px;list-style:none;white-space:nowrap}
 .nav-links a{color:rgba(255,255,255,.85);text-decoration:none;font-size:15px;font-weight:500;white-space:nowrap}
 .nav-links a:hover{color:#fff}
@@ -475,17 +475,16 @@ footer a:hover{color:#fff}
 .contest-copy h1 span{display:block;color:var(--blue)}
 .contest-lede{font-size:18px;color:#33505b;max-width:560px;margin-bottom:26px}
 /* Photo: right half, full hero height, left edge melted into the page. */
-/* Narrower than half the hero (about 0.85 wide per 1 tall at desktop) so more
-   of the photo shows, weighted toward the driveway at the bottom. Rounded to a
-   whole pixel: a fractional left edge drew a hairline seam on the fade. */
-.contest-art{position:absolute;top:0;right:0;bottom:0;width:min(54%,500px);width:round(down,min(54%,500px),1px);z-index:1}
+/* Wide scene behind the whole hero: the mascot sits about two thirds across,
+   and the left of the photo fades out so the headline sits on the page. */
+.contest-art{position:absolute;inset:0;z-index:1}
 .contest-photo{position:absolute;inset:0;display:block;
-  -webkit-mask-image:linear-gradient(to right,transparent 0,transparent 2px,#000 28%),linear-gradient(to top,transparent 0,#000 14%);-webkit-mask-composite:source-in;
-  mask-image:linear-gradient(to right,transparent 0,transparent 2px,#000 28%),linear-gradient(to top,transparent 0,#000 14%);mask-composite:intersect}
-.contest-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 78%}
+  -webkit-mask-image:linear-gradient(to right,transparent 0,transparent 36%,#000 60%),linear-gradient(to top,transparent 0,#000 14%);-webkit-mask-composite:source-in;
+  mask-image:linear-gradient(to right,transparent 0,transparent 36%,#000 60%),linear-gradient(to top,transparent 0,#000 14%);mask-composite:intersect}
+.contest-photo img{width:100%;height:100%;object-fit:cover;object-position:60% 70%}
 .contest-photo-empty{display:grid;place-items:center;background:linear-gradient(135deg,#d7ebf4,#b9d9e8)}
 .contest-photo-empty .shot-empty-label{color:var(--blue)}
-.contest-badge{position:absolute;top:28px;left:2%;width:180px;height:180px;border-radius:50%;z-index:2;filter:drop-shadow(0 10px 18px rgba(15,42,68,.25))}
+.contest-badge{position:absolute;top:28px;left:calc(47% + 8px);width:180px;height:180px;border-radius:50%;z-index:2;filter:drop-shadow(0 10px 18px rgba(15,42,68,.25))}
 
 .contest-howto{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:24px;counter-reset:none}
 .contest-howto li{text-align:center}
@@ -563,6 +562,8 @@ footer a:hover{color:#fff}
 
 @media (max-width:1100px){
   .contest-badge{width:140px;height:140px}
+  /* The copy column reaches further across here; start the photo later. */
+  .contest-photo{-webkit-mask-image:linear-gradient(to right,transparent 0,transparent 44%,#000 64%),linear-gradient(to top,transparent 0,#000 14%);mask-image:linear-gradient(to right,transparent 0,transparent 44%,#000 64%),linear-gradient(to top,transparent 0,#000 14%)}
   .perk-grid{grid-template-columns:1fr 1fr}
 }
 @media (max-width:900px){
@@ -574,7 +575,7 @@ footer a:hover{color:#fff}
   .contest-copy{max-width:none}
   .contest-art{position:relative;width:auto;height:240px;margin-top:20px}
   .contest-photo{-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 22%,#000 78%,transparent 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 22%,#000 78%,transparent 100%);-webkit-mask-composite:add;mask-composite:add}
-  .contest-photo img{object-position:50% 62%}
+  .contest-photo img{object-position:68% 62%;transform:scale(1.75);transform-origin:68% 62%}
   .contest-badge{width:92px;height:92px;top:14px;left:16px}
   .contest-ridges{height:46%}
 }
@@ -625,6 +626,11 @@ button.drive-tile{display:block;border:0;padding:0;cursor:pointer;font:inherit}
 .drive-dialog::backdrop{background:rgba(10,30,51,.82)}
 .drive-dialog-frame{width:min(calc((100vh - 140px) * 9 / 16),calc(100vw - 32px),420px);aspect-ratio:9/16;border-radius:14px;overflow:hidden;background:#000}
 .drive-dialog-frame iframe{width:100%;height:100%;border:0;display:block}
+.drive-dialog-frame.is-photo{width:auto;aspect-ratio:auto;background:transparent}
+.drive-dialog-frame.is-photo img{display:block;max-width:min(1100px,calc(100vw - 32px));max-height:calc(100vh - 120px);width:auto;height:auto;border-radius:14px}
+.drive-photo:focus-visible{outline:3px solid var(--navy);outline-offset:3px}
+.drive-photo img{transition:transform .25s}
+.drive-photo:hover img{transform:scale(1.03)}
 .drive-dialog-close{position:absolute;top:0;right:0;width:44px;height:44px;border-radius:50%;border:0;background:#fff;color:var(--navy);font-size:26px;line-height:1;cursor:pointer}
 .drive-dialog-close:focus-visible{outline:3px solid var(--sky);outline-offset:2px}
 .drive-dialog-yt{display:block;margin-top:10px;text-align:center;color:#fff;font-size:14px;font-weight:600}

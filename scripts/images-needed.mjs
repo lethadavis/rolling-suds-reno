@@ -32,8 +32,8 @@ add(
   "Driveway Makeover Contest, hero",
   "contest",
   "spa-driveway",
-  "1010x1536 or larger, portrait (.webp plus a .jpg fallback)",
-  "The spa driveway mascot from the postcard, on its own: no contest badge baked in (the badge sits on top as its own file) and no dark navy fade. It fills the right half of the hero, faded at its left edge.",
+  "2400x1350 wide (16:9) preferred; the current file is 1376x768 (.webp plus a .jpg fallback)",
+  "The spa driveway mascot in the wide Lake Tahoe scene, mascot about two thirds across, calm sky and lake on the left. No badge or text baked in. It runs behind the whole hero and fades out behind the headline. A larger version would look sharper on wide screens.",
   "A driveway in a towel and cucumber slices enjoying a spa day",
   "Campaign artwork"
 );

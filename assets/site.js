@@ -653,20 +653,31 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
   });
 })();
 
-/* ---------- Contest page: driveway video tile ----------
-   Plays the Short in a dialog so visitors stay on the contest page. */
+/* ---------- Contest page: driveway tiles ----------
+   The video tile plays the Short and the photo tiles show the full image, both
+   in one dialog, so visitors stay on the contest page. */
 (() => {
-  const tile = document.querySelector(".drive-video");
   const dlg = document.getElementById("driveVideo");
-  if (!tile || !dlg || typeof dlg.showModal !== "function") return;
+  const tiles = document.querySelectorAll(".drive-video, .drive-photo");
+  if (!dlg || !tiles.length || typeof dlg.showModal !== "function") return;
   const frame = dlg.querySelector(".drive-dialog-frame");
-  const stop = () => { frame.innerHTML = ""; };
-  tile.addEventListener("click", () => {
-    frame.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${tile.dataset.yt}?autoplay=1&rel=0&playsinline=1" title="${tile.getAttribute("aria-label").replace(/^Play video: /, "")}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
-    dlg.showModal();
-    track("contest_video_play");
-  });
+  const ytLink = dlg.querySelector(".drive-dialog-yt");
+  let opener = null;
+  const esc = (v) => String(v).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  tiles.forEach((tile) =>
+    tile.addEventListener("click", () => {
+      opener = tile;
+      const isVideo = tile.classList.contains("drive-video");
+      frame.classList.toggle("is-photo", !isVideo);
+      ytLink.hidden = !isVideo;
+      frame.innerHTML = isVideo
+        ? `<iframe src="https://www.youtube-nocookie.com/embed/${esc(tile.dataset.yt)}?autoplay=1&rel=0&playsinline=1" title="${esc(tile.getAttribute("aria-label").replace(/^Play video: /, ""))}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`
+        : `<img src="${esc(tile.dataset.full)}" alt="${esc(tile.dataset.alt)}">`;
+      dlg.showModal();
+      track(isVideo ? "contest_video_play" : "contest_photo_view");
+    })
+  );
   dlg.querySelector(".drive-dialog-close").addEventListener("click", () => dlg.close());
   dlg.addEventListener("click", (e) => { if (e.target === dlg) dlg.close(); });
-  dlg.addEventListener("close", () => { stop(); tile.focus(); });
+  dlg.addEventListener("close", () => { frame.innerHTML = ""; opener?.focus(); });
 })();

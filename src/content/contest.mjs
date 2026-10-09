@@ -69,7 +69,7 @@ function heroArt() {
   if (webp || jpg) {
     photo = `<picture class="contest-photo">
         ${webp && webp.endsWith(".webp") ? `<source srcset="${webp}" type="image/webp">` : ""}
-        <img src="/${jpg || webp.slice(1)}" alt="A driveway in a towel and cucumber slices enjoying a spa day" width="1010" height="1536" decoding="async" fetchpriority="high">
+        <img src="/${jpg || webp.slice(1)}" alt="A driveway in a towel and cucumber slices enjoying a spa day" width="1376" height="768" decoding="async" fetchpriority="high">
       </picture>`;
   } else if (!isProduction) {
     photo = `<div class="contest-photo contest-photo-empty" data-slot="contest/spa-driveway"><span class="shot-empty-label">Photo coming soon</span></div>`;
@@ -118,10 +118,11 @@ const DRIVEWAY_PAIR = {
 };
 
 function drivewayRow() {
-  const tile = (t) => `<figure class="drive-tile">
-        <img src="/${t.src}" alt="${t.alt}" width="1200" height="900" loading="lazy" decoding="async">
+  // Photo tiles open the full image in the same dialog as the video.
+  const tile = (t) => `<button type="button" class="drive-tile drive-photo" data-full="/${t.src}" data-alt="${t.alt}" aria-label="View larger photo: ${t.alt}">
+        <img src="/${t.src}" alt="" width="1200" height="900" loading="lazy" decoding="async">
         <span class="compare-label">${t.label}</span>
-      </figure>`;
+      </button>`;
   const empty = (name, label) => `<figure class="drive-tile drive-tile-empty" data-slot="gallery/compare/${name}">
         <span class="shot-empty-label">Photo coming soon</span>
         <span class="compare-label">${label}</span>
@@ -133,7 +134,7 @@ function drivewayRow() {
         <span class="compare-label">Video</span>
         <span class="g-play" aria-hidden="true"></span>
       </button>`;
-  const videoDialog = `<dialog class="drive-dialog" id="driveVideo" aria-label="${v.title}">
+  const videoDialog = `<dialog class="drive-dialog" id="driveVideo" aria-label="Driveway photo or video">
     <button type="button" class="drive-dialog-close" aria-label="Close video">&times;</button>
     <div class="drive-dialog-frame"></div>
     <a class="drive-dialog-yt" href="https://www.youtube.com/shorts/${v.youtubeId}" target="_blank" rel="noopener">Watch on YouTube</a>
