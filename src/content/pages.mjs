@@ -7,6 +7,8 @@ import { localBusiness, serviceSchema, faqSchema, breadcrumbSchema, BUSINESS_ID 
 import { SITE_URL } from "../../site.config.js";
 import { contentPage, pageHero, sections, faqBlock, linkCloud, ctaBand, sideCard } from "../templates/page.mjs";
 import { shot, resolveShot } from "../templates/image.mjs";
+import { contestBody, HERO_PHOTO } from "./contest.mjs";
+import { offerDeal } from "../templates/offer.mjs";
 
 const read = (p) => readFileSync(p, "utf8").trimEnd();
 const HOME_CRUMB = { name: "Home", route: "/" };
@@ -31,6 +33,7 @@ export function buildPages({ flags }) {
     description:
       "Commercial and residential pressure washing in Reno, Sparks, Carson City and Lake Tahoe: houses, roofs, concrete, fleets. Get a free quote today.",
     body: read("src/pages/home.html"),
+    headExtra: "{{HERO_PRELOAD}}",
     needsLightbox: true,
     schema: [localBusiness()],
   });
@@ -59,8 +62,7 @@ export function buildPages({ flags }) {
           ? `<div class="offer-box">
         <span class="offer-tag">${s.offer.tag}</span>
         <p>${s.offer.text}</p>
-        <span class="offer-deal">${s.offer.deal}</span>
-        <span class="offer-until">${s.offer.until}</span>
+        ${offerDeal(s)}
       </div>\n\n      `
           : "") + sections(s.sections)
         ),
@@ -133,7 +135,7 @@ export function buildPages({ flags }) {
     body: contentPage({
       hero: {
         eyebrow: "Service Area",
-        h1: "Where we work across northern Nevada and Tahoe",
+        h1: "Where we work across the Reno-Tahoe area",
         lede:
           "Our crews run from our shop in south Reno out through the Truckee Meadows, south to Carson City and the Douglas County valleys, east along the industrial corridor and up into the Tahoe basin.",
       },
@@ -183,11 +185,11 @@ export function buildPages({ flags }) {
     sourceFile: "src/content/blog.mjs",
     title: "Blog | Pressure Washing Advice for Reno & Tahoe",
     description:
-      "Practical exterior cleaning advice for northern Nevada property owners, from our crews in Reno. Read the latest and request a free quote.",
+      "Practical exterior cleaning advice for Reno-Tahoe property owners, from our crews in Reno. Read the latest and request a free quote.",
     breadcrumbs: blogCrumbs,
     body: `${pageHero({
       eyebrow: "Blog",
-      h1: "Exterior cleaning advice for northern Nevada",
+      h1: "Exterior cleaning advice for Reno-Tahoe",
       lede: "Notes from our crews on what the high desert and the Tahoe basin do to buildings, and what actually helps.",
     })}
 
@@ -271,6 +273,24 @@ ${ctaBand({ heading: "Questions about your property?", text: "Send us the detail
         breadcrumbSchema(crumbs),
       ],
     });
+  });
+
+  /* ---------- Driveway Makeover Contest (postcard landing page) ---------- */
+  // noindex, follow on every deploy, kept out of the sitemap and the nav, and
+  // no schema: no LocalBusiness changes and no review markup on this page.
+  pages.push({
+    route: "/driveway",
+    sourceFile: "src/content/contest.mjs",
+    title: "Great Driveway Makeover Contest | Rolling Suds Reno-Tahoe",
+    description:
+      "Enter your home for a free driveway cleaning and a chance to win a free house wash from Rolling Suds Reno-Tahoe.",
+    robots: "noindex, follow",
+    excludeFromSitemap: true,
+    bodyClass: "contest-page",
+    preloadHero: resolveShot("contest", "spa-driveway") ? HERO_PHOTO : undefined,
+    ogImage: resolveShot("contest", "og-contest") || undefined,
+    body: contestBody(),
+    schema: [],
   });
 
   /* ---------- 404 ---------- */

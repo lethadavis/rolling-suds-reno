@@ -24,10 +24,10 @@ export const COMPARISONS = [
     // The left photo is mid wash, so it stays DURING until a true before exists.
     beforeLabel: "During",
     afterLabel: "After",
-    caption: "Garage Door Wash",
+    caption: "Oxidation Treatment and Rejuvenation (Coordinated Repaint)",
     alts: {
-      before: "Garage door partway through a wash, with cleaned and uncleaned panels side by side",
-      after: "The same style of garage door after washing, clean across every panel",
+      before: "Garage door partway through oxidation treatment, with treated and untreated panels side by side",
+      after: "Garage door after oxidation treatment and rejuvenation, ready for a coordinated repaint",
     },
     // Keep the door panels and handles centred in the 3:2 crop.
     objectPosition: { before: "50% 55%", after: "50% 58%" },

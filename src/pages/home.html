@@ -7,7 +7,7 @@
   </div>
   <div class="wrap hero-grid">
     <div class="hero-copy">
-      <span class="pill">Reno, Sparks &amp; Northern Nevada</span>
+      <span class="pill">Serving the Reno-Tahoe Area</span>
       <h1>Commercial &amp; Residential Pressure Washing <span>in Reno &amp; Tahoe</span></h1>
       <!-- TODO: Francine to verify the plant-safe detergents and 100% satisfaction guarantee claims. -->
       <p class="hero-lede">Locally owned residential and commercial power washing for the Truckee Meadows. Professional-grade equipment, plant-safe detergents, and a 100% satisfaction guarantee.</p>
@@ -15,23 +15,25 @@
       <div class="promo promo-hero">
         <span class="promo-icon" aria-hidden="true"><svg><use href="#i-flame"/></svg></span>
         <div class="promo-body">
-          <span class="promo-eyebrow">Now Booking: Reno &amp; Tahoe</span>
+          {{WILDFIRE_EYEBROW}}
           <span class="promo-title">Wildfire ash and soot cleanup</span>
-          <span class="promo-text">It&rsquo;s been settling on our houses all summer, same as yours. We&rsquo;ll wash it off your roof, siding, deck, windows and solar panels.</span>
+          <span class="promo-text">Ash on homes, businesses and commercial properties? We&rsquo;ll wash it off roofs, siding, decks, windows and solar panels.</span>
           <div class="promo-actions">
-            <a class="btn btn-green js-quote" href="#quote" data-service="Wildfire Ash &amp; Soot Cleanup">Get Ash &amp; Soot Help</a>
+            <a class="btn btn-green js-quote" href="{{WILDFIRE_CTA_HREF}}" data-service="Wildfire Ash &amp; Soot Cleanup"{{WILDFIRE_CTA_OFFER}}>Get Ash &amp; Soot Help</a>
             <a class="promo-link" href="/wildfire-ash-and-soot-cleanup/" >Learn more about ash and soot cleanup</a>
           </div>
-          {{HERO_PROMO_LINE}}
         </div>
       </div>
+      {{WILDFIRE_TERMS}}
     </div>
 
     <div class="quote-card">
       <span class="tag">Free &middot; No Obligation</span>
       <h2>Get Your <span>Free</span> Quote</h2>
       <p>Tell us about your property and we&rsquo;ll get back to you the same business day with a no-obligation estimate.</p>
-    <form id="quoteForm">
+    <form id="quoteForm"{{WILDFIRE_FORM_ATTR}}>
+      {{CONTACT_PREF_HIDDEN}}
+      <input type="hidden" name="offer" value="">
       <div class="form-grid">
         <div class="field"><label for="f-name">Full Name *</label><input id="f-name" name="name" required placeholder="Jane Smith" autocomplete="name"></div>
         <div class="field"><label for="f-phone">Phone Number *</label><input id="f-phone" name="phone" type="tel" required placeholder="(775) 000-0000" autocomplete="tel"></div>
@@ -48,14 +50,16 @@
             <option>Commercial Washing</option>
             <option>Window Cleaning</option>
             <option>Fleet Washing</option>
-            <option>Restaurant Cleaning Services</option>
+            <option>Restaurant Exterior Cleaning</option>
             <option>Wildfire Ash &amp; Soot Cleanup</option>
             <option>Multiple Services</option>
             <option>Not Sure: Need a Consultation</option>
           </select>
+          {{WILDFIRE_APPLIED}}
         </div>
         <div class="field full"><label for="f-notes">Additional Notes</label><textarea id="f-notes" name="notes" placeholder="Property size, problem areas, preferred timing…"></textarea></div>
       </div>
+      {{CONTACT_PREF_QUOTE}}
       <button class="btn btn-green" type="submit">Request My Free Quote →</button>
       <div class="form-msg" id="formMsg" role="status"></div>
     </form>
@@ -82,12 +86,12 @@
     <div class="section-head">
       <span class="eyebrow">What We Do</span>
       <h2>Exterior Cleaning for<br><span>Every Surface</span></h2>
-      <p>High desert dust, hard-water spots, wildfire ash and winter road de-icer all take a toll on Northern Nevada homes and businesses. We have the right method for each one.</p>
+      <p>High desert dust, hard-water spots, wildfire ash and winter road de-icer all take a toll on Reno-Tahoe homes and businesses. We have the right method for each one.</p>
     </div>
     <div class="svc-grid">
       <article class="svc"><div class="svc-icon"><svg><use href="#i-house"/></svg></div><h3>House Washing</h3><p>A gentle soft wash lifts dirt, dust, cobwebs and mildew from vinyl, stucco, brick, wood and fiber-cement siding without damaging the surface.</p><a class="svc-link" href="/house-washing/">See house washing services &rarr;</a></article>
       <article class="svc"><div class="svc-icon"><svg><use href="#i-building"/></svg></div><h3>Commercial Washing</h3><p>Storefronts, office buildings, apartment communities, breezeways, signage, dumpster pads and parking areas, cleaned on a schedule that works around your business.</p><a class="svc-link" href="/commercial-pressure-washing/">See commercial pressure washing &rarr;</a></article>
-      <article class="svc"><div class="svc-icon"><svg><use href="#i-utensils"/></svg></div><h3>Restaurant Cleaning Services</h3><p>Inside-and-out cleaning programs for restaurants and food service: patios, entrances, drive-thrus, grease areas and more.</p><a class="svc-link" href="/restaurant-exterior-cleaning/">See restaurant exterior cleaning &rarr;</a></article>
+      <article class="svc"><div class="svc-icon"><svg><use href="#i-utensils"/></svg></div><h3>Restaurant Exterior Cleaning</h3><p>Exterior cleaning programs for restaurants and food service: patios, entrances, drive-thrus, dumpster pads and grease areas.</p><a class="svc-link" href="/restaurant-exterior-cleaning/">See restaurant exterior cleaning &rarr;</a></article>
       <article class="svc"><div class="svc-icon"><svg><use href="#i-roof"/></svg></div><h3>Roof Cleaning</h3><p>A low-pressure treatment removes streaks, moss and lichen and helps protect your roofing material without the damage high pressure can cause.</p><a class="svc-link" href="/roof-cleaning/">See roof cleaning services &rarr;</a></article>
       <article class="svc"><div class="svc-icon"><svg><use href="#i-concrete"/></svg></div><h3>Driveway &amp; Concrete</h3><p>Surface cleaning removes oil drips, tire marks, rust and de-icer residue from driveways, sidewalks, patios and pool decks.</p><a class="svc-link" href="/driveway-and-concrete-cleaning/">See driveway and concrete cleaning &rarr;</a></article>
       <article class="svc"><div class="svc-icon"><svg><use href="#i-fence"/></svg></div><h3>Deck &amp; Fence Cleaning</h3><p>Bring sun-grayed wood and composite back to life. We clean decks and fences of every material and prep wood for stain or sealer.</p><a class="svc-link" href="/deck-and-fence-cleaning/">See deck and fence cleaning &rarr;</a></article>
@@ -98,16 +102,6 @@
       <article class="svc"><div class="svc-icon"><svg><use href="#i-building"/></svg></div><h3>Property Management</h3><p>Breezeways, entries, concrete and building exteriors for apartment communities and managed portfolios, on a schedule you can plan around.</p><a class="svc-link" href="/property-management-pressure-washing/">See property management cleaning &rarr;</a></article>
       <article class="svc"><div class="svc-icon"><svg><use href="#i-house"/></svg></div><h3>HOA Common Areas</h3><p>Monument signs, sidewalks, clubhouse entries and amenity decks cleaned on a scope your board can approve line by line.</p><a class="svc-link" href="/hoa-pressure-washing/">See HOA pressure washing &rarr;</a></article>
     </div>
-      <a class="promo promo-wide" href="#quote" data-service="Wildfire Ash &amp; Soot Cleanup">
-        <span class="promo-icon" aria-hidden="true"><svg><use href="#i-flame"/></svg></span>
-        <span class="promo-body">
-          <span class="promo-eyebrow">Now Booking: Reno &amp; Tahoe</span>
-          <span class="promo-title">Wildfire ash and soot cleanup</span>
-          <span class="promo-text">It&rsquo;s been settling on our houses all summer, same as yours. We&rsquo;ll wash it off your roof, siding, deck, windows and solar panels</span>
-          <span class="promo-offer">$75 off a full residential exterior wash</span>
-          <span class="promo-until">through October 31</span>
-        </span>
-      </a>
   </div>
 </section>
 
@@ -130,7 +124,7 @@
         </article>
         <article class="tile">
           <div class="svc-icon"><svg><use href="#i-sun"/></svg></div>
-          <h3>Northern Nevada Know-How</h3>
+          <h3>Reno-Tahoe Know-How</h3>
           <p>We match the method and pressure to each surface, so dust, hard water and winter wear come off without damage.</p>
         </article>
         <!-- TODO: Jesse to verify the equipment claim. -->
@@ -181,7 +175,7 @@
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">Our Work</span>
-      <h2>Photo &amp; Video<br><span>Gallery</span></h2>
+      <h2>Photo &amp;<br><span>Video Gallery</span></h2>
       <p>See the before-and-after difference a professional clean makes.</p>
     </div>
     <div class="g-filters" id="gFilters" role="group" aria-label="Filter the gallery"></div>
@@ -193,12 +187,12 @@
 </section>
 
 <!-- ================= SERVICE AREA ================= -->
-<!-- TODO: confirm towns and zip codes against the Reno franchise's territory -->
+<!-- TODO: confirm towns against the Reno franchise's territory. ZIP codes live in SERVED_ZIPS in site.config.js. -->
 <section id="area">
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">Where We Work</span>
-      <h2>Serving Reno, Sparks &amp;<br><span>Northern Nevada</span></h2>
+      <h2>Serving the<br><span>Reno-Tahoe Area</span></h2>
       <p>We work with homeowners and businesses across the Truckee Meadows and surrounding communities.</p>
     </div>
     <div class="area-grid">
@@ -209,7 +203,7 @@
         <div class="zips">
           <h3>Zip Codes Served</h3>
           <div class="zip-list">
-            <span>89501</span><span>89502</span><span>89503</span><span>89506</span><span>89508</span><span>89509</span><span>89511</span><span>89512</span><span>89519</span><span>89521</span><span>89523</span><span>89431</span><span>89434</span><span>89436</span><span>89441</span><span>89433</span><span>89439</span><span>89704</span><span>89701</span><span>89703</span><span>89705</span><span>89706</span><span>89408</span><span>89451</span>
+            {{ZIP_LIST}}
           </div>
         </div>
       </div>

@@ -5,20 +5,20 @@ export const POSTS = [
   {
     slug: "cleaning-wildfire-ash-and-soot",
     published: "2026-09-30",
-    title: "Cleaning Wildfire Ash and Soot From Your Reno Home",
+    title: "Cleaning Wildfire Ash and Soot From Reno Properties",
     description:
-      "How to clean wildfire ash and soot off a Reno home safely: protective gear, dry removal first, surface by surface washing and runoff. Get a free quote.",
-    h1: "How to clean wildfire ash and soot from your home in Reno",
+      "How to clean wildfire ash and soot off Reno homes and businesses safely: protective gear, dry removal first, washing and runoff. Get a free quote.",
+    h1: "How to clean wildfire ash and soot from homes and businesses in Reno",
     eyebrow: "Wildfire cleanup",
     lede:
-      "After wildfire smoke events in northern Nevada, ash settles on every outdoor surface. Here is how we approach the cleanup, and what to be careful about if you tackle it yourself.",
-    shotAlt: "Ash covered patio and railings at a home in Reno, NV before cleaning",
+      "After wildfire smoke events around Reno-Tahoe, ash settles on every outdoor surface. Here is how we approach the cleanup, and what to be careful about if you tackle it yourself.",
+    shotAlt: "Ash covered patio and railings at a property in Reno, NV before cleaning",
     sections: [
       {
         h2: "Start with protection, not a hose",
         blocks: [
           "Wildfire ash is fine, alkaline and easy to stir back into the air. Before touching anything, put on an N95 respirator or better and eye protection, and wear long sleeves and gloves. Keep doors and windows closed while you work so you are not moving the problem indoors.",
-          "Two habits matter more than any technique. Do not dry sweep, and do not use a leaf blower. Both send fine particles straight back into the air you are breathing and onto surfaces you have already cleaned. If anyone in the household has breathing difficulties or other health concerns, talk to a medical professional before doing this work yourself.",
+          "Two habits matter more than any technique. Do not dry sweep, and do not use a leaf blower. Both send fine particles straight back into the air you are breathing and onto surfaces you have already cleaned. If anyone on site has breathing difficulties or other health concerns, talk to a medical professional before doing this work yourself.",
         ],
       },
       {
@@ -38,7 +38,7 @@ export const POSTS = [
           { h3: "Gutters" },
           "Ash washes off the roof into the gutter and turns into a dense sludge with the first rain. Clearing gutters before that happens saves a much harder job later, and it keeps ash laden water from spilling down the walls you are about to wash.",
           { h3: "Siding and stucco" },
-          "Most homes here are stucco, which does not take high pressure well. A soft wash, meaning low pressure plus the right detergent and enough dwell time, lifts the film without driving water behind the finish. The same applies to fiber cement, wood and painted surfaces. Our <a href=\"/house-washing/\">house washing service</a> uses that method as standard.",
+          "Most homes and many commercial buildings here are stucco, which does not take high pressure well. A soft wash, meaning low pressure plus the right detergent and enough dwell time, lifts the film without driving water behind the finish. The same applies to fiber cement, wood and painted surfaces. Our <a href=\"/house-washing/\">house washing service</a> uses that method as standard.",
           { h3: "Windows, screens and solar panels" },
           "Screens hold a surprising amount of ash and are easiest to clean off the window. Glass and panels streak badly if you rinse them with a garden hose, because local water is hard and leaves mineral spots as it dries. Purified water rinsing avoids that. On panels, a film of ash is lost production, so they are worth including.",
           { h3: "Decks, patios and concrete" },
@@ -58,7 +58,7 @@ export const POSTS = [
         h2: "When it is worth calling us",
         blocks: [
           "Do it yourself makes sense for a patio, a car and a few windows. It makes less sense for a roof, a two story elevation, a large deck or a property where ash has been sitting through a season of dew and temperature swings.",
-          "We clean the full exterior in one visit, working top down with the right pressure for each surface. That is the whole point of our <a href=\"/wildfire-ash-and-soot-cleanup/\">wildfire ash and soot cleanup service</a>, and it is the fastest way to get a house back to looking like itself. We cover the same ground for homes across <a href=\"/pressure-washing-reno/\">Reno</a>, Sparks, Carson City and the Tahoe basin.",
+          "We clean the full exterior in one visit, working top down with the right pressure for each surface. That is the whole point of our <a href=\"/wildfire-ash-and-soot-cleanup/\">wildfire ash and soot cleanup service</a>, and it is the fastest way to get a building back to looking like itself. We cover the same ground for homes, businesses and commercial properties across <a href=\"/pressure-washing-reno/\">Reno</a>, Sparks, Carson City and the Tahoe basin.",
         ],
       },
     ],
@@ -100,8 +100,8 @@ export const POSTS = [
         h2: "Frequency by area, not by building",
         blocks: [
           "Most properties do not need everything cleaned on the same cycle. Splitting a site into a few zones usually costs less over a year than treating the whole property as one annual event, because the high traffic areas get attention before buildup becomes a restoration job.",
-          { h3: "Dumpster pads and back of house" },
-          "These are the fastest to deteriorate on any site with food service, and grease spreads from them on shoes and wheels. Monthly to quarterly is typical, and monthly is common where a kitchen is involved.",
+          { h3: "Dumpster pads and rear service areas" },
+          "These are the fastest to deteriorate on any site with food service, and grease spreads from them on shoes and wheels. Monthly to quarterly is typical, and monthly is common where food is prepared on site.",
           { h3: "Entryways and storefronts" },
           "The first three metres of concrete take the most foot traffic on the property. Quarterly suits most retail and office entries, while high volume locations often move to monthly. Glass and frames usually run on a shorter cycle than the concrete.",
           { h3: "Sidewalks and walkways" },
@@ -121,7 +121,7 @@ export const POSTS = [
           {
             list: [
               "<strong>Foot and vehicle traffic.</strong> Volume is the single biggest driver on flatwork.",
-              "<strong>Food service.</strong> Grease migrates from the kitchen to the back door, the bin and the path between them.",
+              "<strong>Food service.</strong> Grease tracks out the back door onto the bin area and the path between them.",
               "<strong>Shade and trees.</strong> Shaded concrete holds moisture and grows organic staining; trees drop litter, sap and berries.",
               "<strong>Nearby construction or open ground.</strong> Wind blown dust is constant in parts of the valley, especially at the edges of newer development.",
               "<strong>Irrigation.</strong> Sprinkler overspray leaves mineral staining and rust on concrete and walls.",
@@ -131,7 +131,7 @@ export const POSTS = [
         ],
       },
       {
-        h2: "Seasonal timing in northern Nevada",
+        h2: "Seasonal timing in Reno-Tahoe",
         blocks: [
           "Spring is the natural reset. Winter road treatment leaves a chalky film on drive lanes, entries and lower walls, and pulling it off before the dry season starts stops it grinding in.",
           "Early summer is when outdoor seating, patios and amenity areas earn their keep, so it is the right window for a lighter second pass on the areas guests use.",
@@ -150,7 +150,7 @@ export const POSTS = [
               "Black spotting on north facing elevations that does not rinse off in a storm",
               "Gum, spills and drink rings that have stopped being individual marks and become a pattern",
               "A glass line that looks hazy even the day after the windows were done",
-              "Slick patches near the kitchen door or the bin, which is a safety issue rather than a cosmetic one",
+              "Slick patches near the back door or the bin, which is a safety issue rather than a cosmetic one",
             ],
           },
           "Any two of those together usually mean the interval has stretched past what the surface can carry.",
@@ -176,7 +176,7 @@ export const POSTS = [
     faqs: [
       {
         q: "How often should a restaurant have its exterior cleaned?",
-        a: "Back of house concrete and dumpster pads are typically monthly to every other month, with patios and entries on a similar cycle, because grease and foot traffic rebuild quickly.",
+        a: "Rear service concrete and dumpster pads are typically monthly to every other month, with patios and entries on a similar cycle, because grease and foot traffic rebuild quickly.",
       },
       {
         q: "Is an annual clean enough for an office building?",
@@ -223,7 +223,7 @@ export const POSTS = [
               "Concrete driveways, sidewalks, entries and pads",
               "Pavers and stamped concrete, at reduced pressure so joint sand stays put",
               "Block walls, curbs and hardscape",
-              "Dumpster pads and back of house concrete, usually with hot water and a degreaser",
+              "Dumpster pads and rear service concrete, usually with hot water and a degreaser",
             ],
           },
           "Even here, technique matters more than raw pressure. A surface cleaner covers flatwork evenly, while a wand leaves the striped pattern you see on driveways that were cleaned in a hurry. Our <a href=\"/driveway-and-concrete-cleaning/\">driveway and concrete cleaning</a> uses a surface cleaner for exactly that reason.",
@@ -271,7 +271,7 @@ export const POSTS = [
       {
         h2: "Where hot water and surface cleaners fit",
         blocks: [
-          "Pressure and detergent are not the only two variables. Water temperature matters on anything greasy, which is why back of house concrete, drive thru lanes and dumpster pads are cleaned hot rather than simply hard. Heat breaks the grease down so the pressure has something to carry away.",
+          "Pressure and detergent are not the only two variables. Water temperature matters on anything greasy, which is why rear service concrete, drive thru lanes and dumpster pads are cleaned hot rather than simply hard. Heat breaks the grease down so the pressure has something to carry away.",
           "A surface cleaner is the other piece. It is a rotating head inside a housing that keeps a consistent distance and overlap across flatwork, which is what produces an even finish instead of wand stripes. It is faster too, so large areas of concrete cost less to clean well than they would with a wand.",
           "None of that applies to siding or roofs. There the work is chemistry and patience, and rushing it with equipment is exactly what causes damage.",
         ],

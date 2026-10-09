@@ -10,9 +10,12 @@ export const FLAGS = {
   WBE_CERTIFIED: false,
   // Woman owned appears in the trust strip only once Francine approves it.
   WOMAN_OWNED_TRUST: false,
-  // Off by default so the hero reads evenly for commercial buyers. When true
-  // the offer line shows under the wildfire button until HERO_PROMO.until.
-  SHOW_HERO_PROMO: false,
+  // Driveway Makeover Contest landing page (/driveway). When false the
+  // page stays up but shows a "contest has ended" note and the quote CTA.
+  CONTEST_ACTIVE: true,
+  // Small link to the contest in the footer. Off: the page is meant to be
+  // reached by the postcard QR code, its printed URL and the short redirects.
+  CONTEST_PROMO_LINK: false,
 };
 
 export const CONTACT = {
@@ -37,14 +40,45 @@ export const CONTACT = {
   sameAs: [],
 };
 
-// Local Google Business Profile rating only. The national Rolling Suds
-// aggregate must never appear on this site. Leave rating or count empty and
-// the rating line disappears everywhere.
-// TODO: confirm the current rating and count before launch.
-export const REVIEWS = {
-  rating: "5.0", // verified on the Google listing, 2026-09-30
-  count: "9",
-  label: "Google reviews",
+// Rolling Suds network rating, shown in the homepage trust strip and the
+// reviews section heading. Corporate approved displaying the network rating.
+// It is the whole Rolling Suds network, not Reno: wording must always say
+// "Rolling Suds reviews", and it never goes in JSON-LD (no aggregateRating or
+// Review markup for another entity's reviews). Leave rating or count empty
+// and the rating disappears everywhere.
+// TODO: refresh NETWORK_REVIEWS from rollingsuds.com monthly.
+export const NETWORK_REVIEWS = {
+  rating: 4.9,
+  count: 2987,
+  source: "rollingsuds.com (rollingsudspowerwashing.com)",
+  approvedByCorporate: true,
+  lastUpdated: "2026-10-05",
+};
+
+// ZIP codes listed under "Zip Codes Served" on the homepage, in numeric order.
+// 26 added from the client's "Missing Zipcodes" list on 2026-10-08 (89431 was
+// already here). The build warns about any duplicate entry.
+export const SERVED_ZIPS = [
+  "89402", "89403", "89406", "89408", "89410", "89413", "89423", "89424", "89428", "89429",
+  "89430", "89431", "89433", "89434", "89436", "89439", "89440", "89441", "89442", "89444",
+  "89448", "89449", "89451", "89460", "89501", "89502", "89503", "89506", "89507", "89508",
+  "89509", "89510", "89511", "89512", "89519", "89521", "89523", "89557", "89701", "89702",
+  "89703", "89704", "89705", "89706", "89711", "89712", "96142", "96143", "96145", "96150",
+];
+
+// ZIP codes the contest form accepts. Left empty, the ZIP check is skipped and
+// every ZIP is accepted.
+// TODO: fill from the confirmed franchise territory. The homepage "Zip Codes
+// Served" list is a starting point but is itself still marked unconfirmed.
+export const SERVICE_ZIPS = [];
+
+// Driveway Makeover Contest form settings.
+export const CONTEST = {
+  // Stored with every entry unless the visit carries a utm_source.
+  leadSource: "Direct Mail: Driveway Postcard",
+  // TODO: there is no privacy policy page yet. Add its path here (for example
+  // "/privacy/") and the consent line links to it.
+  privacyUrl: "",
 };
 
 // Counties and areas the crews cover, used by LocalBusiness schema and the service area page.
@@ -58,36 +92,29 @@ export const AREA_SERVED = [
   "Lake Tahoe, CA",
 ];
 
-// Hero photo. Files live at images/hero/<name>-<width>.{avif,webp,jpg}.
-// Swap name for a job photo later and give it real alt text.
+// Hero background photo, decorative. Files live at
+// images/hero/<name>-<width>.{avif,webp,jpg}; phones use the 4:5 crop in
+// mobile. Swap name for a job photo later and give it real alt text.
 export const HERO_IMAGE = {
   name: "reno-skyline",
-  widths: [1600, 2000],
+  widths: [640, 1024, 1600, 2000],
   intrinsic: { width: 2000, height: 1189 },
   focal: "55% 40%",
+  mobile: { name: "reno-skyline-mobile", widths: [640, 960] },
   alt: "", // decorative regional scenery, so no alt text
 };
 
-// Hero video. Self hosted wins when both files exist, otherwise the YouTube
-// id is used, otherwise the hero shows the poster on its own.
-// Corporate has approved use of this clip on this site.
-// TODO: replace with a self hosted file at video/hero.mp4 and video/hero.webm
-// and the mode switches over on its own.
-// TODO: place a poster frame from 3:49 at images/hero/hero-poster.jpg.
-export const HERO_VIDEO = {
-  mp4: "/video/hero.mp4",
-  webm: "/video/hero.webm",
-  poster: "hero-poster", // images/hero/hero-poster.*, falls back to the skyline set
-  youtubeId: "pDbqotygNrI",
-  start: 229, // 3:49
-  end: 265, // 4:25
-};
-
-// Hero offer line, shown only when FLAGS.SHOW_HERO_PROMO is true and today is
-// on or before the end date.
-export const HERO_PROMO = {
-  text: "$75 off a full residential exterior wash",
-  until: "2026-10-31",
+// Wildfire ash and soot cleanup offer. The hero card pill, the service page
+// offer box, the quote form's "applied" line and the offer=wildfire75 tag on
+// leads all read from here. active: false removes it everywhere.
+// Terms stay hidden in production while they still start with "TODO".
+export const WILDFIRE_OFFER = {
+  active: true,
+  amountOff: 75,
+  text: "$75 off",
+  appliesTo: "homes and businesses",
+  terms: "TODO: confirm terms with Francine and Jesse",
+  expires: null,
 };
 
 export const BRAND = {

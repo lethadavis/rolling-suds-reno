@@ -37,6 +37,33 @@
   status = 301
   force = true
 
+# Driveway Makeover Contest lives at /driveway. The old path and the short
+# URLs point at it. Netlify passes the query string through, so UTM tags on
+# the QR code survive the redirect. /driveway itself is never redirected.
+[[redirects]]
+  from = "/driveway-makeover"
+  to = "/driveway/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/driveway-makeover/*"
+  to = "/driveway/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/spa"
+  to = "/driveway/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/makeover"
+  to = "/driveway/"
+  status = 301
+  force = true
+
 # Old domain to the new one, path preserved. These take effect once both
 # domains are pointed at this site in Netlify.
 [[redirects]]

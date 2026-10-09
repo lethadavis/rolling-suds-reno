@@ -1,5 +1,5 @@
 // Page shell: head tags, nav, body, footer. Every page is rendered through here.
-import { SITE_URL, CONTACT, BRAND, REVIEWS } from "../site.config.js";
+import { SITE_URL, CONTACT, BRAND, NETWORK_REVIEWS } from "../site.config.js";
 
 export const esc = (v) =>
   String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -17,20 +17,21 @@ export function fillTokens(html, extra = {}) {
     MAP_EMBED_URL: CONTACT.mapEmbedUrl.replace(/&/g, "&amp;"),
     REVIEW_URL: CONTACT.reviewUrl,
     CORPORATE_URL: CONTACT.corporateUrl,
-    RATING_LINE_HERO: ratingLine("hero"),
-    RATING_LINE_SECTION: ratingLine("section"),
+    RATING_LINE_SECTION: networkRating("section"),
   };
   return html.replace(/\{\{([A-Z_]+)\}\}/g, (m, key) => (key in map ? map[key] : m));
 }
 
-// No rating configured means no rating line anywhere on the site.
-function ratingLine(kind) {
-  const { rating, count, label } = REVIEWS;
-  if (!rating || !count) return "";
-  const stars = `<span class="g-stars" role="img" aria-label="Google rating, ${rating} stars"></span>`;
-  return kind === "hero"
-    ? `<span class="rating">${stars} Rated ${rating} / 5 (${count} ${label})</span>`
-    : `<p class="rating">${stars} Rated <strong>${rating} / 5</strong> (${count} ${label})</p>`;
+// Rolling Suds network rating (NETWORK_REVIEWS). Display only, never schema.
+// Plain stars, no Google mark: the figure is not a Google rating.
+export const STARS = '<span class="net-stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span>';
+export function networkRating(kind) {
+  const { rating, count, approvedByCorporate } = NETWORK_REVIEWS;
+  if (!rating || !count || !approvedByCorporate) return "";
+  const n = `${Number(count).toLocaleString("en-US")}+`;
+  return kind === "trust"
+    ? `<span class="trust-item trust-rating">${STARS}<span>Rated ${rating}/5 across ${n} Rolling Suds reviews</span></span>`
+    : `<p class="rating">${STARS}<span><strong>${rating} / 5</strong> across ${n} Rolling Suds reviews</span></p>`;
 }
 
 export const canonicalFor = (route) => (route === "/" ? SITE_URL + "/" : SITE_URL + route + "/");
@@ -63,7 +64,7 @@ export function renderPage(page, parts, opts) {
 <title>${esc(page.title)}</title>
 <meta name="description" content="${esc(page.description)}">
 <link rel="canonical" href="${canonical}">
-${noindex ? '<meta name="robots" content="noindex, nofollow">' : '<meta name="robots" content="index, follow, max-image-preview:large">'}
+${page.robots ? `<meta name="robots" content="${page.robots}">` : noindex ? '<meta name="robots" content="noindex, nofollow">' : '<meta name="robots" content="index, follow, max-image-preview:large">'}
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="${esc(CONTACT.name)}">
 <meta property="og:title" content="${esc(page.ogTitle || page.title)}">
@@ -80,7 +81,7 @@ ${noindex ? '<meta name="robots" content="noindex, nofollow">' : '<meta name="ro
 <link rel="icon" href="/images/favicon.png" type="image/png">
 <link rel="apple-touch-icon" href="/images/favicon.png">
 <link rel="stylesheet" href="/assets/site.css?v=${buildStamp}">
-${page.preloadHero ? `<link rel="preload" as="image" href="${page.preloadHero}" fetchpriority="high">` : ""}
+${page.preloadHero ? `<link rel="preload" as="image" href="${page.preloadHero}"${page.preloadHero.endsWith(".webp") ? ' type="image/webp"' : ""} fetchpriority="high">` : ""}
 ${page.headExtra || ""}
 <script src="/assets/site.js?v=${buildStamp}" defer></script>
 ${schema}

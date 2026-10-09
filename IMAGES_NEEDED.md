@@ -7,7 +7,7 @@ preference: `.webp`, `.jpg`, `.jpeg`, `.png`. WebP is preferred for photographs.
 Nothing else needs changing: each slot picks up its file on the next build, and
 until then it shows a neutral placeholder at the right shape.
 
-**Status: 0 of 22 slots filled.**
+**Status: 3 of 27 slots filled.**
 
 ## Already covered
 
@@ -32,6 +32,11 @@ until then it shows a neutral placeholder at the right shape.
 | --- | --- | --- | --- | --- | --- | --- |
 | Homepage hero | `images/hero/reno-skyline.webp` | 1920x1080 | Daytime Reno skyline with the mountains behind it, shot wide. The left third sits under a pale wash and carries the headline, so keep it free of detail. A hi-res replacement for the current 1500px file is wanted. | Regional scenery | Decorative, no alt needed | no |
 | Homepage, Why Us | `images/why-us/crew.webp` | 900x1100 | Crew at work on a property, people visible and in uniform. Portrait or square crops best: it sits in a rounded slot beside the Why Us tiles and stays hidden until this file exists. | Real job photography | Our crew and truck on a job in the Truckee Meadows | no |
+| Driveway Makeover Contest, hero | `images/contest/spa-driveway.webp` | 1010x1536 or larger, portrait (.webp plus a .jpg fallback) | The spa driveway mascot from the postcard, on its own: no contest badge baked in (the badge sits on top as its own file) and no dark navy fade. It fills the right half of the hero, faded at its left edge. | Campaign artwork | A driveway in a towel and cucumber slices enjoying a spa day | yes |
+| Driveway Makeover Contest, badge | `images/contest/driveway-makeover-badge.webp` | 360x360, shown at 180px | The round contest badge on a transparent background. | Campaign artwork | Decorative, no alt needed (the eyebrow carries the same words) | yes |
+| Driveway Makeover Contest, Driveway glow-ups row (before) | `images/gallery/compare/driveway-before.webp` | 1200x900 (4:3 landscape, .webp) | A real customer driveway in our service area before cleaning: oil, tire marks or de-icer film clearly visible. Shot from the same spot as the after photo. | Real job photography | Stained concrete driveway before cleaning | no |
+| Driveway Makeover Contest, Driveway glow-ups row (after) | `images/gallery/compare/driveway-after.webp` | 1200x900 (4:3 landscape, .webp) | The same driveway after cleaning, same angle and framing as the before. Once both exist they show as one before and after card in the row. | Real job photography | The same driveway after cleaning | no |
+| Driveway Makeover Contest, social share | `images/contest/og-contest.webp` | 1200x630 (.jpg) | Open Graph image for shares and link previews. | Campaign artwork | Not shown on the page | yes |
 | Service: Commercial Pressure Washing | `images/services/commercial-pressure-washing.webp` | 1200x800 | Work in progress or a finished result for this service. Before and after pairs work well. | Real job photography | Our crew pressure washing a commercial storefront entry in Reno, NV | no |
 | Service: Property Management | `images/services/property-management-pressure-washing.webp` | 1200x800 | Work in progress or a finished result for this service. Before and after pairs work well. | Real job photography | Breezeway and stairwell cleaning at an apartment community in Sparks, NV | no |
 | Service: HOA Pressure Washing | `images/services/hoa-pressure-washing.webp` | 1200x800 | Work in progress or a finished result for this service. Before and after pairs work well. | Real job photography | Entry monument and sidewalk cleaning in a Reno, NV community | no |

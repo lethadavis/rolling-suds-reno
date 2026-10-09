@@ -5,6 +5,46 @@ function track(event, detail = {}) {
   (window.dataLayer = window.dataLayer || []).push({ event, ...detail });
 }
 
+/* ---------- Preferred method of contact ----------
+   Shared by every lead form. Keeps the hidden preferred_contact field in step
+   with the ticked boxes ("phone, email"), shows the text consent line while
+   Text is ticked, and requires at least one choice. */
+function contactPref(form) {
+  const group = form.querySelector("[data-contact-group]");
+  if (!group) return null;
+  const single = group.hasAttribute("data-single");
+  const boxes = [...group.querySelectorAll('input[type="checkbox"], input[type="radio"]')];
+  const consent = group.querySelector(".sms-consent");
+  const err = group.querySelector(".field-err");
+  // Checkbox forms only; on single-choice forms the radios carry the name.
+  const hidden = form.querySelector('input[type="hidden"][name="preferred_contact"]');
+  const value = () => boxes.filter((b) => b.checked).map((b) => b.value).join(", ");
+  const setError = (text) => {
+    err.textContent = text;
+    err.hidden = !text;
+    group.classList.toggle("is-invalid", Boolean(text));
+    boxes.forEach((b) => b.setAttribute("aria-invalid", text ? "true" : "false"));
+  };
+  const sync = () => {
+    consent.hidden = !boxes.some((b) => b.value === "text" && b.checked);
+    if (hidden) hidden.value = value();
+    if (value()) setError("");
+  };
+  boxes.forEach((b) => b.addEventListener("change", sync));
+  sync();
+  return {
+    value,
+    focus: () => boxes[0].focus(),
+    reset: () => { boxes.forEach((b) => { b.checked = false; }); sync(); },
+    validate() {
+      sync();
+      if (value()) return true;
+      setError(single ? "Please choose how you would like us to contact you." : "Please choose at least one way for us to contact you.");
+      return false;
+    },
+  };
+}
+
 /* ---------- SETTINGS ---------- */
 // Where quote requests are sent. Paste a Formspree/Netlify/etc. URL here.
 // Left empty, the form opens the visitor's email app instead.
@@ -257,21 +297,27 @@ syncHeader();
   const form = document.getElementById("quoteForm");
   if (!form) return;
   const msg = document.getElementById("formMsg");
+  const pref = contactPref(form);
   form.addEventListener("submit", async e => {
     e.preventDefault();
+    if (pref && !pref.validate()) { pref.focus(); return; }
+    // preferred_contact is the form's first field, so it leads the email body.
     const data = new FormData(form);
     if (!FORM_ENDPOINT) {
       const body = [...data.entries()].map(([k, v]) => `${k}: ${v}`).join("\n");
       location.href = `mailto:${FALLBACK_EMAIL}?subject=${encodeURIComponent("Free Quote Request")}&body=${encodeURIComponent(body)}`;
       return;
     }
-    track("quote_submit");
+    track("quote_submit", { preferred_contact: pref ? pref.value() : "", offer: form.offer?.value || "" });
     msg.style.display = "block";
     msg.textContent = "Sending…";
     try {
       const res = await fetch(FORM_ENDPOINT, { method: "POST", body: data, headers: { Accept: "application/json" } });
       if (!res.ok) throw new Error();
       form.reset();
+      pref?.reset();
+      const applied = document.getElementById("offerApplied");
+      if (applied) applied.hidden = true;
       // TODO: Jesse to confirm the same business day promise.
       msg.textContent = "Thanks, we have your details. We will get back to you the same business day.";
       track("quote_success");
@@ -284,175 +330,39 @@ syncHeader();
 const yearEl = document.getElementById("yr");
 if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-/* ---------- Hero background video ---------- */
-(() => {
-  const media = document.querySelector(".hero-media");
-  if (!media || media.dataset.heroMode === "poster") return;
-  const toggle = document.querySelector(".hero-media-toggle");
-
-  // Checked when we are about to load, not at parse time: Chrome often reports
-  // a slower effectiveType for the first moments of a page load.
-  function shouldSkip() {
-    const conn = navigator.connection || {};
-    // Phones keep the poster: cheaper on data and easier to read over.
-    if (window.innerWidth < 768) return "small-screen";
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return "reduced-motion";
-    if (conn.saveData === true) return "save-data";
-    if (["slow-2g", "2g", "3g"].includes(conn.effectiveType)) return "slow-connection";
-    return null;
-  }
-
-  let api = null;
-  let userPaused = false;
-  let onScreen = true;
-  const setPlaying = (on) => media.classList.toggle("is-playing", on);
-
-  function loadFile() {
-    const video = media.querySelector(".hero-video");
-    for (const [type, key] of [["video/webm", "srcWebm"], ["video/mp4", "srcMp4"]]) {
-      const src = video.dataset[key];
-      if (!src) continue;
-      const source = document.createElement("source");
-      source.src = src;
-      source.type = type;
-      video.appendChild(source);
-    }
-    video.load();
-    video.addEventListener("playing", () => setPlaying(true), { once: true });
-    video.play().catch(() => {});
-    api = { play: () => video.play().catch(() => {}), pause: () => video.pause() };
-  }
-
-  function loadYouTube() {
-    const host = media.querySelector(".hero-yt");
-    const id = host.dataset.yt;
-    const from = Number(host.dataset.start) || 0;
-    const to = Number(host.dataset.end) || 0;
-    const mount = document.createElement("div");
-    host.appendChild(mount);
-
-    const tag = document.createElement("script");
-    tag.src = "https://www.youtube.com/iframe_api";
-    document.head.appendChild(tag);
-
-    window.onYouTubeIframeAPIReady = () => {
-      const player = new YT.Player(mount, {
-        host: "https://www.youtube-nocookie.com",
-        videoId: id,
-        playerVars: { autoplay: 1, mute: 1, controls: 0, playsinline: 1, rel: 0, modestbranding: 1, iv_load_policy: 3, disablekb: 1, fs: 0, start: from },
-        events: {
-          onReady: (e) => { e.target.mute(); e.target.seekTo(from, true); e.target.playVideo(); },
-          onStateChange: (e) => { if (e.data === YT.PlayerState.PLAYING) setPlaying(true); },
-        },
-      });
-      api = { play: () => player.playVideo(), pause: () => player.pauseVideo() };
-      // The poster stays until playback is confirmed, whichever signal arrives first.
-      const confirm = setInterval(() => {
-        const state = player.getPlayerState ? player.getPlayerState() : null;
-        if (state === 1) { setPlaying(true); clearInterval(confirm); }
-        // Autoplay can be refused on the first gesture-less load; nudge it once.
-        if (state === 5 || state === -1) player.playVideo();
-      }, 300);
-      setTimeout(() => clearInterval(confirm), 15000);
-
-      // Loop the approved segment only, dipping to the poster so the jump back
-      // is hidden and no end screen or related videos can appear.
-      // Some embeds report a frozen currentTime, so wall clock time is used as
-      // the fallback once playback has started.
-      if (to > from) {
-        let anchorTime = from;
-        let anchorAt = performance.now();
-        let lastReported = from;
-        let dipping = false;
-
-        const resetAnchor = (seconds) => { anchorTime = seconds; anchorAt = performance.now(); };
-
-        setInterval(() => {
-          if (userPaused || !onScreen || dipping) return;
-          // Only stand down when the player is genuinely paused or ended.
-          const state = player.getPlayerState ? player.getPlayerState() : 1;
-          if (state === 2 || state === 0) return;
-
-          const reported = player.getCurrentTime ? player.getCurrentTime() : 0;
-          if (reported > lastReported + 0.05) {
-            lastReported = reported;
-            resetAnchor(reported);
-          }
-          const elapsed = (performance.now() - anchorAt) / 1000;
-          const position = anchorTime + elapsed;
-
-          if (position >= to - 0.35 || position < from - 1) {
-            dipping = true;
-            media.classList.add("is-dipping");
-            setTimeout(() => {
-              player.seekTo(from, true);
-              player.playVideo();
-              lastReported = from;
-              resetAnchor(from);
-              media.classList.remove("is-dipping");
-              dipping = false;
-            }, 300);
-          }
-        }, 250);
-      }
-    };
-  }
-
-  const begin = () => {
-    // Reduced motion, Save-Data or a slow connection: the poster is the whole hero.
-    const skip = shouldSkip();
-    if (skip) {
-      media.dataset.heroSkipped = skip;
-      return;
-    }
-    if (toggle) toggle.hidden = false;
-    media.dataset.heroMode === "youtube" ? loadYouTube() : loadFile();
-  };
-  const kick = () => ("requestIdleCallback" in window ? requestIdleCallback(begin, { timeout: 2500 }) : setTimeout(begin, 300));
-  if (document.readyState === "complete") kick();
-  else addEventListener("load", kick, { once: true });
-
-  if (toggle) {
-    toggle.addEventListener("click", () => {
-      userPaused = !userPaused;
-      toggle.dataset.state = userPaused ? "paused" : "playing";
-      toggle.setAttribute("aria-label", userPaused ? "Play the background video" : "Pause the background video");
-      if (!api) return;
-      userPaused ? api.pause() : api.play();
-    });
-  }
-
-  // Stop burning CPU when the tab is hidden or the hero is scrolled away.
-  document.addEventListener("visibilitychange", () => {
-    if (!api) return;
-    if (document.hidden) api.pause();
-    else if (!userPaused && onScreen) api.play();
-  });
-  new IntersectionObserver(([entry]) => {
-    onScreen = entry.isIntersecting;
-    if (!api) return;
-    if (onScreen && !userPaused) api.play();
-    else api.pause();
-  }, { threshold: 0.15 }).observe(media);
-})();
-
 /* ---------- Quote buttons: scroll to the hero form and focus it ---------- */
 (() => {
   const form = document.getElementById("quoteForm");
   const hero = document.getElementById("quote");
   const smooth = !matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  function focusForm(service) {
+  // Wildfire offer: only a code the form was built with (data-offer-code)
+  // is accepted. It rides along as the hidden "offer" field.
+  function applyOffer(code) {
+    if (!form || !form.offer) return;
+    const ok = Boolean(code) && form.dataset.offerCode === code;
+    form.offer.value = ok ? code : "";
+    const line = document.getElementById("offerApplied");
+    if (line) line.hidden = !ok;
+    if (ok) track("quote_offer_applied", { offer: code });
+  }
+  // Switching away from the wildfire service drops the offer.
+  document.getElementById("f-svc")?.addEventListener("change", (e) => {
+    if (form.offer?.value && !/wildfire/i.test(e.target.value)) applyOffer(null);
+  });
+
+  function focusForm(service, offer) {
     if (!form || !hero) return false;
     if (service) {
       const select = document.getElementById("f-svc");
       const option = [...select.options].find((o) => o.text === service);
       if (option) select.value = option.value;
     }
+    applyOffer(offer);
     hero.scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "start" });
     // Focus after the scroll settles, without yanking the page back.
     setTimeout(() => document.getElementById("f-name")?.focus({ preventScroll: true }), smooth ? 500 : 0);
-    track("quote_focus", { service: service || "none" });
+    track("quote_focus", { service: service || "none", offer: offer || "" });
     return true;
   }
 
@@ -462,12 +372,20 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
     const link = e.target.closest('a.js-quote, a[href="#quote"], a[href="/#quote"]');
     if (!link || !form) return;
     e.preventDefault();
-    focusForm(link.dataset.service);
+    // Keep ?service and ?offer in the address bar, as on a direct visit.
+    if (link.dataset.offer) history.replaceState(null, "", link.getAttribute("href"));
+    focusForm(link.dataset.service, link.dataset.offer);
   });
 
+  // Runs after load, once the browser has restored any form values from a
+  // reload, so a restored selection cannot undo the link's preselect.
   const params = new URLSearchParams(location.search);
-  if (params.get("service") === "wildfire") setTimeout(() => focusForm("Wildfire Ash & Soot Cleanup"), 250);
-  else if (location.hash === "#quote") setTimeout(() => focusForm(), 250);
+  const arrive = () => {
+    if (params.get("service") === "wildfire") setTimeout(() => focusForm("Wildfire Ash & Soot Cleanup", params.get("offer")), 50);
+    else if (location.hash === "#quote") setTimeout(() => focusForm(), 50);
+  };
+  if (document.readyState === "complete") arrive();
+  else addEventListener("load", arrive, { once: true });
 })();
 
 /* ---------- Reviews carousel ---------- */
@@ -499,4 +417,238 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
     ["mouseleave", "focusout"].forEach(e => car.addEventListener(e, () => paused = false));
     setInterval(() => { if (!paused && !document.hidden) go(page() + 1); }, 6000);
   }
+})();
+
+/* ---------- Driveway Makeover Contest form ----------
+   Posts to Netlify Forms ("driveway-contest"), photos included. Netlify caps a
+   submission at 8 MB in total and one file per field, so photos are scaled
+   down in the browser and sent as photo1 to photo4. */
+(() => {
+  const form = document.getElementById("contestForm");
+  const page = document.querySelector(".contest-page");
+  if (!page) return;
+  track("contest_view", { contest_active: Boolean(form) });
+
+  // Official Rules links open the accordion as well as jumping to it.
+  const rules = document.getElementById("rules");
+  const openRules = () => { if (rules) rules.open = true; };
+  document.querySelectorAll('a[href="#rules"]').forEach((a) => a.addEventListener("click", openRules));
+  if (location.hash === "#rules") openRules();
+
+  if (!form) return;
+  const loadedAt = Date.now();
+  const MAX_PHOTOS = 4;
+  const MAX_BYTES = 10 * 1024 * 1024;
+  const SEND_BUDGET = 7.5 * 1024 * 1024; // under Netlify's 8 MB request cap
+  const msg = document.getElementById("contestMsg");
+  const success = document.getElementById("contestSuccess");
+  const submitBtn = form.querySelector('button[type="submit"]');
+  const zips = (form.dataset.zips || "").split(/\s+/).filter(Boolean);
+  const pref = contactPref(form);
+
+  /* ---- Tracking fields ---- */
+  const params = new URLSearchParams(location.search);
+  const utm = (k) => (params.get(k) || "").trim().slice(0, 100);
+  form.utm_source.value = utm("utm_source") || "direct";
+  form.utm_medium.value = utm("utm_medium");
+  form.utm_campaign.value = utm("utm_campaign");
+  form.lead_source.value = utm("utm_source") || form.dataset.leadSource;
+  form.page_url.value = location.href;
+
+  let started = false;
+  form.addEventListener("focusin", () => {
+    if (started) return;
+    started = true;
+    track("contest_form_start");
+  });
+
+  // Hero button: scroll to the form and put the cursor in the first field.
+  document.querySelectorAll("a.js-enter").forEach((a) =>
+    a.addEventListener("click", (e) => {
+      e.preventDefault();
+      const smooth = !matchMedia("(prefers-reduced-motion: reduce)").matches;
+      document.getElementById("enter").scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "start" });
+      setTimeout(() => document.getElementById("c-name").focus({ preventScroll: true }), smooth ? 500 : 0);
+    })
+  );
+
+  /* ---- Photos: one picker, thumbnails, remove buttons ---- */
+  const picker = form.querySelector(".photo-picker");
+  const pick = document.getElementById("c-photo-pick");
+  const thumbs = form.querySelector(".photo-thumbs");
+  const addText = form.querySelector(".photo-add-text");
+  const fallback = form.querySelector(".photo-fallback");
+  const photosErr = document.getElementById("photos-err");
+  const photos = []; // { file, url, ready: Promise<File> }
+
+  picker.hidden = false;
+  fallback.hidden = true;
+  fallback.querySelectorAll("input").forEach((i) => { i.required = false; i.disabled = true; });
+
+  async function shrink(file, maxEdge, quality) {
+    try {
+      const bmp = await createImageBitmap(file);
+      const scale = Math.min(1, maxEdge / Math.max(bmp.width, bmp.height));
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.round(bmp.width * scale);
+      canvas.height = Math.round(bmp.height * scale);
+      canvas.getContext("2d").drawImage(bmp, 0, 0, canvas.width, canvas.height);
+      bmp.close?.();
+      const blob = await new Promise((res) => canvas.toBlob(res, "image/jpeg", quality));
+      if (!blob || blob.size >= file.size) return file;
+      return new File([blob], file.name.replace(/\.[^.]+$/, "") + ".jpg", { type: "image/jpeg" });
+    } catch {
+      return file; // a format this browser cannot draw: send it as is
+    }
+  }
+
+  function renderPhotos() {
+    thumbs.innerHTML = "";
+    photos.forEach((p, i) => {
+      const li = document.createElement("li");
+      li.innerHTML = `<img src="${p.url}" alt="Driveway photo ${i + 1}"><button type="button" class="photo-remove" aria-label="Remove photo ${i + 1}"><span aria-hidden="true">&times;</span></button>`;
+      li.querySelector("button").addEventListener("click", () => {
+        URL.revokeObjectURL(p.url);
+        photos.splice(i, 1);
+        renderPhotos();
+        pick.focus();
+      });
+      thumbs.appendChild(li);
+    });
+    picker.classList.toggle("is-full", photos.length >= MAX_PHOTOS);
+    addText.textContent = photos.length ? `Add another photo (${photos.length} of ${MAX_PHOTOS})` : "Add photos";
+  }
+
+  pick.addEventListener("change", () => {
+    const notes = [];
+    for (const file of pick.files) {
+      if (photos.length >= MAX_PHOTOS) { notes.push(`You can add up to ${MAX_PHOTOS} photos.`); break; }
+      if (!file.type.startsWith("image/")) { notes.push(`${file.name} is not a photo.`); continue; }
+      if (file.size > MAX_BYTES) { notes.push(`${file.name} is over 10 MB. Try a smaller photo.`); continue; }
+      photos.push({ file, url: URL.createObjectURL(file), ready: shrink(file, 2000, 0.82) });
+      track("contest_photo_added", { photo_count: photos.length });
+    }
+    pick.value = "";
+    renderPhotos();
+    setError(pick, photosErr, notes.join(" "));
+  });
+
+  /* ---- Validation ---- */
+  function setError(input, errEl, text) {
+    errEl.innerHTML = text || "";
+    errEl.hidden = !text;
+    if (input === pick) form.querySelector(".photo-add").classList.toggle("is-invalid", Boolean(text));
+    else input.setAttribute("aria-invalid", text ? "true" : "false");
+  }
+  const errFor = (input) => document.getElementById(input.id + "-err");
+  const digits = (v) => v.replace(/\D/g, "").replace(/^1(?=\d{10}$)/, "");
+
+  function checkField(input) {
+    const v = input.type === "checkbox" ? input.checked : input.value.trim();
+    let text = "";
+    if (!v) {
+      text = {
+        "c-name": "Please enter your full name.",
+        "c-email": "Please enter your email address.",
+        "c-phone": "Please enter your mobile number.",
+        "c-street": "Please enter the street address.",
+        "c-city": "Please enter the city.",
+        "c-zip": "Please enter the ZIP code.",
+        "c-owner": "The contest is open to homeowners only. Please confirm you own this home.",
+      }[input.id];
+    } else if (input.id === "c-email" && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) {
+      text = "Please check the email address. It should look like name@example.com.";
+    } else if (input.id === "c-phone" && digits(v).length !== 10) {
+      text = "Please enter a 10 digit phone number, area code first.";
+    } else if (input.id === "c-zip") {
+      const zip = v.slice(0, 5);
+      if (!/^\d{5}(-\d{4})?$/.test(v)) text = "Please enter a 5 digit ZIP code.";
+      else if (zips.length && !zips.includes(zip))
+        text = `That ZIP is outside our service area right now. Call us and we'll see what we can do: <a href="tel:{{PHONE_HREF}}">{{PHONE}}</a>`;
+    }
+    setError(input, errFor(input), text);
+    return !text;
+  }
+
+  const fields = ["c-name", "c-email", "c-phone", "c-street", "c-city", "c-zip", "c-owner"].map((id) => document.getElementById(id));
+  fields.forEach((input) => {
+    input.addEventListener(input.type === "checkbox" ? "change" : "blur", () => {
+      if (input.type === "checkbox" || input.value.trim() || input.getAttribute("aria-invalid") === "true") checkField(input);
+    });
+  });
+
+  function checkPhotos() {
+    const ok = photos.length > 0;
+    setError(pick, photosErr, ok ? "" : "Please add at least 1 photo of your driveway.");
+    return ok;
+  }
+
+  /* ---- Submit ---- */
+  const showSuccess = () => {
+    form.hidden = true;
+    success.hidden = false;
+    success.focus();
+    success.scrollIntoView({ block: "center" });
+  };
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    msg.style.display = "none";
+    const results = fields.map(checkField);
+    const photosOk = checkPhotos();
+    const contactOk = pref.validate();
+    if (results.includes(false) || !photosOk || !contactOk) {
+      const first = fields.find((f, i) => !results[i]);
+      if (first) first.focus();
+      else if (!photosOk) pick.focus();
+      else pref.focus();
+      return;
+    }
+
+    // Bots: a filled honeypot or a form completed in under 3 seconds gets the
+    // success screen but nothing is sent.
+    if (form["bot-field"].value || Date.now() - loadedAt < 3000) {
+      showSuccess();
+      return;
+    }
+
+    track("contest_submit", { photo_count: photos.length, lead_source: form.lead_source.value, preferred_contact: pref.value() });
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Sending your entry…";
+
+    try {
+      let files = await Promise.all(photos.map((p) => p.ready));
+      if (files.reduce((n, f) => n + f.size, 0) > SEND_BUDGET) {
+        files = await Promise.all(photos.map((p) => shrink(p.file, 1400, 0.72)));
+      }
+      if (files.reduce((n, f) => n + f.size, 0) > SEND_BUDGET) {
+        throw new Error("too-large");
+      }
+
+      form.submitted_at.value = new Date().toISOString();
+      const fields = new FormData(form);
+      for (let n = 1; n <= MAX_PHOTOS; n++) fields.delete("photo" + n);
+      // preferred_contact goes first, right after form-name, so it leads the
+      // entry and the notification email.
+      const data = new FormData();
+      data.append("form-name", fields.get("form-name"));
+      data.append("preferred_contact", pref.value());
+      for (const [k, v] of fields.entries()) if (k !== "form-name" && k !== "preferred_contact") data.append(k, v);
+      files.forEach((f, i) => data.append("photo" + (i + 1), f, f.name));
+
+      const res = await fetch("/", { method: "POST", body: data });
+      if (!res.ok) throw new Error("http " + res.status);
+      track("contest_success", { photo_count: files.length, lead_source: form.lead_source.value });
+      photos.forEach((p) => URL.revokeObjectURL(p.url));
+      showSuccess();
+    } catch (err) {
+      msg.innerHTML =
+        err.message === "too-large"
+          ? "Those photos are too large to send together. Please remove one and try again."
+          : 'Something went wrong sending your entry. Please try again, or call us at <a href="tel:{{PHONE_HREF}}">{{PHONE}}</a>.';
+      msg.style.display = "block";
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Enter the Makeover Contest";
+    }
+  });
 })();

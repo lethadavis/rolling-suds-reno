@@ -15,7 +15,7 @@ export function resolveShot(group, name) {
   return null;
 }
 
-export function shot({ group, name, alt, width = 1200, height = 800, lazy = true, caption }) {
+export function shot({ group, name, alt, width = 1200, height = 800, lazy = true, caption, className = "" }) {
   if (!alt) throw new Error(`Image slot ${group}/${name} is missing alt text`);
   const src = resolveShot(group, name);
   const figcaption = caption ? `<figcaption>${esc(caption)}</figcaption>` : "";
@@ -23,12 +23,12 @@ export function shot({ group, name, alt, width = 1200, height = 800, lazy = true
   if (!src) {
     // No photo yet. Decorative placeholder, so no alt text claims a photo that
     // does not exist. The wanted shot is listed in IMAGES_NEEDED.md.
-    return `<figure class="shot shot-empty" style="aspect-ratio:${width}/${height}" data-slot="${esc(group)}/${esc(name)}">
+    return `<figure class="shot shot-empty${className ? " " + className : ""}" style="aspect-ratio:${width}/${height}" data-slot="${esc(group)}/${esc(name)}">
         <span class="shot-empty-label">Photo coming soon</span>
       </figure>`;
   }
 
-  return `<figure class="shot">
+  return `<figure class="shot${className ? " " + className : ""}">
         <img src="${src}" alt="${esc(alt)}" width="${width}" height="${height}" loading="${lazy ? "lazy" : "eager"}" decoding="async">
         ${figcaption}
       </figure>`;

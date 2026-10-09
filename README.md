@@ -40,33 +40,34 @@ No action is needed at launch beyond pointing the domain at the site: once
 rollingsudsreno.com is the site's primary URL, production builds become
 indexable on their own.
 
-## Hero video
+## Hero image
 
-`HERO_VIDEO` in `site.config.js` picks the mode automatically:
+The homepage hero is a static, decorative photo of the Reno skyline under a
+pale veil. `HERO_IMAGE` in `site.config.js` lists the sizes: 640, 1024, 1600
+and 2000 wide, plus a 4:5 phone crop at 640 and 960, each as AVIF, WebP and
+JPG in `images/hero/`. Tablets and desktops preload it at high priority. Phones
+do not: there the headline is the largest paint, and an early image fetch
+slowed it down.
 
-1. **Self hosted** when both `video/hero.mp4` and `video/hero.webm` exist.
-2. **YouTube** when `youtubeId` is set (currently the corporate clip, approved
-   for use here, looping 229s to 265s inside a muted, unclickable player).
-3. **Poster only** when neither is available.
+## Driveway Makeover Contest (/driveway)
 
-The poster always paints first and the video fades in over it once playing.
-Reduced motion, Save-Data and slow connections stay on the poster.
+Postcard landing page, built from `src/content/contest.mjs`. It is noindex,
+left out of the sitemap and the nav, and reached through the QR code, the
+printed URL and the `/driveway-makeover`, `/spa` and `/makeover` redirects.
 
-To switch to self hosted, trim and compress the clip, then drop both files in
-`video/`:
-
-```bash
-# MP4 (H.264), 1080p max, no audio, fast start
-ffmpeg -ss 229 -to 265 -i source.mp4 -an -vf "scale=-2:1080" \
-  -c:v libx264 -crf 26 -preset slow -movflags +faststart video/hero.mp4
-
-# WebM (VP9), same trim, no audio
-ffmpeg -ss 229 -to 265 -i source.mp4 -an -vf "scale=-2:1080" \
-  -c:v libvpx-vp9 -crf 36 -b:v 0 -row-mt 1 video/hero.webm
-```
-
-Aim for 6 to 15 seconds and 2 to 4 MB. Check the result with
-`ls -lh video/` before committing.
+- Entries go to **Netlify Forms** under the form name `driveway-contest`
+  (Netlify > Forms). Form detection must be switched on for the site, and the
+  notification email for the inbox is set there too.
+- Each entry carries `lead_source` ("Direct Mail: Driveway Postcard", or the
+  utm_source when the link has one), the three UTM fields, the page URL and a
+  timestamp.
+- Photos arrive as `photo1` to `photo4`, already scaled down in the browser so
+  the whole entry stays under Netlify's 8 MB limit. Open a submission in the
+  Netlify app to view or download them; the links also appear in notification
+  emails and CSV exports.
+- `FLAGS.CONTEST_ACTIVE` false swaps the form for a "contest has ended" note.
+  `FLAGS.CONTEST_PROMO_LINK` adds a footer link. `SERVICE_ZIPS` turns on the
+  ZIP check once it has entries.
 
 ## Domain redirect plan
 
