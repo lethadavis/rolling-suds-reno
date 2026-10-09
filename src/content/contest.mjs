@@ -95,6 +95,11 @@ const RIDGES = `<svg class="contest-ridges" viewBox="0 0 1440 360" preserveAspec
 // in images/gallery/compare, replaces the two empty slots with the
 // BeforeAfter card. Missing photos show a placeholder on staging only, and the
 // row disappears when fewer than 2 real photos exist.
+// The driveway Short from the homepage gallery leads the row. It plays in a
+// dialog on this page (contest-video in site.js) rather than sending visitors
+// off to YouTube.
+const DRIVEWAY_VIDEO = { youtubeId: "ooFJGDmO_xA", title: "You Forgot What Color Your Driveway Actually Is" };
+
 const DRIVEWAY_TILES = [
   { src: "images/gallery/crew-driveway-cleaning.webp", label: "On the job", alt: "Technician surface cleaning a driveway beside the Rolling Suds truck" },
   { src: "images/gallery/truck-driveway-cleaning.webp", label: "On the job", alt: "Rolling Suds truck parked at a home while a technician cleans the driveway" },
@@ -122,12 +127,24 @@ function drivewayRow() {
         <span class="compare-label">${label}</span>
       </figure>`;
 
+  const v = DRIVEWAY_VIDEO;
+  const video = `<button type="button" class="drive-tile drive-video" data-yt="${v.youtubeId}" aria-label="Play video: ${v.title}">
+        <img src="https://i.ytimg.com/vi/${v.youtubeId}/oar2.jpg" alt="" width="1080" height="1920" loading="lazy" decoding="async">
+        <span class="compare-label">Video</span>
+        <span class="g-play" aria-hidden="true"></span>
+      </button>`;
+  const videoDialog = `<dialog class="drive-dialog" id="driveVideo" aria-label="${v.title}">
+    <button type="button" class="drive-dialog-close" aria-label="Close video">&times;</button>
+    <div class="drive-dialog-frame"></div>
+    <a class="drive-dialog-yt" href="https://www.youtube.com/shorts/${v.youtubeId}" target="_blank" rel="noopener">Watch on YouTube</a>
+  </dialog>`;
+
   const real = DRIVEWAY_TILES.filter((t) => existsSync(t.src));
   const pair = pairIsComplete(DRIVEWAY_PAIR);
-  const count = real.length + (pair ? 2 : 0);
+  const count = 1 + real.length + (pair ? 2 : 0);
   if (count < 2) return "";
 
-  const items = real.map(tile);
+  const items = [video, ...real.map(tile)];
   if (pair) items.push(`<div class="drive-pair">${beforeAfter(DRIVEWAY_PAIR)}</div>`);
   else if (!isProduction) items.push(empty("driveway-before", "Before"), empty("driveway-after", "After"));
 
@@ -138,6 +155,7 @@ function drivewayRow() {
       ${items.join("\n      ")}
     </div>
   </div>
+  ${videoDialog}
 </section>`;
 }
 

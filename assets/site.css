@@ -607,16 +607,30 @@ footer a:hover{color:#fff}
 
 /* Driveway glow-ups row (contest page) */
 .contest-drives{padding-top:56px}
-.drive-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+/* Tiles keep their four-across size and centre on the row, so three tiles
+   sit in the middle until the before and after pair arrives. */
+.drive-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:18px;--tile:calc((100% - 54px) / 4)}
+.drive-grid > *{flex:0 0 var(--tile)}
 .drive-tile{position:relative;margin:0;aspect-ratio:4/3;border-radius:14px;overflow:hidden;box-shadow:0 10px 26px rgba(15,42,68,.12);background:var(--off)}
 .drive-tile img{width:100%;height:100%;object-fit:cover;display:block}
 .drive-tile .compare-label{left:10px;top:10px}
 .drive-tile-empty{display:grid;place-items:center;border:1px dashed var(--border)}
 .drive-tile-empty .shot-empty-label{color:var(--blue);font-size:12px}
-.drive-pair{grid-column:span 2}
+.drive-grid > .drive-pair{flex-basis:calc(var(--tile) * 2 + 18px)}
+button.drive-tile{display:block;border:0;padding:0;cursor:pointer;font:inherit}
+.drive-video:focus-visible{outline:3px solid var(--navy);outline-offset:3px}
+.drive-video:hover .g-play{transform:scale(1.06)}
+/* margin:auto puts back the centring the global reset removes. */
+.drive-dialog{margin:auto;border:0;padding:56px 0 0;background:transparent;max-width:none;max-height:none;overflow:visible}
+.drive-dialog::backdrop{background:rgba(10,30,51,.82)}
+.drive-dialog-frame{width:min(calc((100vh - 140px) * 9 / 16),calc(100vw - 32px),420px);aspect-ratio:9/16;border-radius:14px;overflow:hidden;background:#000}
+.drive-dialog-frame iframe{width:100%;height:100%;border:0;display:block}
+.drive-dialog-close{position:absolute;top:0;right:0;width:44px;height:44px;border-radius:50%;border:0;background:#fff;color:var(--navy);font-size:26px;line-height:1;cursor:pointer}
+.drive-dialog-close:focus-visible{outline:3px solid var(--sky);outline-offset:2px}
+.drive-dialog-yt{display:block;margin-top:10px;text-align:center;color:#fff;font-size:14px;font-weight:600}
 .drive-pair .g-compare{height:100%}
-@media (max-width:1100px){.drive-grid{grid-template-columns:1fr 1fr}}
-@media (max-width:640px){.drive-grid{gap:10px}.drive-tile .compare-label{font-size:10px;padding:4px 9px;left:8px;top:8px}}
+@media (max-width:1100px){.drive-grid{--tile:calc((100% - 18px) / 2)}.drive-grid > .drive-pair{flex-basis:100%}}
+@media (max-width:640px){.drive-grid{gap:10px;--tile:calc((100% - 10px) / 2)}.drive-tile .compare-label{font-size:10px;padding:4px 9px;left:8px;top:8px}}
 
 /* Preferred method of contact (all lead forms) */
 .contact-pref{border:0;padding:0;margin:18px 0 0;min-width:0}
