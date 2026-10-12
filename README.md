@@ -61,10 +61,6 @@ printed URL and the `/driveway-makeover`, `/spa` and `/makeover` redirects.
 - Each entry carries `lead_source` ("Direct Mail: Driveway Postcard", or the
   utm_source when the link has one), the three UTM fields, the page URL and a
   timestamp.
-- Photos arrive as `photo1` to `photo4`, already scaled down in the browser so
-  the whole entry stays under Netlify's 8 MB limit. Open a submission in the
-  Netlify app to view or download them; the links also appear in notification
-  emails and CSV exports.
 - `FLAGS.CONTEST_ACTIVE` false swaps the form for a "contest has ended" note.
   `FLAGS.CONTEST_PROMO_LINK` adds a footer link. `SERVICE_ZIPS` turns on the
   ZIP check once it has entries.

@@ -435,9 +435,7 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
 })();
 
 /* ---------- Driveway Makeover Contest form ----------
-   Posts to Netlify Forms ("driveway-contest"), photos included. Netlify caps a
-   submission at 8 MB in total and one file per field, so photos are scaled
-   down in the browser and sent as photo1 to photo4. */
+   Posts to Netlify Forms ("driveway-contest"). */
 (() => {
   const form = document.getElementById("contestForm");
   const page = document.querySelector(".contest-page");
@@ -452,9 +450,6 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
 
   if (!form) return;
   const loadedAt = Date.now();
-  const MAX_PHOTOS = 4;
-  const MAX_BYTES = 10 * 1024 * 1024;
-  const SEND_BUDGET = 7.5 * 1024 * 1024; // under Netlify's 8 MB request cap
   const msg = document.getElementById("contestMsg");
   const success = document.getElementById("contestSuccess");
   const submitBtn = form.querySelector('button[type="submit"]');
@@ -487,73 +482,11 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
     })
   );
 
-  /* ---- Photos: one picker, thumbnails, remove buttons ---- */
-  const picker = form.querySelector(".photo-picker");
-  const pick = document.getElementById("c-photo-pick");
-  const thumbs = form.querySelector(".photo-thumbs");
-  const addText = form.querySelector(".photo-add-text");
-  const fallback = form.querySelector(".photo-fallback");
-  const photosErr = document.getElementById("photos-err");
-  const photos = []; // { file, url, ready: Promise<File> }
-
-  picker.hidden = false;
-  fallback.hidden = true;
-  fallback.querySelectorAll("input").forEach((i) => { i.required = false; i.disabled = true; });
-
-  async function shrink(file, maxEdge, quality) {
-    try {
-      const bmp = await createImageBitmap(file);
-      const scale = Math.min(1, maxEdge / Math.max(bmp.width, bmp.height));
-      const canvas = document.createElement("canvas");
-      canvas.width = Math.round(bmp.width * scale);
-      canvas.height = Math.round(bmp.height * scale);
-      canvas.getContext("2d").drawImage(bmp, 0, 0, canvas.width, canvas.height);
-      bmp.close?.();
-      const blob = await new Promise((res) => canvas.toBlob(res, "image/jpeg", quality));
-      if (!blob || blob.size >= file.size) return file;
-      return new File([blob], file.name.replace(/\.[^.]+$/, "") + ".jpg", { type: "image/jpeg" });
-    } catch {
-      return file; // a format this browser cannot draw: send it as is
-    }
-  }
-
-  function renderPhotos() {
-    thumbs.innerHTML = "";
-    photos.forEach((p, i) => {
-      const li = document.createElement("li");
-      li.innerHTML = `<img src="${p.url}" alt="Driveway photo ${i + 1}"><button type="button" class="photo-remove" aria-label="Remove photo ${i + 1}"><span aria-hidden="true">&times;</span></button>`;
-      li.querySelector("button").addEventListener("click", () => {
-        URL.revokeObjectURL(p.url);
-        photos.splice(i, 1);
-        renderPhotos();
-        pick.focus();
-      });
-      thumbs.appendChild(li);
-    });
-    picker.classList.toggle("is-full", photos.length >= MAX_PHOTOS);
-    addText.textContent = photos.length ? `Add another photo (${photos.length} of ${MAX_PHOTOS})` : "Add photos";
-  }
-
-  pick.addEventListener("change", () => {
-    const notes = [];
-    for (const file of pick.files) {
-      if (photos.length >= MAX_PHOTOS) { notes.push(`You can add up to ${MAX_PHOTOS} photos.`); break; }
-      if (!file.type.startsWith("image/")) { notes.push(`${file.name} is not a photo.`); continue; }
-      if (file.size > MAX_BYTES) { notes.push(`${file.name} is over 10 MB. Try a smaller photo.`); continue; }
-      photos.push({ file, url: URL.createObjectURL(file), ready: shrink(file, 2000, 0.82) });
-      track("contest_photo_added", { photo_count: photos.length });
-    }
-    pick.value = "";
-    renderPhotos();
-    setError(pick, photosErr, notes.join(" "));
-  });
-
   /* ---- Validation ---- */
   function setError(input, errEl, text) {
     errEl.innerHTML = text || "";
     errEl.hidden = !text;
-    if (input === pick) form.querySelector(".photo-add").classList.toggle("is-invalid", Boolean(text));
-    else input.setAttribute("aria-invalid", text ? "true" : "false");
+    input.setAttribute("aria-invalid", text ? "true" : "false");
   }
   const errFor = (input) => document.getElementById(input.id + "-err");
   const digits = (v) => v.replace(/\D/g, "").replace(/^1(?=\d{10}$)/, "");
@@ -592,12 +525,6 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
     });
   });
 
-  function checkPhotos() {
-    const ok = photos.length > 0;
-    setError(pick, photosErr, ok ? "" : "Please add at least 1 photo of your driveway.");
-    return ok;
-  }
-
   /* ---- Submit ---- */
   const showSuccess = () => {
     form.hidden = true;
@@ -610,12 +537,10 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
     e.preventDefault();
     msg.style.display = "none";
     const results = fields.map(checkField);
-    const photosOk = checkPhotos();
     const contactOk = pref.validate();
-    if (results.includes(false) || !photosOk || !contactOk) {
+    if (results.includes(false) || !contactOk) {
       const first = fields.find((f, i) => !results[i]);
       if (first) first.focus();
-      else if (!photosOk) pick.focus();
       else pref.focus();
       return;
     }
@@ -627,43 +552,29 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
       return;
     }
 
-    track("contest_submit", { photo_count: photos.length, lead_source: form.lead_source.value, preferred_contact: pref.value() });
+    track("contest_submit", { lead_source: form.lead_source.value, preferred_contact: pref.value() });
     submitBtn.disabled = true;
     submitBtn.textContent = "Sending your entry…";
 
     try {
-      let files = await Promise.all(photos.map((p) => p.ready));
-      if (files.reduce((n, f) => n + f.size, 0) > SEND_BUDGET) {
-        files = await Promise.all(photos.map((p) => shrink(p.file, 1400, 0.72)));
-      }
-      if (files.reduce((n, f) => n + f.size, 0) > SEND_BUDGET) {
-        throw new Error("too-large");
-      }
-
       form.submitted_at.value = new Date().toISOString();
       const fields = new FormData(form);
-      for (let n = 1; n <= MAX_PHOTOS; n++) fields.delete("photo" + n);
       // preferred_contact goes first, right after form-name, so it leads the
       // entry and the notification email.
       const data = new FormData();
       data.append("form-name", fields.get("form-name"));
       data.append("preferred_contact", pref.value());
       for (const [k, v] of fields.entries()) if (k !== "form-name" && k !== "preferred_contact") data.append(k, v);
-      files.forEach((f, i) => data.append("photo" + (i + 1), f, f.name));
 
       const res = await fetch("/", { method: "POST", body: data });
       if (!res.ok) throw new Error("http " + res.status);
-      track("contest_success", { photo_count: files.length, lead_source: form.lead_source.value });
-      photos.forEach((p) => URL.revokeObjectURL(p.url));
+      track("contest_success", { lead_source: form.lead_source.value });
       showSuccess();
     } catch (err) {
-      msg.innerHTML =
-        err.message === "too-large"
-          ? "Those photos are too large to send together. Please remove one and try again."
-          : 'Something went wrong sending your entry. Please try again, or call us at <a href="tel:{{PHONE_HREF}}">{{PHONE}}</a>.';
+      msg.innerHTML = 'Something went wrong sending your entry. Please try again, or call us at <a href="tel:{{PHONE_HREF}}">{{PHONE}}</a>.';
       msg.style.display = "block";
       submitBtn.disabled = false;
-      submitBtn.textContent = "Enter the Makeover Contest";
+      submitBtn.textContent = "Book My Free Cleaning";
     }
   });
 })();

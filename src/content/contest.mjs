@@ -5,7 +5,7 @@
 //
 // Entries go to Netlify Forms as "driveway-contest". Netlify reads the form
 // from this static HTML at deploy time, so every field the script fills in
-// (UTM values, lead source, page URL, timestamp, photo1 to photo4) has to be
+// (UTM values, lead source, page URL, timestamp) has to be
 // present in the markup below.
 //
 // Wording must match the postcard. Rules text is the postcard's own.
@@ -16,8 +16,8 @@ import { contactPref } from "../templates/contact-pref.mjs";
 import { isProduction } from "../env.mjs";
 
 const STEPS = [
-  "Fill out the form below and add photos of your driveway.",
-  "Qualifying homes receive a FREE, no-obligation driveway cleaning.",
+  "Fill out the short form below.",
+  "We schedule your free, no-obligation driveway cleaning.",
   "Every free cleaning is automatically entered in the grand prize drawing.",
   "One winner gets the ultimate home spa treatment, including a free professional house wash.",
 ];
@@ -65,9 +65,8 @@ function deadlineLabel(iso) {
 }
 const DEADLINE = deadlineLabel(CONTEST.deadline);
 
-// Contest badge, drawn in code so the deadline on its top arc always matches
-// the hero line. Colors match the original badge artwork. Decorative: the
-// same words are in the hero copy.
+// Contest badge, drawn in code. Colors match the original badge artwork.
+// Decorative: the same offer is in the hero copy.
 const BADGE = (() => {
   const navy = "#000e32", aqua = "#00b9d1", green = "#75bd43", fold = "#5aa032";
   const arc = (id, r, top) => top
@@ -79,7 +78,7 @@ const BADGE = (() => {
       <circle cx="100" cy="100" r="98" fill="${aqua}"/>
       <circle cx="100" cy="100" r="71" fill="${navy}" stroke="#fff" stroke-width="3"/>
       <circle cx="100" cy="100" r="66" fill="none" stroke="${green}" stroke-width="1.6" stroke-dasharray="1.5 4.5" stroke-linecap="round"/>
-      ${ringText("badgeTop", `BOOK BY ${DEADLINE.toUpperCase()}`)}
+      ${ringText("badgeTop", "ROLLING SUDS")}
       ${ringText("badgeBottom", "RENO-TAHOE")}
       <text class="badge-free" x="100" y="95" text-anchor="middle">FREE</text>
       <text class="badge-sub" x="100" y="115" text-anchor="middle">Driveway Cleaning</text>
@@ -118,11 +117,6 @@ const RIDGES = `<svg class="contest-ridges" viewBox="0 0 1440 360" preserveAspec
       <path fill="#19b5d9" fill-opacity=".22" d="M0 302C140 282 260 294 400 286S660 264 800 282 1080 302 1220 288 1380 278 1440 284V360H0Z"/>
     </svg>`;
 
-// Driveway tiles after How it works. Existing gallery files are referenced in
-// place, never copied. A driveway before and after pair, once both photos are
-// in images/gallery/compare, replaces the two empty slots with the
-// BeforeAfter card. Missing photos show a placeholder on staging only, and the
-// row disappears when fewer than 2 real photos exist.
 // Driveway glow-ups row: six real Rolling Suds before and after jobs first,
 // then the driveway Short from the homepage gallery, then the two on the job
 // shots. Every tile opens in one dialog on this page (see site.js). The
@@ -218,20 +212,6 @@ function entryForm() {
             <p class="field-err" id="c-owner-err" hidden></p>
           </div>
 
-          <fieldset class="field full photo-field" aria-describedby="photos-hint photos-err">
-            <legend>Add 1 to 4 photos of your driveway (the messier the better) <span aria-hidden="true">*</span></legend>
-            <div class="photo-picker" hidden>
-              <input id="c-photo-pick" class="photo-pick sr-only" type="file" accept="image/*" multiple aria-describedby="photos-hint photos-err">
-              <label class="photo-add" for="c-photo-pick"><svg aria-hidden="true"><use href="#i-camera"/></svg><span class="photo-add-text">Add photos</span></label>
-              <ul class="photo-thumbs" aria-label="Photos added"></ul>
-            </div>
-            <div class="photo-fallback">
-              ${[1, 2, 3, 4].map((n) => `<label>Photo ${n}${n === 1 ? " (required)" : ""} <input type="file" name="photo${n}" accept="image/*"${n === 1 ? " required" : ""}></label>`).join("\n              ")}
-            </div>
-            <p class="hint" id="photos-hint">Take them with your phone camera or choose from your photos. Up to 10 MB each.</p>
-            <p class="field-err" id="photos-err" hidden></p>
-          </fieldset>
-
           <div class="field full">
             <label for="c-notes">Anything we should know?</label>
             <textarea id="c-notes" name="notes" rows="3"></textarea>
@@ -240,9 +220,9 @@ function entryForm() {
 
         ${contactPref("c", { single: true })}
 
-        <button class="btn btn-green btn-lg" type="submit">Enter the Makeover Contest</button>
+        <button class="btn btn-green btn-lg" type="submit">Book My Free Cleaning</button>
         <p class="form-msg" id="contestMsg" role="alert"></p>
-        <p class="consent">By submitting, you agree to be contacted by Rolling Suds Reno-Tahoe about this contest by phone, text or email. Message and data rates may apply. Reply STOP to opt out. ${privacyLink} &middot; <a href="#rules" class="js-rules">Official Rules</a></p>
+        <p class="consent">By submitting, you agree to be contacted by Rolling Suds Reno-Tahoe about your free cleaning and the giveaway by phone, text or email. Message and data rates may apply. Reply STOP to opt out. ${privacyLink} &middot; <a href="#rules" class="js-rules">Official Rules</a></p>
       </form>
       <div class="contest-success" id="contestSuccess" tabindex="-1" hidden>
         <span class="success-icon" aria-hidden="true"><svg><use href="#i-check"/></svg></span>
@@ -293,13 +273,7 @@ export function contestBody() {
       ${
         active
           ? `<span class="pill">Free Driveway Cleaning, Reno&#8209;Tahoe</span>
-      <h1>We&rsquo;ll clean your driveway for free. <span>And enter you to win a whole&#8209;house wash.</span></h1>
-      <p class="contest-lede">Give your driveway a spa day on us. Book a free driveway cleaning and you&rsquo;re automatically entered to win a free whole&#8209;house exterior pressure wash.</p>
-      <ol class="hero-steps">
-        <li><span class="hero-step-icon" aria-hidden="true"><svg><use href="#i-calendar"/></svg></span><span><b>1.</b> Book your free cleaning</span></li>
-        <li><span class="hero-step-icon" aria-hidden="true"><svg><use href="#i-spray"/></svg></span><span><b>2.</b> We wash your driveway</span></li>
-        <li><span class="hero-step-icon" aria-hidden="true"><svg><use href="#i-trophy"/></svg></span><span><b>3.</b> You&rsquo;re entered to win a whole&#8209;house wash</span></li>
-      </ol>
+      <h1>Give your driveway a spa day on us. <span class="h1-sub">Book your free cleaning today and you&rsquo;re automatically entered to win a free whole&#8209;house exterior pressure washing.</span></h1>
       <a class="btn btn-green btn-lg js-enter" href="#enter">Book Your Free Cleaning Now</a>
       <p class="hero-deadline">Book your cleaning by ${DEADLINE}</p>
       <p class="hero-fine">No purchase necessary. Reno-Tahoe service area. See <a href="#official-rules" class="js-rules">official rules</a>.</p>`
@@ -336,17 +310,6 @@ ${trustRow}`;
 
   return `${hero}
 
-<section class="contest-steps bg-off" aria-labelledby="how-heading">
-  <div class="wrap">
-    <h2 class="contest-h2" id="how-heading">How it works</h2>
-    <ol class="contest-howto">
-      ${STEPS.map((s, i) => `<li><span class="contest-num" aria-hidden="true">${i + 1}</span><p>${s}</p></li>`).join("\n      ")}
-    </ol>
-  </div>
-</section>
-
-${drivewayRow()}
-
 <section class="contest-perks" aria-labelledby="perks-heading">
   <div class="wrap">
     <h2 class="contest-h2" id="perks-heading">What you get</h2>
@@ -356,10 +319,22 @@ ${drivewayRow()}
   </div>
 </section>
 
+${drivewayRow()}
+
+<section class="contest-steps bg-off" aria-labelledby="how-heading">
+  <div class="wrap">
+    <h2 class="contest-h2" id="how-heading">How it works</h2>
+    <ol class="contest-howto">
+      ${STEPS.map((s, i) => `<li><span class="contest-num" aria-hidden="true">${i + 1}</span><p>${s}</p></li>`).join("\n      ")}
+    </ol>
+  </div>
+</section>
+
 <section class="contest-form-section bg-off" id="enter" aria-labelledby="enter-heading">
   <div class="wrap">
     <div class="quote-card contest-card">
-      <h2 id="enter-heading">See if your home qualifies</h2>
+      <h2 id="enter-heading">Book your free driveway cleaning</h2>
+      <p>Takes a minute. We&rsquo;ll reach out to schedule.</p>
       ${entryForm()}
     </div>
   </div>
