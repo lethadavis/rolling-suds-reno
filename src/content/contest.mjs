@@ -80,8 +80,9 @@ const BADGE = (() => {
       <circle cx="100" cy="100" r="66" fill="none" stroke="${green}" stroke-width="1.6" stroke-dasharray="1.5 4.5" stroke-linecap="round"/>
       ${ringText("badgeTop", "ROLLING SUDS")}
       ${ringText("badgeBottom", "RENO-TAHOE")}
-      <text class="badge-free" x="100" y="95" text-anchor="middle">FREE</text>
-      <text class="badge-sub" x="100" y="115" text-anchor="middle">Driveway Cleaning</text>
+      <text class="badge-free" x="100" y="91.6" text-anchor="middle">FREE</text>
+      <text class="badge-sub" x="100" y="103.6" text-anchor="middle">Driveway</text>
+      <text class="badge-sub" x="100" y="117.9" text-anchor="middle">Cleaning</text>
       <path d="M 8,128 L 24,124 L 24,150 L 8,146 Z M 192,128 L 176,124 L 176,150 L 192,146 Z" fill="${fold}"/>
       <rect x="22" y="124" width="156" height="26" rx="2" fill="${green}"/>
       <text class="badge-ribbon" x="100" y="141.5" text-anchor="middle">+ WIN A HOUSE WASH</text>
@@ -273,9 +274,9 @@ export function contestBody() {
       ${
         active
           ? `<span class="pill">Free Driveway Cleaning, Reno&#8209;Tahoe</span>
-      <h1>Give your driveway a spa day on us. <span class="h1-sub">Book your free cleaning today and you&rsquo;re automatically entered to win a free whole&#8209;house exterior pressure washing.</span></h1>
+      <h1>Give your driveway a spa day on us. <span class="h1-sub">Get a free, no-obligation driveway cleaning and you&rsquo;re automatically entered to win a whole&#8209;house exterior pressure washing.</span></h1>
       <a class="btn btn-green btn-lg js-enter" href="#enter">Book Your Free Cleaning Now</a>
-      <p class="hero-deadline">Book your cleaning by ${DEADLINE}</p>
+      <p class="hero-deadline">Offer ends ${DEADLINE}</p>
       <p class="hero-fine">No purchase necessary. Reno-Tahoe service area. See <a href="#official-rules" class="js-rules">official rules</a>.</p>`
           : `<span class="pill">The Great Driveway Makeover Contest, Reno-Tahoe</span>
       <h1>Your Driveway Called&hellip; <span>and it wants a free spa day!</span></h1>

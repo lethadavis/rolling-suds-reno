@@ -400,6 +400,7 @@ footer a:hover{color:#fff}
 .prose ul{margin:0 0 18px;padding-left:20px;color:#33505b;display:grid;gap:8px}
 .prose a{color:var(--blue);font-weight:600}
 .prose strong{color:var(--text)}
+.prose.privacy{max-width:780px}
 .side-card{background:var(--off);border:1px solid var(--border);border-radius:var(--radius);padding:26px;position:sticky;top:100px}
 .side-card h2{font-family:var(--display);font-size:24px;font-weight:800;text-transform:uppercase;letter-spacing:-.02em;margin-bottom:10px}
 .side-card p{font-size:15px;color:var(--gray);margin-bottom:16px}
@@ -483,8 +484,8 @@ footer a:hover{color:#fff}
 .hero-fine a{color:var(--blue);font-weight:600;text-decoration:underline}
 /* Inline SVG badge text, in badge units (viewBox 200). */
 .badge-arc{font:800 12.5px var(--display);letter-spacing:1.6px;fill:#fff;stroke:#000e32;stroke-width:.9px;stroke-linejoin:round;paint-order:stroke}
-.badge-free{font:900 36px var(--display);letter-spacing:1px;fill:#fff}
-.badge-sub{font:italic 800 12.5px var(--display);fill:#00b9d1}
+.badge-free{font:900 40px var(--display);letter-spacing:1px;fill:#fff}
+.badge-sub{font:italic 800 14px var(--display);fill:#00b9d1}
 .badge-ribbon{font:800 10.5px var(--display);letter-spacing:.6px;fill:#fff}
 /* Photo: right half, full hero height, left edge melted into the page. */
 /* Wide scene behind the whole hero: the mascot sits about two thirds across,

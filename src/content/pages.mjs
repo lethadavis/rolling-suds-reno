@@ -9,6 +9,7 @@ import { contentPage, pageHero, sections, faqBlock, linkCloud, ctaBand, sideCard
 import { shot, resolveShot } from "../templates/image.mjs";
 import { contestBody, HERO_PHOTO } from "./contest.mjs";
 import { offerDeal } from "../templates/offer.mjs";
+import { privacyBody } from "./privacy.mjs";
 
 const read = (p) => readFileSync(p, "utf8").trimEnd();
 const HOME_CRUMB = { name: "Home", route: "/" };
@@ -291,6 +292,19 @@ ${ctaBand({ heading: "Questions about your property?", text: "Send us the detail
     ogImage: resolveShot("contest", "og-contest") || undefined,
     body: contestBody(),
     schema: [],
+  });
+
+  /* ---------- Privacy Policy ---------- */
+  const privacyCrumbs = [HOME_CRUMB, { name: "Privacy Policy", route: "/privacy-policy" }];
+  pages.push({
+    route: "/privacy-policy",
+    sourceFile: "src/content/privacy.mjs",
+    title: "Privacy Policy | Rolling Suds of Reno-Tahoe",
+    description:
+      "How Rolling Suds of Reno-Tahoe collects and uses information from quote requests, free driveway cleaning bookings, text messages and site analytics.",
+    breadcrumbs: privacyCrumbs,
+    body: privacyBody(),
+    schema: [breadcrumbSchema(privacyCrumbs)],
   });
 
   /* ---------- 404 ---------- */
