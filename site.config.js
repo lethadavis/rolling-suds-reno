@@ -74,6 +74,9 @@ export const SERVICE_ZIPS = [];
 
 // Driveway Makeover Contest form settings.
 export const CONTEST = {
+  // Booking deadline, the one place it lives. The hero line under the button
+  // ("Book your cleaning by Nov 30th") and the badge's top arc both read it.
+  deadline: "2026-11-30",
   // Stored with every entry unless the visit carries a utm_source.
   leadSource: "Direct Mail: Driveway Postcard",
   // TODO: there is no privacy policy page yet. Add its path here (for example

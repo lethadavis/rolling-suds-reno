@@ -473,7 +473,21 @@ footer a:hover{color:#fff}
 .contest-copy h1{font-family:var(--display);font-weight:800;font-size:clamp(32px,4vw,50px);line-height:1.05;letter-spacing:-.03em;text-transform:uppercase;margin:18px 0 16px;text-wrap:balance}
 .contest-copy h1 span{text-wrap:balance}
 .contest-copy h1 span{display:block;color:var(--blue)}
-.contest-lede{font-size:18px;color:#33505b;max-width:560px;margin-bottom:26px}
+.contest-lede{font-size:18px;color:#33505b;max-width:560px;margin-bottom:20px}
+/* Three steps between the lede and the button. */
+.hero-steps{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:560px;margin:0 0 24px}
+.hero-steps li{display:flex;align-items:flex-start;gap:10px;font-size:14px;font-weight:600;line-height:1.35;color:var(--navy)}
+.hero-steps b{color:var(--blue)}
+.hero-step-icon{flex:none;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--foam);color:var(--blue)}
+.hero-step-icon svg{width:18px;height:18px}
+.hero-deadline{margin:14px 0 4px;font-size:16px;font-weight:800;color:var(--navy)}
+.hero-fine{font-size:13px;color:var(--gray)}
+.hero-fine a{color:var(--blue);font-weight:600;text-decoration:underline}
+/* Inline SVG badge text, in badge units (viewBox 200). */
+.badge-arc{font:800 12.5px var(--display);letter-spacing:1.6px;fill:#fff;stroke:#000e32;stroke-width:.9px;stroke-linejoin:round;paint-order:stroke}
+.badge-free{font:900 36px var(--display);letter-spacing:1px;fill:#fff}
+.badge-sub{font:italic 800 12.5px var(--display);fill:#00b9d1}
+.badge-ribbon{font:800 10.5px var(--display);letter-spacing:.6px;fill:#fff}
 /* Photo: right half, full hero height, left edge melted into the page. */
 /* Wide scene behind the whole hero: the mascot sits about two thirds across,
    and the left of the photo fades out so the headline sits on the page. */
@@ -576,7 +590,7 @@ footer a:hover{color:#fff}
   .contest-art{position:relative;width:auto;height:240px;margin-top:20px}
   .contest-photo{-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 22%,#000 78%,transparent 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 22%,#000 78%,transparent 100%);-webkit-mask-composite:add;mask-composite:add}
   .contest-photo img{object-position:68% 62%;transform:scale(1.75);transform-origin:68% 62%}
-  .contest-badge{width:92px;height:92px;top:14px;left:16px}
+  .contest-badge{width:120px;height:120px;top:10px;left:12px}
   .contest-ridges{height:46%}
 }
 @media (max-width:640px){
@@ -585,9 +599,11 @@ footer a:hover{color:#fff}
   .contest-page main > .contest-form-section + .contest-rules{padding-top:32px}
   .contest-page main > .contest-rules{padding-bottom:32px}
   .contest-art{height:230px;margin-top:12px}
-  .contest-badge{width:76px;height:76px;top:10px;left:12px}
+  .contest-badge{width:112px;height:112px;top:8px;left:10px}
   .contest-copy h1{font-size:30px;margin:14px 0 12px}
-  .contest-lede{font-size:16px;margin-bottom:20px}
+  .contest-lede{font-size:16px;margin-bottom:16px}
+  .hero-steps{grid-template-columns:1fr;gap:8px;margin-bottom:20px}
+  .hero-steps li{align-items:center}
   .contest-copy .btn{width:100%}
   .contest-h2{font-size:24px;margin-bottom:16px}
   .contest-howto{grid-template-columns:1fr;gap:14px}
@@ -608,16 +624,13 @@ footer a:hover{color:#fff}
 
 /* Driveway glow-ups row (contest page) */
 .contest-drives{padding-top:56px}
-/* Tiles keep their four-across size and centre on the row, so three tiles
-   sit in the middle until the before and after pair arrives. */
-.drive-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:18px;--tile:calc((100% - 54px) / 4)}
+/* Square tiles, three across on desktop and tablet, two on phones; an
+   incomplete last row centres. */
+.drive-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:18px;--tile:calc((100% - 36px) / 3)}
 .drive-grid > *{flex:0 0 var(--tile)}
-.drive-tile{position:relative;margin:0;aspect-ratio:4/3;border-radius:14px;overflow:hidden;box-shadow:0 10px 26px rgba(15,42,68,.12);background:var(--off)}
+.drive-tile{position:relative;margin:0;aspect-ratio:1/1;border-radius:14px;overflow:hidden;box-shadow:0 10px 26px rgba(15,42,68,.12);background:var(--off)}
 .drive-tile img{width:100%;height:100%;object-fit:cover;display:block}
 .drive-tile .compare-label{left:10px;top:10px}
-.drive-tile-empty{display:grid;place-items:center;border:1px dashed var(--border)}
-.drive-tile-empty .shot-empty-label{color:var(--blue);font-size:12px}
-.drive-grid > .drive-pair{flex-basis:calc(var(--tile) * 2 + 18px)}
 button.drive-tile{display:block;border:0;padding:0;cursor:pointer;font:inherit}
 .drive-video:focus-visible{outline:3px solid var(--navy);outline-offset:3px}
 .drive-video:hover .g-play{transform:scale(1.06)}
@@ -634,9 +647,10 @@ button.drive-tile{display:block;border:0;padding:0;cursor:pointer;font:inherit}
 .drive-dialog-close{position:absolute;top:0;right:0;width:44px;height:44px;border-radius:50%;border:0;background:#fff;color:var(--navy);font-size:26px;line-height:1;cursor:pointer}
 .drive-dialog-close:focus-visible{outline:3px solid var(--sky);outline-offset:2px}
 .drive-dialog-yt{display:block;margin-top:10px;text-align:center;color:#fff;font-size:14px;font-weight:600}
-.drive-pair .g-compare{height:100%}
-@media (max-width:1100px){.drive-grid{--tile:calc((100% - 18px) / 2)}.drive-grid > .drive-pair{flex-basis:100%}}
-@media (max-width:640px){.drive-grid{gap:10px;--tile:calc((100% - 10px) / 2)}.drive-tile .compare-label{font-size:10px;padding:4px 9px;left:8px;top:8px}}
+.drive-more{display:none}
+@media (max-width:640px){.drive-grid{gap:10px;--tile:calc((100% - 10px) / 2)}
+  .drive-grid.is-collapsible:not(.is-open) > :nth-child(n+5){display:none}
+  .drive-more{display:flex;margin:16px auto 0;min-height:44px}.drive-tile .compare-label{font-size:10px;padding:4px 9px;left:8px;top:8px}}
 
 /* Preferred method of contact (all lead forms) */
 .contact-pref{border:0;padding:0;margin:18px 0 0;min-width:0}

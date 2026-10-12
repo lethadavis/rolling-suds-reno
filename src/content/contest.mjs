@@ -12,7 +12,6 @@
 import { existsSync } from "node:fs";
 import { FLAGS, SERVICE_ZIPS, CONTEST } from "../../site.config.js";
 import { resolveShot } from "../templates/image.mjs";
-import { beforeAfter, pairIsComplete } from "../templates/before-after.mjs";
 import { contactPref } from "../templates/contact-pref.mjs";
 import { isProduction } from "../env.mjs";
 
@@ -57,14 +56,43 @@ const privacyLink = CONTEST.privacyUrl
 // the page. Missing photo: a soft placeholder on staging, nothing in production.
 export const HERO_PHOTO = "/images/contest/spa-driveway.webp";
 
+// "2026-11-30" -> "Nov 30th"; the badge shows it in capitals.
+function deadlineLabel(iso) {
+  const d = new Date(iso + "T12:00:00");
+  const day = d.getDate();
+  const suffix = day % 100 >= 11 && day % 100 <= 13 ? "th" : ["th", "st", "nd", "rd"][day % 10] || "th";
+  return `${d.toLocaleDateString("en-US", { month: "short" })} ${day}${suffix}`;
+}
+const DEADLINE = deadlineLabel(CONTEST.deadline);
+
+// Contest badge, drawn in code so the deadline on its top arc always matches
+// the hero line. Colors match the original badge artwork. Decorative: the
+// same words are in the hero copy.
+const BADGE = (() => {
+  const navy = "#000e32", aqua = "#00b9d1", green = "#75bd43", fold = "#5aa032";
+  const arc = (id, r, top) => top
+    ? `<path id="${id}" d="M ${100 - r},100 A ${r},${r} 0 0,1 ${100 + r},100" fill="none"/>`
+    : `<path id="${id}" d="M ${100 - r},100 A ${r},${r} 0 0,0 ${100 + r},100" fill="none"/>`;
+  const ringText = (id, text) => `<text class="badge-arc"><textPath href="#${id}" startOffset="50%" text-anchor="middle">${text}</textPath></text>`;
+  return `<svg class="contest-badge" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+      <defs>${arc("badgeTop", 79, true)}${arc("badgeBottom", 90, false)}</defs>
+      <circle cx="100" cy="100" r="98" fill="${aqua}"/>
+      <circle cx="100" cy="100" r="71" fill="${navy}" stroke="#fff" stroke-width="3"/>
+      <circle cx="100" cy="100" r="66" fill="none" stroke="${green}" stroke-width="1.6" stroke-dasharray="1.5 4.5" stroke-linecap="round"/>
+      ${ringText("badgeTop", `BOOK BY ${DEADLINE.toUpperCase()}`)}
+      ${ringText("badgeBottom", "RENO-TAHOE")}
+      <text class="badge-free" x="100" y="95" text-anchor="middle">FREE</text>
+      <text class="badge-sub" x="100" y="115" text-anchor="middle">Driveway Cleaning</text>
+      <path d="M 8,128 L 24,124 L 24,150 L 8,146 Z M 192,128 L 176,124 L 176,150 L 192,146 Z" fill="${fold}"/>
+      <rect x="22" y="124" width="156" height="26" rx="2" fill="${green}"/>
+      <text class="badge-ribbon" x="100" y="141.5" text-anchor="middle">+ WIN A HOUSE WASH</text>
+    </svg>`;
+})();
+
 function heroArt() {
   const webp = resolveShot("contest", "spa-driveway");
   const jpg = ["jpg", "jpeg", "png"].map((e) => `images/contest/spa-driveway.${e}`).find((f) => existsSync(f));
-  const badgeSrc = resolveShot("contest", "driveway-makeover-badge");
-  // The badge repeats the eyebrow text, so it is decorative.
-  const badge = badgeSrc
-    ? `<img class="contest-badge" src="${badgeSrc}" alt="" width="180" height="180" decoding="async" fetchpriority="high">`
-    : "";
+  const badge = BADGE;
   let photo = "";
   if (webp || jpg) {
     photo = `<picture class="contest-photo">
@@ -95,68 +123,63 @@ const RIDGES = `<svg class="contest-ridges" viewBox="0 0 1440 360" preserveAspec
 // in images/gallery/compare, replaces the two empty slots with the
 // BeforeAfter card. Missing photos show a placeholder on staging only, and the
 // row disappears when fewer than 2 real photos exist.
-// The driveway Short from the homepage gallery leads the row. It plays in a
-// dialog on this page (contest-video in site.js) rather than sending visitors
-// off to YouTube.
+// Driveway glow-ups row: six real Rolling Suds before and after jobs first,
+// then the driveway Short from the homepage gallery, then the two on the job
+// shots. Every tile opens in one dialog on this page (see site.js). The
+// before and after images carry their own BEFORE / AFTER labels, so they get
+// no pill. On phones the row shows four tiles and a "see more" button.
+const DRIVEWAY_BEFORE_AFTER = [
+  { name: "two-car-driveway", alt: "Before and after: a two-car garage driveway washed from grey and blotchy to clean, bright concrete" },
+  { name: "two-story-driveway", alt: "Before and after: rust and dirt streaks cleaned off the driveway of a two-story home" },
+  { name: "carport-driveway", alt: "Before and after: a stained concrete driveway and carport washed clean" },
+  { name: "front-walkway", alt: "Before and after: orange rust stains removed from a front walkway" },
+  { name: "leafy-driveway", alt: "Before and after: a debris-covered concrete driveway cleared and washed bright" },
+  { name: "driveway-apron", alt: "Before and after: dark stains cleaned from a driveway apron by the street" },
+];
 const DRIVEWAY_VIDEO = { youtubeId: "ooFJGDmO_xA", title: "You Forgot What Color Your Driveway Actually Is" };
-
 const DRIVEWAY_TILES = [
   { src: "images/gallery/crew-driveway-cleaning.webp", label: "On the job", alt: "Technician surface cleaning a driveway beside the Rolling Suds truck" },
   { src: "images/gallery/truck-driveway-cleaning.webp", label: "On the job", alt: "Rolling Suds truck parked at a home while a technician cleans the driveway" },
 ];
-const DRIVEWAY_PAIR = {
-  id: "driveway",
-  beforeName: "driveway-before",
-  afterName: "driveway-after",
-  beforeLabel: "Before",
-  afterLabel: "After",
-  caption: "Driveway cleaning",
-  alts: {
-    before: "Stained concrete driveway before cleaning",
-    after: "The same driveway after cleaning",
-  },
-};
+const PHONE_SHOWN = 4;
 
 function drivewayRow() {
-  // Photo tiles open the full image in the same dialog as the video.
-  const tile = (t) => `<button type="button" class="drive-tile drive-photo" data-full="/${t.src}" data-alt="${t.alt}" aria-label="View larger photo: ${t.alt}">
-        <img src="/${t.src}" alt="" width="1200" height="900" loading="lazy" decoding="async">
-        <span class="compare-label">${t.label}</span>
+  const photo = ({ full, thumb, alt, label }) => `<button type="button" class="drive-tile drive-photo" data-full="/${full}" data-alt="${alt}" aria-label="View larger photo: ${alt}">
+        <img src="/${thumb}" alt="" width="760" height="760" loading="lazy" decoding="async">
+        ${label ? `<span class="compare-label">${label}</span>` : ""}
       </button>`;
-  const empty = (name, label) => `<figure class="drive-tile drive-tile-empty" data-slot="gallery/compare/${name}">
-        <span class="shot-empty-label">Photo coming soon</span>
-        <span class="compare-label">${label}</span>
-      </figure>`;
-
   const v = DRIVEWAY_VIDEO;
   const video = `<button type="button" class="drive-tile drive-video" data-yt="${v.youtubeId}" aria-label="Play video: ${v.title}">
         <img src="https://i.ytimg.com/vi/${v.youtubeId}/oar2.jpg" alt="" width="1080" height="1920" loading="lazy" decoding="async">
         <span class="compare-label">Video</span>
         <span class="g-play" aria-hidden="true"></span>
       </button>`;
-  const videoDialog = `<dialog class="drive-dialog" id="driveVideo" aria-label="Driveway photo or video">
-    <button type="button" class="drive-dialog-close" aria-label="Close video">&times;</button>
+  const dialog = `<dialog class="drive-dialog" id="driveVideo" aria-label="Driveway photo or video">
+    <button type="button" class="drive-dialog-close" aria-label="Close">&times;</button>
     <div class="drive-dialog-frame"></div>
     <a class="drive-dialog-yt" href="https://www.youtube.com/shorts/${v.youtubeId}" target="_blank" rel="noopener">Watch on YouTube</a>
   </dialog>`;
 
-  const real = DRIVEWAY_TILES.filter((t) => existsSync(t.src));
-  const pair = pairIsComplete(DRIVEWAY_PAIR);
-  const count = 1 + real.length + (pair ? 2 : 0);
-  if (count < 2) return "";
-
-  const items = [video, ...real.map(tile)];
-  if (pair) items.push(`<div class="drive-pair">${beforeAfter(DRIVEWAY_PAIR)}</div>`);
-  else if (!isProduction) items.push(empty("driveway-before", "Before"), empty("driveway-after", "After"));
+  const dir = "images/gallery/driveways";
+  const items = [
+    ...DRIVEWAY_BEFORE_AFTER.filter((b) => existsSync(`${dir}/${b.name}-760.webp`)).map((b) =>
+      photo({ full: `${dir}/${b.name}.webp`, thumb: `${dir}/${b.name}-760.webp`, alt: b.alt })
+    ),
+    video,
+    ...DRIVEWAY_TILES.filter((t) => existsSync(t.src)).map((t) => photo({ full: t.src, thumb: t.src, alt: t.alt, label: t.label })),
+  ];
+  if (items.length < 2) return "";
+  const more = items.length > PHONE_SHOWN;
 
   return `<section class="contest-drives" aria-labelledby="drives-heading">
   <div class="wrap">
     <h2 class="contest-h2" id="drives-heading">Driveway glow-ups</h2>
-    <div class="drive-grid">
+    <div class="drive-grid${more ? " is-collapsible" : ""}" id="driveGrid">
       ${items.join("\n      ")}
     </div>
+    ${more ? `<button type="button" class="btn btn-light drive-more" aria-controls="driveGrid" aria-expanded="false">See all ${items.length} driveways</button>` : ""}
   </div>
-  ${videoDialog}
+  ${dialog}
 </section>`;
 }
 
@@ -230,7 +253,7 @@ function entryForm() {
 }
 
 function rules() {
-  return `<section class="contest-rules" aria-labelledby="rules-heading">
+  return `<section class="contest-rules" id="official-rules" aria-labelledby="rules-heading">
   <div class="wrap">
     <details id="rules" class="rules-box">
       <summary><h2 id="rules-heading">Official Rules</h2></summary>
@@ -267,13 +290,22 @@ export function contestBody() {
   ${RIDGES}
   <div class="wrap contest-hero-grid">
     <div class="contest-copy">
-      <span class="pill">The Great Driveway Makeover Contest, Reno-Tahoe</span>
-      <h1>Your Driveway Called&hellip; <span>and it wants a free spa day!</span></h1>
       ${
         active
-          ? `<p class="contest-lede">We&rsquo;re giving the area&rsquo;s hardest-working driveways a power washing spa treatment, and one lucky home wins a free whole-house wash.</p>
-      <a class="btn btn-green btn-lg js-enter" href="#enter">Enter Your Home</a>`
-          : `<p class="contest-lede">This contest has ended. Thank you for entering!</p>
+          ? `<span class="pill">Free Driveway Cleaning, Reno&#8209;Tahoe</span>
+      <h1>We&rsquo;ll clean your driveway for free. <span>And enter you to win a whole&#8209;house wash.</span></h1>
+      <p class="contest-lede">Give your driveway a spa day on us. Book a free driveway cleaning and you&rsquo;re automatically entered to win a free whole&#8209;house exterior pressure wash.</p>
+      <ol class="hero-steps">
+        <li><span class="hero-step-icon" aria-hidden="true"><svg><use href="#i-calendar"/></svg></span><span><b>1.</b> Book your free cleaning</span></li>
+        <li><span class="hero-step-icon" aria-hidden="true"><svg><use href="#i-spray"/></svg></span><span><b>2.</b> We wash your driveway</span></li>
+        <li><span class="hero-step-icon" aria-hidden="true"><svg><use href="#i-trophy"/></svg></span><span><b>3.</b> You&rsquo;re entered to win a whole&#8209;house wash</span></li>
+      </ol>
+      <a class="btn btn-green btn-lg js-enter" href="#enter">Book Your Free Cleaning Now</a>
+      <p class="hero-deadline">Book your cleaning by ${DEADLINE}</p>
+      <p class="hero-fine">No purchase necessary. Reno-Tahoe service area. See <a href="#official-rules" class="js-rules">official rules</a>.</p>`
+          : `<span class="pill">The Great Driveway Makeover Contest, Reno-Tahoe</span>
+      <h1>Your Driveway Called&hellip; <span>and it wants a free spa day!</span></h1>
+      <p class="contest-lede">This contest has ended. Thank you for entering!</p>
       <a class="btn btn-green btn-lg" href="/#quote">Get a Free Quote</a>`
       }
     </div>

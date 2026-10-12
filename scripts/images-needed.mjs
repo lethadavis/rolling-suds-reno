@@ -38,33 +38,6 @@ add(
   "Campaign artwork"
 );
 add(
-  "Driveway Makeover Contest, badge",
-  "contest",
-  "driveway-makeover-badge",
-  "360x360, shown at 180px",
-  "The round contest badge on a transparent background.",
-  "Decorative, no alt needed (the eyebrow carries the same words)",
-  "Campaign artwork"
-);
-add(
-  "Driveway Makeover Contest, Driveway glow-ups row (before)",
-  "gallery/compare",
-  "driveway-before",
-  "1200x900 (4:3 landscape, .webp)",
-  "A real customer driveway in our service area before cleaning: oil, tire marks or de-icer film clearly visible. Shot from the same spot as the after photo.",
-  "Stained concrete driveway before cleaning",
-  "Real job photography"
-);
-add(
-  "Driveway Makeover Contest, Driveway glow-ups row (after)",
-  "gallery/compare",
-  "driveway-after",
-  "1200x900 (4:3 landscape, .webp)",
-  "The same driveway after cleaning, same angle and framing as the before. Once both exist they show as one before and after card in the row.",
-  "The same driveway after cleaning",
-  "Real job photography"
-);
-add(
   "Driveway Makeover Contest, social share",
   "contest",
   "og-contest",

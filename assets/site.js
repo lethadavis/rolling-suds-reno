@@ -447,8 +447,8 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
   // Official Rules links open the accordion as well as jumping to it.
   const rules = document.getElementById("rules");
   const openRules = () => { if (rules) rules.open = true; };
-  document.querySelectorAll('a[href="#rules"]').forEach((a) => a.addEventListener("click", openRules));
-  if (location.hash === "#rules") openRules();
+  document.querySelectorAll('a[href="#rules"], a[href="#official-rules"]').forEach((a) => a.addEventListener("click", openRules));
+  if (location.hash === "#rules" || location.hash === "#official-rules") openRules();
 
   if (!form) return;
   const loadedAt = Date.now();
@@ -695,4 +695,16 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
   dlg.querySelector(".drive-dialog-close").addEventListener("click", () => dlg.close());
   dlg.addEventListener("click", (e) => { if (e.target === dlg) dlg.close(); });
   dlg.addEventListener("close", () => { frame.innerHTML = ""; opener?.focus(); });
+})();
+
+/* Contest page: phones show four driveway tiles until "See all" is tapped. */
+(() => {
+  const btn = document.querySelector(".drive-more");
+  const grid = document.getElementById("driveGrid");
+  if (!btn || !grid) return;
+  btn.addEventListener("click", () => {
+    grid.classList.add("is-open");
+    btn.hidden = true;
+    grid.children[4]?.focus();
+  });
 })();
