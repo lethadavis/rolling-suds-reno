@@ -66,7 +66,7 @@ export function privacyBody() {
       <p>We review this policy from time to time. Any changes are posted on this page with a new &ldquo;last updated&rdquo; date.</p>
 
       <h2>Contact us</h2>
-      <p>Questions about this policy or your information? Call us at <a href="tel:{{PHONE_HREF}}">{{PHONE}}</a> or write to ${CONTACT.legalName}, {{STREET}}, {{CITY_STATE_ZIP}}.</p>
+      <p>Questions about this policy or your information? Call us at <a href="tel:{{PHONE_HREF}}">{{PHONE}}</a>, email <a href="mailto:{{EMAIL}}">{{EMAIL}}</a>, or write to ${CONTACT.legalName}, {{STREET}}, {{CITY_STATE_ZIP}}.</p>
     </div>
   </div>
 </section>`;

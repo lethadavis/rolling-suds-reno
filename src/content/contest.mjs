@@ -37,15 +37,15 @@ const RULES = [
   "No purchase necessary.",
 ];
 
-// Not invented. Each one is confirmed with Francine before launch, then moved
-// into RULES above.
-const RULES_TODO = [
-  "Contest start and end date",
-  "Grand prize description and approximate value",
-  "How and when the winner is selected and notified",
-  "Sponsor legal name and address",
-  "Eligibility (proposed: 18+, Nevada and California service area residents)",
-  "Number of free driveway cleanings available",
+// Promotion details. Bracketed items ([START DATE], [VALUE] and so on) are
+// still to be confirmed with Francine and Jesse.
+const RULES_DETAIL = [
+  "Promotion period: The promotion begins on [START DATE]. Requests for a free driveway cleaning must be submitted by 11:59 p.m. Pacific Time on November 30, 2026. We may extend the promotion. If we do, we will post the new dates on this page before November 30, 2026.",
+  "Grand prize: One winner will receive a free whole-house exterior cleaning of the home at the address entered. Approximate retail value: $[VALUE]. The prize must be scheduled and completed by [June 30, 2027], weather permitting. The prize cannot be transferred, exchanged or redeemed for cash.",
+  "How the winner is chosen: We will draw one winner at random from all eligible entries, using a random selection tool, within seven days after [December 15, 2026]. We will notify the winner by phone and email using the contact information on the entry form. If the winner does not respond within seven days, is not eligible, or declines the prize, we will draw an alternate winner at random. The odds of winning depend on the number of eligible entries.",
+  "Sponsor: [LEGAL ENTITY NAME], doing business as Rolling Suds of Reno-Tahoe, 5635 Riggins Court, Unit 8, Reno, NV 89502. Rolling Suds of Reno-Tahoe is a locally owned franchise of Rolling Suds Power Washing.",
+  "Who can enter: Open to Nevada and California residents who are 18 or older and are the legal owner of the home entered. The home must be in one of these ZIP codes: 89402, 89403, 89406, 89408, 89410, 89413, 89423, 89424, 89428, 89429, 89430, 89431, 89433, 89434, 89436, 89439, 89440, 89441, 89442, 89444, 89448, 89449, 89451, 89460, 89501, 89502, 89503, 89506, 89507, 89508, 89509, 89510, 89511, 89512, 89519, 89521, 89523, 89557, 89701, 89702, 89703, 89704, 89705, 89706, 89711, 89712, 96142, 96143, 96145, 96150. Employees of the sponsor and their immediate family and household members are not eligible. Void where prohibited.",
+  "Free driveway cleanings and entries: There is no set limit on the number of free driveway cleanings. We schedule them in the order requests are received, as our crew schedule allows. Each completed free driveway cleaning earns one entry into the grand prize drawing. To be entered, the request must be submitted by November 30, 2026, and the cleaning must be completed by [December 15, 2026]. If we cannot complete a cleaning by then, we will let the homeowner know, and that request will not be entered.",
 ];
 
 const privacyLink = CONTEST.privacyUrl
@@ -240,7 +240,7 @@ function rules() {
       <summary><h2 id="rules-heading">Official Rules</h2></summary>
       <ul>
         ${RULES.map((r) => `<li>${r}</li>`).join("\n        ")}
-        ${RULES_TODO.map((r) => `<li><span class="tbd">TODO: ${r}</span></li>`).join("\n        ")}
+        ${RULES_DETAIL.map((r) => `<li>${r}</li>`).join("\n        ")}
       </ul>
     </details>
   </div>

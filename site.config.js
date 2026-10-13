@@ -23,7 +23,7 @@ export const CONTACT = {
   legalName: "Rolling Suds of Reno-Tahoe",
   phone: "775.342.7287",
   phoneHref: "+17753427287",
-  email: "EMAIL@rollingsuds.com", // TODO: real address, still a placeholder
+  email: "jesse.mckanna@rollingsuds.com", // all site email goes to Jesse
   street: "5635 Riggins Court, Unit 8",
   city: "Reno",
   state: "NV",
