@@ -85,6 +85,7 @@ nav.top.is-compact .logo img{height:74px}
 .quote-card h2 span{color:var(--blue)}
 .quote-card > p{font-size:14px;color:var(--gray);margin-bottom:20px}
 .quote-card .btn{width:100%;margin-top:18px;font-size:17px;padding:15px}
+.hp-field{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 .form-msg{display:none;margin-top:14px;padding:12px 14px;border-radius:10px;font-size:14px;background:var(--foam);color:var(--navy)}
 .form-foot{text-align:center;font-size:13px;color:var(--gray);margin-top:14px}
 .form-foot a{color:var(--blue);font-weight:700}
@@ -521,7 +522,8 @@ footer a:hover{color:#fff}
 .check-row input{width:24px;height:24px;flex:none;accent-color:var(--navy);cursor:pointer}
 .contest-card .check-row label{font-size:16px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--text);cursor:pointer}
 .contest-card .btn-lg{margin-top:22px}
-.contest-card .form-msg{background:#fdecea;color:#7a1c12}
+.contest-card .hp-field{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.form-msg{background:#fdecea;color:#7a1c12}
 .contest-card .form-msg a{color:inherit;font-weight:700}
 .consent{margin-top:14px;font-size:13px;line-height:1.55;color:var(--gray)}
 .consent a{color:var(--blue);font-weight:600}

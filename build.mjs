@@ -4,7 +4,7 @@ import { readFileSync, writeFileSync, mkdirSync, cpSync, rmSync, existsSync } fr
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { dirname, join } from "node:path";
-import { SITE_URL, FLAGS, HERO_IMAGE, SERVED_ZIPS } from "./site.config.js";
+import { HUBSPOT, SITE_URL, FLAGS, HERO_IMAGE, SERVED_ZIPS } from "./site.config.js";
 import { renderPage, fillTokens, canonicalFor, networkRating } from "./src/layout.mjs";
 import { context, isProduction } from "./src/env.mjs";
 import { buildPages, SERVICES, CITIES } from "./src/content/pages.mjs";
@@ -128,6 +128,10 @@ if (dupZips.length) console.warn(`SERVED_ZIPS has duplicates, shown once: ${[...
 const zipList = [...new Set(SERVED_ZIPS)].sort().map((z) => `<span>${z}</span>`).join("");
 
 const tokens = {
+  HS_PORTAL_ID: HUBSPOT.portalId,
+  HS_QUOTE_FORM: HUBSPOT.quoteFormGuid,
+  HS_CONTEST_FORM: HUBSPOT.contestFormGuid,
+  HS_FIELD_MAP: JSON.stringify(HUBSPOT.fieldMap),
   ZIP_LIST: zipList,
   HERO_PRELOAD: heroPreload,
   CONTACT_PREF_HIDDEN: contactPrefHidden,
@@ -186,7 +190,7 @@ for (const page of pages) {
 // Assets and images ship as-is. Contact tokens are filled in the JS and CSS too.
 mkdirSync(join(OUT, "assets"), { recursive: true });
 write("assets/site.css", read("assets/site.css"));
-write("assets/site.js", fillTokens(read("assets/site.js")));
+write("assets/site.js", fillTokens(read("assets/site.js"), tokens));
 cpSync("images", join(OUT, "images"), { recursive: true });
 if (existsSync("video")) cpSync("video", join(OUT, "video"), { recursive: true });
 

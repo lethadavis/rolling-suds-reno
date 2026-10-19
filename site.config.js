@@ -119,6 +119,30 @@ export const WILDFIRE_OFFER = {
   expires: null,
 };
 
+// HubSpot. Leads post straight to HubSpot's public form endpoint from the
+// visitor's browser, so no API key lives in the site.
+// TODO: paste the Portal ID and each form's GUID. Find them in HubSpot under
+// Marketing > Forms > (your form) > Share > Embed code: the embed shows
+// portalId and formId. Until these are filled the forms fall back to Netlify
+// Forms, so no lead is ever lost.
+//
+// fieldMap sends our field names to HubSpot property names. HubSpot rejects a
+// submission that names a property its form does not have, so only mapped
+// fields are sent. Everything unmapped is appended to the message instead, so
+// nothing is lost even before custom properties exist.
+export const HUBSPOT = {
+  portalId: "",
+  quoteFormGuid: "",
+  contestFormGuid: "",
+  fieldMap: {
+    name: "firstname",      // split on the first space into firstname + lastname
+    email: "email",
+    phone: "phone",
+    address: "address",
+    zip: "zip",
+  },
+};
+
 // Google Analytics 4. Loads on the live domain only (production builds), so
 // local runs and Netlify previews never count as visits. Empty id = off.
 export const ANALYTICS = {

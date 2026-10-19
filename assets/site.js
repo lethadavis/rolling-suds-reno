@@ -61,6 +61,82 @@ function contactPref(form) {
 /* ---------- SETTINGS ---------- */
 // Where quote requests are sent. Paste a Formspree/Netlify/etc. URL here.
 // Left empty, the form opens the visitor's email app instead.
+/* ---------- HubSpot ----------
+   Leads post to HubSpot's public form endpoint straight from the browser, so
+   no API key ships with the site. Portal and form ids come from site.config.js.
+   Until they are filled, forms fall back to Netlify Forms. */
+const HUBSPOT = {
+  portalId: "{{HS_PORTAL_ID}}",
+  quoteForm: "{{HS_QUOTE_FORM}}",
+  contestForm: "{{HS_CONTEST_FORM}}",
+  fieldMap: {{HS_FIELD_MAP}},
+};
+const hubspotReady = (guid) => Boolean(HUBSPOT.portalId && guid);
+const prettyLabel = (key) => key.replace(/[_-]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+
+// Only mapped fields are named to HubSpot, because it rejects a submission
+// that names a property the form does not have. Everything else is written
+// into the message, so no answer is lost before custom properties exist.
+function hubspotPayload(entries, extraLines = []) {
+  const map = HUBSPOT.fieldMap || {};
+  const fields = [];
+  const leftovers = [];
+  const push = (name, value) => {
+    if (value) fields.push({ objectTypeId: "0-1", name, value: String(value).slice(0, 65000) });
+  };
+  for (const [key, raw] of entries) {
+    if (typeof raw !== "string") continue; // skip file inputs
+    const value = raw.trim();
+    if (!value || key === "form-name" || key === "bot-field") continue;
+    const prop = map[key];
+    if (prop === "firstname") {
+      const [first, ...rest] = value.split(/\s+/);
+      push("firstname", first);
+      if (rest.length) push("lastname", rest.join(" "));
+    } else if (prop) {
+      push(prop, value);
+    } else {
+      leftovers.push(`${prettyLabel(key)}: ${value}`);
+    }
+  }
+  const message = [...leftovers, ...extraLines].filter(Boolean).join("\n");
+  if (message) push(map.notes || "message", message);
+  const hutk = document.cookie.match(/hubspotutk=([^;]+)/);
+  return {
+    submittedAt: Date.now(),
+    fields,
+    context: { pageUri: location.href, pageName: document.title, ...(hutk ? { hutk: hutk[1] } : {}) },
+  };
+}
+
+async function sendToHubSpot(guid, entries, extraLines) {
+  const url = `https://api.hsforms.com/submissions/v3/integration/submit/${HUBSPOT.portalId}/${guid}`;
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(hubspotPayload(entries, extraLines)),
+  });
+  if (!res.ok) {
+    const detail = await res.text().catch(() => "");
+    throw new Error(`HubSpot ${res.status}: ${detail.slice(0, 300)}`);
+  }
+  return res;
+}
+
+// Netlify Forms: the form markup carries data-netlify, so a urlencoded POST
+// to the page path records the submission.
+async function sendToNetlify(entries) {
+  const body = new URLSearchParams();
+  for (const [k, v] of entries) if (typeof v === "string") body.append(k, v);
+  const res = await fetch("/", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: body.toString(),
+  });
+  if (!res.ok) throw new Error(`Netlify ${res.status}`);
+  return res;
+}
+
 const FORM_ENDPOINT = "";
 const FALLBACK_EMAIL = "{{EMAIL}}";
 
@@ -305,43 +381,61 @@ addEventListener("scroll", () => {
 }, { passive: true });
 syncHeader();
 
-/* ---------- Quote form ---------- */
+/* ---------- Quote form ----------
+   HubSpot when it is configured, otherwise Netlify Forms. The old behaviour
+   handed the visitor a mailto: link, which silently did nothing on any machine
+   without a desktop mail client. */
 (() => {
   const form = document.getElementById("quoteForm");
   if (!form) return;
   const msg = document.getElementById("formMsg");
   const pref = contactPref(form);
-  form.addEventListener("submit", async e => {
+  const submitBtn = form.querySelector('button[type="submit"]');
+  const originalLabel = submitBtn ? submitBtn.textContent : "";
+
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
     if (pref && !pref.validate()) { pref.focus(); return; }
-    // preferred_contact is the form's first field, so it leads the email body.
-    const data = new FormData(form);
-    if (!FORM_ENDPOINT) {
-      // No form backend yet: the request goes out through the visitor's email app.
-      track("quote_submit", { method: "email_app", preferred_contact: pref ? pref.value() : "", offer: form.offer?.value || "" });
-      const body = [...data.entries()].map(([k, v]) => `${k}: ${v}`).join("\n");
-      location.href = `mailto:${FALLBACK_EMAIL}?subject=${encodeURIComponent("Free Quote Request")}&body=${encodeURIComponent(body)}`;
-      return;
-    }
-    track("quote_submit", { preferred_contact: pref ? pref.value() : "", offer: form.offer?.value || "" });
+    if (!form.reportValidity()) return;
+
+    const entries = [...new FormData(form).entries()];
+    const destination = hubspotReady(HUBSPOT.quoteForm) ? "hubspot" : "netlify";
+    track("quote_submit", {
+      method: destination,
+      preferred_contact: pref ? pref.value() : "",
+      offer: form.offer?.value || "",
+    });
+
     msg.style.display = "block";
     msg.textContent = "Sending…";
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "Sending…"; }
+
     try {
-      const res = await fetch(FORM_ENDPOINT, { method: "POST", body: data, headers: { Accept: "application/json" } });
-      if (!res.ok) throw new Error();
+      if (destination === "hubspot") {
+        await sendToHubSpot(HUBSPOT.quoteForm, entries, [
+          `Preferred contact: ${pref ? pref.value() : ""}`,
+          `Page: ${location.href}`,
+        ]);
+      } else {
+        await sendToNetlify(entries);
+      }
       form.reset();
       pref?.reset();
       const applied = document.getElementById("offerApplied");
       if (applied) applied.hidden = true;
       // TODO: Jesse to confirm the same business day promise.
       msg.textContent = "Thanks, we have your details. We will get back to you the same business day.";
-      track("quote_success");
-    } catch {
-      msg.textContent = "Something went wrong. Please call us at {{PHONE}}.";
+      track("quote_success", { method: destination });
+    } catch (err) {
+      console.error("[quote form]", err);
+      msg.innerHTML = 'Something went wrong sending your request. Please call or text us at <a href="tel:{{PHONE_HREF}}">{{PHONE}}</a>, or email <a href="mailto:{{EMAIL}}">{{EMAIL}}</a>.';
+      track("quote_error", { method: destination });
+    } finally {
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = originalLabel; }
     }
   });
-
 })();
+
 const yearEl = document.getElementById("yr");
 if (yearEl) yearEl.textContent = new Date().getFullYear();
 
@@ -568,6 +662,15 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
 
       const res = await fetch("/", { method: "POST", body: data });
       if (!res.ok) throw new Error("http " + res.status);
+      // Netlify holds the entry. HubSpot gets a copy when it is configured,
+      // and a HubSpot problem never costs the visitor their entry.
+      if (hubspotReady(HUBSPOT.contestForm)) {
+        sendToHubSpot(HUBSPOT.contestForm, [...data.entries()], [
+          `Preferred contact: ${pref.value()}`,
+          `Lead source: ${form.lead_source.value}`,
+          `Page: ${form.page_url.value}`,
+        ]).catch((err) => console.error("[contest form] HubSpot copy failed", err));
+      }
       track("contest_success", { lead_source: form.lead_source.value });
       showSuccess();
     } catch (err) {
