@@ -671,17 +671,28 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
       data.append("preferred_contact", pref.value());
       for (const [k, v] of fields.entries()) if (k !== "form-name" && k !== "preferred_contact") data.append(k, v);
 
-      const res = await fetch("/", { method: "POST", body: data });
-      if (!res.ok) throw new Error("http " + res.status);
-      // Netlify holds the entry. HubSpot gets a copy when it is configured,
-      // and a HubSpot problem never costs the visitor their entry.
+      // Netlify holds the whole entry, photos included. HubSpot gets the
+      // contact, as far as its own form allows. Both go at once and either
+      // one landing keeps the entry, so a problem at one destination never
+      // costs the visitor their entry.
+      const sends = [
+        fetch("/", { method: "POST", body: data }).then((res) => {
+          if (!res.ok) throw new Error(`Netlify ${res.status}`);
+          return res;
+        }),
+      ];
       if (hubspotReady(HUBSPOT.contestForm)) {
-        sendToHubSpot(HUBSPOT.contestForm, [...data.entries()], [
-          `Preferred contact: ${pref.value()}`,
-          `Lead source: ${form.lead_source.value}`,
-          `Page: ${form.page_url.value}`,
-        ]).catch((err) => console.error("[contest form] HubSpot copy failed", err));
+        sends.push(
+          sendToHubSpot(HUBSPOT.contestForm, [...data.entries()], [
+            `Preferred contact: ${pref.value()}`,
+            `Lead source: ${form.lead_source.value}`,
+            `Page: ${form.page_url.value}`,
+          ])
+        );
       }
+      const results = await Promise.allSettled(sends);
+      for (const r of results) if (r.status === "rejected") console.error("[contest form]", r.reason);
+      if (!results.some((r) => r.status === "fulfilled")) throw results[0].reason;
       track("contest_success", { lead_source: form.lead_source.value });
       showSuccess();
     } catch (err) {
