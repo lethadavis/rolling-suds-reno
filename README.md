@@ -49,6 +49,32 @@ JPG in `images/hero/`. Tablets and desktops preload it at high priority. Phones
 do not: there the headline is the largest paint, and an early image fetch
 slowed it down.
 
+## Where leads go
+
+Both forms send to two places, and either one landing counts as a success, so
+a problem at one destination never shows the visitor an error.
+
+- **Netlify Forms** is the full record and the notification email. The homepage
+  form is `site-quote`, the contest form is `driveway-contest`. Form detection
+  has to be on for the site (Netlify > Forms), and the notification address is
+  set there.
+- **HubSpot** gets the lead as a contact, posted straight from the browser to
+  the public form endpoint, so no API key ships with the site. `HUBSPOT` in
+  `site.config.js` holds the Portal ID and the form GUID.
+
+HubSpot rejects a submission that names a property its form does not have, so
+`HUBSPOT.fieldMap` lists only properties the form really carries. The form is
+First Name, Last Name and Email today, so that is all HubSpot receives: phone,
+address, service and notes reach us through Netlify. Add those fields in
+HubSpot and uncomment the matching lines in `fieldMap` to send them too. Give
+`fieldMap` a `notes` entry and every answer without a field of its own is
+written into that one property as well.
+
+Both pages point at the same HubSpot form, because it is the only one that
+exists. HubSpot records the page each submission came from, so homepage quotes
+and contest entries stay distinguishable. A second HubSpot form for the
+contest would be tidier once its fields differ.
+
 ## Driveway Makeover Contest (/driveway)
 
 Postcard landing page, built from `src/content/contest.mjs`. It is noindex,

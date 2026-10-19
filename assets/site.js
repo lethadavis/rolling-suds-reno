@@ -75,8 +75,9 @@ const hubspotReady = (guid) => Boolean(HUBSPOT.portalId && guid);
 const prettyLabel = (key) => key.replace(/[_-]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 
 // Only mapped fields are named to HubSpot, because it rejects a submission
-// that names a property the form does not have. Everything else is written
-// into the message, so no answer is lost before custom properties exist.
+// that names a property the form does not have. Anything unmapped goes into
+// the notes property when the form has one, and is dropped otherwise: Netlify
+// holds the full record either way, so no answer is lost.
 function hubspotPayload(entries, extraLines = []) {
   const map = HUBSPOT.fieldMap || {};
   const fields = [];
@@ -99,8 +100,10 @@ function hubspotPayload(entries, extraLines = []) {
       leftovers.push(`${prettyLabel(key)}: ${value}`);
     }
   }
-  const message = [...leftovers, ...extraLines].filter(Boolean).join("\n");
-  if (message) push(map.notes || "message", message);
+  if (map.notes) {
+    const message = [...leftovers, ...extraLines].filter(Boolean).join("\n");
+    if (message) push(map.notes, message);
+  }
   const hutk = document.cookie.match(/hubspotutk=([^;]+)/);
   return {
     submittedAt: Date.now(),
@@ -399,7 +402,7 @@ syncHeader();
     if (!form.reportValidity()) return;
 
     const entries = [...new FormData(form).entries()];
-    const destination = hubspotReady(HUBSPOT.quoteForm) ? "hubspot" : "netlify";
+    const destination = hubspotReady(HUBSPOT.quoteForm) ? "hubspot+netlify" : "netlify";
     track("quote_submit", {
       method: destination,
       preferred_contact: pref ? pref.value() : "",
@@ -411,14 +414,22 @@ syncHeader();
     if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "Sending…"; }
 
     try {
-      if (destination === "hubspot") {
-        await sendToHubSpot(HUBSPOT.quoteForm, entries, [
-          `Preferred contact: ${pref ? pref.value() : ""}`,
-          `Page: ${location.href}`,
-        ]);
-      } else {
-        await sendToNetlify(entries);
+      // Netlify Forms keeps the whole request and sends the notification
+      // email. HubSpot gets the lead too, so far as its own form allows.
+      // One of the two landing is enough: the request is not lost, and a
+      // problem at one destination never shows the visitor an error.
+      const sends = [sendToNetlify(entries)];
+      if (hubspotReady(HUBSPOT.quoteForm)) {
+        sends.push(
+          sendToHubSpot(HUBSPOT.quoteForm, entries, [
+            `Preferred contact: ${pref ? pref.value() : ""}`,
+            `Page: ${location.href}`,
+          ])
+        );
       }
+      const results = await Promise.allSettled(sends);
+      for (const r of results) if (r.status === "rejected") console.error("[quote form]", r.reason);
+      if (!results.some((r) => r.status === "fulfilled")) throw results[0].reason;
       form.reset();
       pref?.reset();
       const applied = document.getElementById("offerApplied");

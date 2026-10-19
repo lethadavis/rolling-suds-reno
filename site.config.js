@@ -120,26 +120,34 @@ export const WILDFIRE_OFFER = {
 };
 
 // HubSpot. Leads post straight to HubSpot's public form endpoint from the
-// visitor's browser, so no API key lives in the site.
-// TODO: paste the Portal ID and each form's GUID. Find them in HubSpot under
-// Marketing > Forms > (your form) > Share > Embed code: the embed shows
-// portalId and formId. Until these are filled the forms fall back to Netlify
-// Forms, so no lead is ever lost.
+// visitor's browser, so no API key lives in the site. Every lead is also
+// recorded in Netlify Forms, which stays the full record: HubSpot can only
+// accept the fields its own form carries, and Netlify accepts all of them.
 //
-// fieldMap sends our field names to HubSpot property names. HubSpot rejects a
-// submission that names a property its form does not have, so only mapped
-// fields are sent. Everything unmapped is appended to the message instead, so
-// nothing is lost even before custom properties exist.
+// Both pages point at the same HubSpot form for now, because that is the only
+// form that exists. HubSpot stamps each submission with the page it came from,
+// so homepage quotes and /driveway entries are still told apart.
 export const HUBSPOT = {
-  portalId: "",
-  quoteFormGuid: "",
-  contestFormGuid: "",
+  portalId: "246064596",
+  quoteFormGuid: "009a2b20-3e64-4b6e-9f7a-1efd028734c4",
+  contestFormGuid: "009a2b20-3e64-4b6e-9f7a-1efd028734c4",
+  // Our field names on the left, HubSpot property names on the right.
+  // HubSpot rejects a submission that names a property its form does not
+  // have, so this lists only properties the form really carries. As of
+  // 2026-10-19 the form is First Name, Last Name and Email, nothing else.
+  //
+  // TODO: add Phone, Street Address, a dropdown for Service and a multi line
+  // text field for Notes to the HubSpot form, then uncomment the matching
+  // lines below. Until then those answers reach us through Netlify Forms and
+  // its notification email only.
   fieldMap: {
     name: "firstname",      // split on the first space into firstname + lastname
     email: "email",
-    phone: "phone",
-    address: "address",
-    zip: "zip",
+    // phone: "phone",
+    // address: "address",
+    // zip: "zip",
+    // service: "<the dropdown's internal name>",
+    // notes: "message",    // also the sink for any answer with no field of its own
   },
 };
 
