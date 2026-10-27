@@ -393,6 +393,15 @@ syncHeader();
   if (!form) return;
   const msg = document.getElementById("formMsg");
   const pref = contactPref(form);
+
+  /* ---- Tracking fields, read off the page address like the contest form ---- */
+  const params = new URLSearchParams(location.search);
+  const utm = (k) => (params.get(k) || "").trim().slice(0, 100);
+  form.utm_source.value = utm("utm_source") || "direct";
+  form.utm_medium.value = utm("utm_medium");
+  form.utm_campaign.value = utm("utm_campaign");
+  form.page_url.value = location.href;
+
   const submitBtn = form.querySelector('button[type="submit"]');
   const originalLabel = submitBtn ? submitBtn.textContent : "";
 
