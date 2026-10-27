@@ -227,8 +227,8 @@ function entryForm() {
       </form>
       <div class="contest-success" id="contestSuccess" tabindex="-1" hidden>
         <span class="success-icon" aria-hidden="true"><svg><use href="#i-check"/></svg></span>
-        <h2>You&rsquo;re entered!</h2>
-        <p>We&rsquo;ll review your photos and be in touch within 2 business days.</p>
+        <h2>You&rsquo;re on the list!</h2>
+        <p>We&rsquo;ll be in touch within 2 business days to schedule your free driveway cleaning. Once your cleaning is done, you&rsquo;re automatically entered to win a free whole-house exterior pressure washing.</p>
         <p class="form-foot">Questions in the meantime? Call <a href="tel:{{PHONE_HREF}}">{{PHONE}}</a></p>
       </div>`;
 }

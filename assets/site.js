@@ -410,6 +410,7 @@ syncHeader();
     });
 
     msg.style.display = "block";
+    msg.className = "form-msg";
     msg.textContent = "Sending…";
     if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "Sending…"; }
 
@@ -435,10 +436,14 @@ syncHeader();
       const applied = document.getElementById("offerApplied");
       if (applied) applied.hidden = true;
       // TODO: Jesse to confirm the same business day promise.
-      msg.textContent = "Thanks, we have your details. We will get back to you the same business day.";
+      msg.className = "form-msg is-ok";
+      msg.innerHTML =
+        '<span class="msg-icon" aria-hidden="true"><svg><use href="#i-check"/></svg></span>' +
+        "<span>Thanks, we have your details. We will get back to you the same business day.</span>";
       track("quote_success", { method: destination });
     } catch (err) {
       console.error("[quote form]", err);
+      msg.className = "form-msg is-error";
       msg.innerHTML = 'Something went wrong sending your request. Please call or text us at <a href="tel:{{PHONE_HREF}}">{{PHONE}}</a>, or email <a href="mailto:{{EMAIL}}">{{EMAIL}}</a>.';
       track("quote_error", { method: destination });
     } finally {
@@ -696,6 +701,7 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
       track("contest_success", { lead_source: form.lead_source.value });
       showSuccess();
     } catch (err) {
+      msg.className = "form-msg is-error";
       msg.innerHTML = 'Something went wrong sending your entry. Please try again, or call us at <a href="tel:{{PHONE_HREF}}">{{PHONE}}</a>.';
       msg.style.display = "block";
       submitBtn.disabled = false;
