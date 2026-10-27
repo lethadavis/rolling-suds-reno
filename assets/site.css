@@ -87,7 +87,7 @@ nav.top.is-compact .logo img{height:74px}
 .quote-card .btn{width:100%;margin-top:18px;font-size:17px;padding:15px}
 .hp-field{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 .form-msg{display:none;margin-top:14px;padding:12px 14px;border-radius:10px;font-size:14px;background:var(--foam);color:var(--navy)}
-.form-msg.is-ok{background:#E9F3F8;color:#2E8B6E;display:flex;align-items:flex-start;gap:10px}
+.form-msg.is-ok{background:#E9F3F8;color:#1E6B52;display:flex;align-items:flex-start;gap:10px}
 .form-msg .msg-icon{flex:none;display:grid;place-items:center;width:22px;height:22px;margin-top:1px;border-radius:50%;background:var(--accent);color:var(--navy)}
 .form-msg .msg-icon svg{width:14px;height:14px}
 .form-foot{text-align:center;font-size:13px;color:var(--gray);margin-top:14px}
