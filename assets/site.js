@@ -61,111 +61,24 @@ function contactPref(form) {
 /* ---------- SETTINGS ---------- */
 // Where quote requests are sent. Paste a Formspree/Netlify/etc. URL here.
 // Left empty, the form opens the visitor's email app instead.
-/* ---------- HubSpot ----------
-   Leads post to HubSpot's public form endpoint straight from the browser, so
-   no API key ships with the site. Portal and form ids come from site.config.js.
-   Until they are filled, forms fall back to Netlify Forms. */
-const HUBSPOT = {{HS_CONFIG}};
-const hubspotReady = (guid) => Boolean(HUBSPOT.portalId && guid);
-
-// Builds one HubSpot submission. Only properties the HubSpot form carries may
-// be named, so the long answers and the tracking tags go into the notes.
-// opts: { leadSource, service, extraLines }
-function hubspotPayload(entries, opts = {}) {
-  const map = HUBSPOT.fieldMap || {};
-  const data = {};
-  for (const [key, raw] of entries) {
-    if (typeof raw !== "string") continue; // skip file inputs
-    if (key === "form-name" || key === "bot-field") continue;
-    const value = raw.trim();
-    if (!value) continue;
-    // Checkboxes sharing a name arrive as several entries.
-    data[key] = key in data ? `${data[key]}, ${value}` : value;
+/* ---------- Leads ----------
+   Both forms post to /api/lead, a Netlify function that writes the contact
+   to HubSpot. The HubSpot token lives on the server, and the browser sends
+   our own field names only, so it can never name a HubSpot property. */
+async function sendToLead(form, entries) {
+  const fields = {};
+  for (const [key, value] of entries) {
+    if (typeof value !== "string") continue; // skip file inputs
+    fields[key] = key in fields ? `${fields[key]}, ${value}` : value;
   }
-
-  const fields = [];
-  const push = (name, value) => {
-    if (name && value) fields.push({ objectTypeId: "0-1", name, value: String(value).slice(0, 65000) });
-  };
-
-  if (data.name) {
-    const [first, ...rest] = data.name.split(/\s+/);
-    push(map.name, first);
-    if (rest.length) push("lastname", rest.join(" "));
-  }
-  push(map.email, data.email);
-  push(map.phone, data.phone);
-  push(map.address, data.address || data.street);
-  push(map.city, data.city);
-  push(map.zip, data.zip);
-  if (data.homeowner) push(map.homeowner, HUBSPOT.homeownerYes);
-
-  // Preferred contact: one checkbox property per method, plus a line in the
-  // notes so the whole answer is readable, including any method the form has
-  // no checkbox for.
-  const chosen = (data.preferred_contact || "")
-    .split(/[,;]\s*/)
-    .map((v) => v.toLowerCase())
-    .filter(Boolean);
-  for (const key of Object.keys(HUBSPOT.contactCheckboxes || {})) {
-    push(HUBSPOT.contactCheckboxes[key], chosen.includes(key) ? "true" : "false");
-  }
-
-  push("lead_source", opts.leadSource);
-
-  // Service Selected takes its own options only. Anything else is named in
-  // the notes so the answer survives.
-  const spare = [];
-  if (chosen.length) {
-    spare.push(
-      `Preferred contact: ${chosen.map((c) => (HUBSPOT.contactMethods || {})[c] || c).join(", ")}`
-    );
-  }
-  const service = opts.service || data.service;
-  if (service) {
-    if ((HUBSPOT.serviceOptions || []).includes(service)) push(map.service, service);
-    else spare.push(`Requested service: ${service}`);
-  }
-
-  const tail = (HUBSPOT.notesTail || [])
-    .filter(([key]) => data[key])
-    .map(([key, label]) => `${label}: ${data[key]}`);
-  push(
-    HUBSPOT.notesProperty,
-    [data.description, data.notes, ...spare, ...(opts.extraLines || []), ...tail].filter(Boolean).join("\n")
-  );
-
-  const hutk = document.cookie.match(/hubspotutk=([^;]+)/);
-  return {
-    submittedAt: Date.now(),
-    fields,
-    context: { pageUri: location.href, pageName: document.title, ...(hutk ? { hutk: hutk[1] } : {}) },
-  };
-}
-
-async function sendToHubSpot(guid, entries, opts = {}) {
-  const url = `https://api.hsforms.com/submissions/v3/integration/submit/${HUBSPOT.portalId}/${guid}`;
-  const post = (payload) =>
-    fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-
-  const payload = hubspotPayload(entries, opts);
-  let res = await post(payload);
-  if (res.status === 400) {
-    // HubSpot refuses a submission that names a property its form does not
-    // carry, which is what happens while a field is still unpublished. Send
-    // the three the form has always had, so the lead still arrives.
-    const detail = await res.text().catch(() => "");
-    console.warn("[hubspot] full submission refused, retrying with name and email", detail.slice(0, 300));
-    const core = new Set(["firstname", "lastname", "email"]);
-    res = await post({ ...payload, fields: payload.fields.filter((f) => core.has(f.name)) });
-  }
+  const res = await fetch("/api/lead", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ form, fields }),
+  });
   if (!res.ok) {
     const detail = await res.text().catch(() => "");
-    throw new Error(`HubSpot ${res.status}: ${detail.slice(0, 300)}`);
+    throw new Error(`Lead ${res.status}: ${detail.slice(0, 200)}`);
   }
   return res;
 }
@@ -455,7 +368,7 @@ syncHeader();
     if (!form.reportValidity()) return;
 
     const entries = [...new FormData(form).entries()];
-    const destination = hubspotReady(HUBSPOT.quoteFormGuid) ? "hubspot+netlify" : "netlify";
+    const destination = "hubspot+netlify";
     track("quote_submit", {
       method: destination,
       preferred_contact: pref ? pref.value() : "",
@@ -472,12 +385,7 @@ syncHeader();
       // email. HubSpot gets the lead too, so far as its own form allows.
       // One of the two landing is enough: the request is not lost, and a
       // problem at one destination never shows the visitor an error.
-      const sends = [sendToNetlify(entries)];
-      if (hubspotReady(HUBSPOT.quoteFormGuid)) {
-        sends.push(
-          sendToHubSpot(HUBSPOT.quoteFormGuid, entries, { leadSource: HUBSPOT.leadSource.quote })
-        );
-      }
+      const sends = [sendToNetlify(entries), sendToLead("quote", entries)];
       const results = await Promise.allSettled(sends);
       for (const r of results) if (r.status === "rejected") console.error("[quote form]", r.reason);
       if (!results.some((r) => r.status === "fulfilled")) throw results[0].reason;
@@ -736,14 +644,7 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
           return res;
         }),
       ];
-      if (hubspotReady(HUBSPOT.contestFormGuid)) {
-        sends.push(
-          sendToHubSpot(HUBSPOT.contestFormGuid, [...data.entries()], {
-            leadSource: HUBSPOT.leadSource.contest,
-            service: HUBSPOT.contestService,
-          })
-        );
-      }
+      sends.push(sendToLead("contest", [...data.entries()]));
       const results = await Promise.allSettled(sends);
       for (const r of results) if (r.status === "rejected") console.error("[contest form]", r.reason);
       if (!results.some((r) => r.status === "fulfilled")) throw results[0].reason;

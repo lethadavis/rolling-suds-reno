@@ -6,6 +6,12 @@
 [build.environment]
   NODE_VERSION = "22"
 
+# Lead delivery to HubSpot. Needs HUBSPOT_TOKEN set under Site configuration >
+# Environment variables, with the crm.objects.contacts.write scope.
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
 [[headers]]
   for = "/*"
   [headers.values]
@@ -23,6 +29,12 @@
   for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=604800"
+
+# Both forms post their lead here.
+[[redirects]]
+  from = "/api/lead"
+  to = "/.netlify/functions/lead"
+  status = 200
 
 # Retired service. Not offered, so the old route points at the service area.
 [[redirects]]

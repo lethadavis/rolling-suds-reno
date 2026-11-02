@@ -128,9 +128,11 @@ export const WILDFIRE_OFFER = {
 // form that exists. HubSpot stamps each submission with the page it came from,
 // so homepage quotes and /driveway entries are still told apart.
 export const HUBSPOT = {
+  // Kept for reference. Leads go to the CRM API from netlify/functions/lead.mjs,
+  // which needs neither of these: HubSpot's form submission API accepts a
+  // submission for a form built in the new editor and then discards it.
   portalId: "246064596",
-  quoteFormGuid: "009a2b20-3e64-4b6e-9f7a-1efd028734c4",
-  contestFormGuid: "009a2b20-3e64-4b6e-9f7a-1efd028734c4",
+  formGuid: "009a2b20-3e64-4b6e-9f7a-1efd028734c4",
 
   // Our field name on the left, the HubSpot property the published form
   // carries on the right. HubSpot refuses a submission that names a property
@@ -150,6 +152,11 @@ export const HUBSPOT = {
 
   // The form's "Additional notes" box.
   notesProperty: "message",
+
+  // The proper enumeration for the contact preference. The form does not use
+  // it, but the CRM API can, and it is the only field that can hold the email
+  // choice, so it is filled alongside the checkboxes.
+  preferredContactProperty: "preferred_contact_method",
 
   // The form asks for the preferred contact method as separate checkboxes
   // rather than one property, so each is set true or false.

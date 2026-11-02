@@ -51,29 +51,52 @@ slowed it down.
 
 ## Where leads go
 
-Both forms send to two places, and either one landing counts as a success, so
-a problem at one destination never shows the visitor an error.
+Both forms send to two places at once, and either one landing counts as a
+success, so a problem at one destination never shows the visitor an error.
 
 - **Netlify Forms** is the full record and the notification email. The homepage
   form is `site-quote`, the contest form is `driveway-contest`. Form detection
   has to be on for the site (Netlify > Forms), and the notification address is
   set there.
-- **HubSpot** gets the lead as a contact, posted straight from the browser to
-  the public form endpoint, so no API key ships with the site. `HUBSPOT` in
-  `site.config.js` holds the Portal ID and the form GUID.
+- **HubSpot** gets the contact, through `/api/lead`.
 
-HubSpot rejects a submission that names a property its form does not have, so
-`HUBSPOT.fieldMap` lists only properties the form really carries. The form is
-First Name, Last Name and Email today, so that is all HubSpot receives: phone,
-address, service and notes reach us through Netlify. Add those fields in
-HubSpot and uncomment the matching lines in `fieldMap` to send them too. Give
-`fieldMap` a `notes` entry and every answer without a field of its own is
-written into that one property as well.
+### Why there is a function
 
-Both pages point at the same HubSpot form, because it is the only one that
-exists. HubSpot records the page each submission came from, so homepage quotes
-and contest entries stay distinguishable. A second HubSpot form for the
-contest would be tidier once its fields differ.
+HubSpot's form submission API accepts a submission for a form built in the new
+editor, answers 200, and then discards it: no contact is created and nothing
+appears in the form's submissions. Tested three times against the live form in
+November 2026, with the same payload succeeding through HubSpot's own embed.
+
+So leads go to the CRM API instead, which needs a private app token. A token
+cannot ship in a static site, so `netlify/functions/lead.mjs` holds it:
+
+- The browser posts our own field names to `/api/lead`. It never names a
+  HubSpot property, so a crafted request cannot write to one.
+- `src/lib/hubspot-map.mjs` turns those into contact properties. It is the one
+  place the mapping lives, and it is server side only.
+- The contact is matched on email address, so a repeat enquiry updates the
+  contact already there rather than making a second one.
+- A filled honeypot gets a cheerful answer and sends nothing.
+- Email addresses and phone numbers are stripped out of anything logged.
+
+**Setup:** in Netlify, Site configuration > Environment variables, add
+`HUBSPOT_TOKEN`. Create it in HubSpot under Settings > Integrations > Private
+apps, with the `crm.objects.contacts.write` scope. Without it the function
+answers 500 and logs that it is unset, and Netlify Forms still holds the lead.
+
+### Fields
+
+`HUBSPOT.fieldMap` in `site.config.js` follows the published HubSpot form, so
+the names look unusual on purpose: `mobilephone` rather than `phone`,
+`service_street_address` rather than `address`, `service_zip` rather than
+`zip`. Service Selected accepts its own options only, so a quote form choice
+with no matching option, such as "Multiple Services", is written into the
+notes instead. The offer tag and the UTM tags finish the notes.
+
+Two things in HubSpot are worth fixing, and both have a TODO at the line that
+works around them: the Lead Source option "Driveway / Websit" is missing its
+final "e", and the form's Email contact checkbox points at `work_email`, a
+property meant to hold an email address.
 
 ## Driveway Makeover Contest (/driveway)
 

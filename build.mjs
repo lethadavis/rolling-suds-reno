@@ -4,7 +4,7 @@ import { readFileSync, writeFileSync, mkdirSync, cpSync, rmSync, existsSync } fr
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { dirname, join } from "node:path";
-import { HUBSPOT, SITE_URL, FLAGS, HERO_IMAGE, SERVED_ZIPS } from "./site.config.js";
+import { SITE_URL, FLAGS, HERO_IMAGE, SERVED_ZIPS } from "./site.config.js";
 import { renderPage, fillTokens, canonicalFor, networkRating } from "./src/layout.mjs";
 import { context, isProduction } from "./src/env.mjs";
 import { buildPages, SERVICES, CITIES } from "./src/content/pages.mjs";
@@ -128,7 +128,6 @@ if (dupZips.length) console.warn(`SERVED_ZIPS has duplicates, shown once: ${[...
 const zipList = [...new Set(SERVED_ZIPS)].sort().map((z) => `<span>${z}</span>`).join("");
 
 const tokens = {
-  HS_CONFIG: JSON.stringify(HUBSPOT),
   ZIP_LIST: zipList,
   HERO_PRELOAD: heroPreload,
   CONTACT_PREF_HIDDEN: contactPrefHidden,
