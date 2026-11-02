@@ -93,10 +93,13 @@ the names look unusual on purpose: `mobilephone` rather than `phone`,
 with no matching option, such as "Multiple Services", is written into the
 notes instead. The offer tag and the UTM tags finish the notes.
 
-Two things in HubSpot are worth fixing, and both have a TODO at the line that
-works around them: the Lead Source option "Driveway / Websit" is missing its
-final "e", and the form's Email contact checkbox points at `work_email`, a
-property meant to hold an email address.
+Two oddities in HubSpot are worked around rather than fixed, and each is
+explained at the line that handles it. The Lead Source option stores
+"Driveway / Websit" without its final "e": the label was corrected but HubSpot
+locks the stored value, so that spelling is sent deliberately. The form's Email
+contact checkbox points at `work_email`, a property meant to hold an email
+address, so the contact preference is written to `preferred_contact_method`
+instead.
 
 ## Driveway Makeover Contest (/driveway)
 

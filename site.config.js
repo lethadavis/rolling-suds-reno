@@ -201,10 +201,13 @@ export const HUBSPOT = {
   contestService: "Driveway & Concrete",
 
   // Lead Source option values, exactly as HubSpot stores them.
-  // TODO: "Driveway / Websit" is missing its final "e" in HubSpot. The value
-  // has to match character for character or the submission is refused, so it
-  // is spelled wrong here on purpose. Fix the option in HubSpot, then fix it
-  // here in the same change.
+  //
+  // "Driveway / Websit" is missing its final "e" on purpose and must stay that
+  // way. The option was created with that spelling, and HubSpot locks an
+  // option's stored value once it exists. The label was corrected to
+  // "Driveway / Website" on 2026-11-02, so records and reports read correctly,
+  // but the stored value is still the short spelling and has to match it
+  // character for character or the submission is refused.
   leadSource: {
     quote: "Web Search / Website",
     contest: "Driveway / Websit",
