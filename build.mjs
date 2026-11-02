@@ -8,6 +8,7 @@ import { SITE_URL, FLAGS, HERO_IMAGE, SERVED_ZIPS } from "./site.config.js";
 import { renderPage, fillTokens, canonicalFor, networkRating } from "./src/layout.mjs";
 import { context, isProduction } from "./src/env.mjs";
 import { buildPages, SERVICES, CITIES } from "./src/content/pages.mjs";
+import { RENO_LINK } from "./src/content/cities.mjs";
 import { shot, resolveShot } from "./src/templates/image.mjs";
 import { beforeAfter, pairIsComplete } from "./src/templates/before-after.mjs";
 import { COMPARISONS, FEATURED_VIDEO } from "./src/content/gallery.mjs";
@@ -147,7 +148,7 @@ const tokens = {
   FOOTER_SERVICES: footerColumn("Services", liveServices.map((s) => ({ route: "/" + s.slug, label: s.label }))),
   FOOTER_CITIES: footerColumn(
     "Service Area",
-    CITIES.map((c) => ({ route: "/" + c.slug, label: c.label })).concat([{ route: "/service-area", label: "All areas" }, { route: "/blog", label: "Blog" }])
+    [RENO_LINK, ...CITIES.map((c) => ({ route: "/" + c.slug, label: c.label }))].concat([{ route: "/service-area", label: "All areas" }, { route: "/blog", label: "Blog" }])
   ),
   // Off by default: the contest page is reached by the postcard, not the site.
   FOOTER_CONTEST_LINK:

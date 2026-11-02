@@ -30,6 +30,20 @@
   [headers.values]
     Cache-Control = "public, max-age=604800"
 
+# Reno was folded into the homepage in November 2026. The two pages were
+# competing for the same search, so there is one page for it now.
+[[redirects]]
+  from = "/pressure-washing-reno"
+  to = "/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/pressure-washing-reno/*"
+  to = "/"
+  status = 301
+  force = true
+
 # Both forms post their lead here.
 [[redirects]]
   from = "/api/lead"

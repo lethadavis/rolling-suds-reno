@@ -58,7 +58,7 @@ export const POSTS = [
         h2: "When it is worth calling us",
         blocks: [
           "Do it yourself makes sense for a patio, a car and a few windows. It makes less sense for a roof, a two story elevation, a large deck or a property where ash has been sitting through a season of dew and temperature swings.",
-          "We clean the full exterior in one visit, working top down with the right pressure for each surface. That is the whole point of our <a href=\"/wildfire-ash-and-soot-cleanup/\">wildfire ash and soot cleanup service</a>, and it is the fastest way to get a building back to looking like itself. We cover the same ground for homes, businesses and commercial properties across <a href=\"/pressure-washing-reno/\">Reno</a>, Sparks, Carson City and the Tahoe basin.",
+          "We clean the full exterior in one visit, working top down with the right pressure for each surface. That is the whole point of our <a href=\"/wildfire-ash-and-soot-cleanup/\">wildfire ash and soot cleanup service</a>, and it is the fastest way to get a building back to looking like itself. We cover the same ground for homes, businesses and commercial properties across <a href=\"/\">Reno</a>, Sparks, Carson City and the Tahoe basin.",
         ],
       },
     ],
@@ -81,7 +81,7 @@ export const POSTS = [
       },
     ],
     related: ["wildfire-ash-and-soot-cleanup", "house-washing", "roof-cleaning"],
-    city: "pressure-washing-reno",
+    city: "home",
   },
 
   {
@@ -379,7 +379,7 @@ export const POSTS = [
         h2: "How to compare two quotes fairly",
         blocks: [
           "Line the scopes up side by side before you look at the totals. Check whether each includes soffits and eaves, gutter exteriors, window frames and screens, the back fence line, and any concrete. Check whether the company carries its own water. Ask whether they are insured, and ask what happens if you are not satisfied.",
-          "Price matters, but the cheapest bid that skips the north elevation or blasts your stucco is not the cheaper job. It is the one you pay for twice. Our <a href=\"/house-washing/\">house washing</a>, <a href=\"/roof-cleaning/\">roof cleaning</a> and <a href=\"/driveway-and-concrete-cleaning/\">driveway cleaning</a> pages each list what is included, and we serve <a href=\"/pressure-washing-reno/\">Reno</a> and the surrounding areas.",
+          "Price matters, but the cheapest bid that skips the north elevation or blasts your stucco is not the cheaper job. It is the one you pay for twice. Our <a href=\"/house-washing/\">house washing</a>, <a href=\"/roof-cleaning/\">roof cleaning</a> and <a href=\"/driveway-and-concrete-cleaning/\">driveway cleaning</a> pages each list what is included, and we serve <a href=\"/\">Reno</a> and the surrounding areas.",
         ],
       },
     ],
@@ -398,6 +398,6 @@ export const POSTS = [
       },
     ],
     related: ["house-washing", "roof-cleaning", "driveway-and-concrete-cleaning"],
-    city: "pressure-washing-reno",
+    city: "home",
   },
 ];

@@ -1,7 +1,7 @@
 // Every route on the site. build.mjs renders whatever this returns.
 import { readFileSync } from "node:fs";
 import { SERVICES } from "./services.mjs";
-import { CITIES } from "./cities.mjs";
+import { CITIES, RENO_LINK } from "./cities.mjs";
 import { POSTS } from "./blog.mjs";
 import { localBusiness, serviceSchema, faqSchema, breadcrumbSchema, BUSINESS_ID } from "../schema.mjs";
 import { SITE_URL } from "../../site.config.js";
@@ -23,7 +23,8 @@ function withShot(figure, body) {
 export function buildPages({ flags }) {
   const liveServices = SERVICES.filter((s) => !s.flag || flags[s.flag]);
   const serviceBySlug = Object.fromEntries(SERVICES.map((s) => [s.slug, s]));
-  const cityLinks = CITIES.map((c) => ({ route: "/" + c.slug, label: c.label }));
+  // Reno leads the list and points at the homepage, which is now its page.
+  const cityLinks = [RENO_LINK, ...CITIES.map((c) => ({ route: "/" + c.slug, label: c.label }))];
   const pages = [];
 
   /* ---------- Homepage ---------- */
@@ -36,7 +37,25 @@ export function buildPages({ flags }) {
     body: read("src/pages/home.html"),
     headExtra: "{{HERO_PRELOAD}}",
     needsLightbox: true,
-    schema: [localBusiness()],
+    // The FAQs moved here from /pressure-washing-reno/, and their markup came
+    // with them so the answers stay eligible for rich results.
+    schema: [
+      localBusiness(),
+      faqSchema([
+        {
+          q: "Which parts of Reno do you cover?",
+          a: "The whole city, from the Old Southwest and Midtown to Caughlin Ranch, Somersett, north Reno and the South Meadows, plus Verdi to the west.",
+        },
+        {
+          q: "How soon can you get to a property in Reno?",
+          a: "Our shop is in south Reno, so most of the city is a short drive. Call or send the quote form and we will confirm the next available window.",
+        },
+        {
+          q: "Do you work on both homes and commercial buildings here?",
+          a: "Yes. Residential and commercial are both core work for us, and commercial jobs are usually scheduled outside business hours.",
+        },
+      ], ""),
+    ],
   });
 
   /* ---------- Service pages ---------- */
@@ -142,7 +161,7 @@ export function buildPages({ flags }) {
       },
       body: `<h2>Cities and towns</h2>
       <p>Pick the area closest to you for local detail on the neighborhoods, building types and services we are asked for most.</p>
-      <ul>${CITIES.map((c) => `<li><a href="/${c.slug}/">Pressure washing in ${c.label}</a>: ${c.lede}</li>`).join("")}</ul>
+      <ul><li><a href="${RENO_LINK.route}">Pressure washing in ${RENO_LINK.label}</a>: our shop sits in south Reno, so most of the valley is a short drive for our crews.</li>${CITIES.map((c) => `<li><a href="/${c.slug}/">Pressure washing in ${c.label}</a>: ${c.lede}</li>`).join("")}</ul>
 
       <h2>Counties we cover</h2>
       <p>We serve Washoe County, Carson City, Douglas County, Lyon County, Storey County and Churchill County, plus the California shore of Lake Tahoe. If you are on the edge of that map, call and ask. Travel time is the only real limit.</p>
@@ -155,7 +174,7 @@ export function buildPages({ flags }) {
       aside: {
         heading: "Not sure if you are in range?",
         text: "Send the address with your quote request and we will confirm scheduling for your area.",
-        links: CITIES.map((c) => ({ route: "/" + c.slug, label: c.label })),
+        links: [RENO_LINK, ...CITIES.map((c) => ({ route: "/" + c.slug, label: c.label }))],
         linksHeading: "City pages",
       },
       faqs: [
@@ -222,6 +241,11 @@ ${ctaBand({ heading: "Questions about your property?", text: "Send us the detail
       .filter((s) => s && (!s.flag || flags[s.flag]))
       .map((s) => ({ route: "/" + s.slug, label: s.label }));
     const cityPage = CITIES.find((c) => c.slug === post.city);
+    const cityLink = cityPage
+      ? { route: "/" + cityPage.slug, label: `Pressure washing in ${cityPage.label}` }
+      : post.city === "home"
+        ? { route: RENO_LINK.route, label: `Pressure washing in ${RENO_LINK.label}` }
+        : null;
 
     const nav = prev || next
       ? `<nav class="post-nav" aria-label="More posts">
@@ -247,7 +271,7 @@ ${ctaBand({ heading: "Questions about your property?", text: "Send us the detail
         aside: {
           heading: "Want this handled for you?",
           text: "Send the address and what needs cleaning. We will reply the same business day with a free quote.",
-          links: relatedLinks.concat(cityPage ? [{ route: "/" + cityPage.slug, label: `Pressure washing in ${cityPage.label}` }] : []),
+          links: relatedLinks.concat(cityLink ? [cityLink] : []),
           linksHeading: "Related pages",
         },
         faqs: post.faqs,

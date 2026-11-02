@@ -95,9 +95,8 @@ export const AREA_SERVED = [
 ];
 
 // Towns named in the business block's areaServed, alongside the counties in
-// AREA_SERVED. These are the places people type into a search.
-// TODO: confirm Truckee is inside the territory. It was added for schema on
-// 2026-11-02 and is not in AREA_SERVED.
+// AREA_SERVED. These are the places people type into a search. Truckee is
+// inside the territory, confirmed by the client on 2026-11-02.
 export const SERVED_PLACES = [
   "Reno, NV",
   "Sparks, NV",

@@ -1,68 +1,13 @@
 // City page copy. Local detail only where it is verifiable geography, building
 // stock or climate. No invented customers, job counts or results.
 
-export const CITIES = [
-  {
-    slug: "pressure-washing-reno",
-    shotAlt: "Our crew washing a home exterior in Reno, NV",
-    label: "Reno",
-    keyword: "pressure washing Reno",
-    title: "Pressure Washing in Reno NV | Rolling Suds Reno-Tahoe",
-    description:
-      "Pressure washing in Reno NV for homes and businesses: house washing, roofs, concrete, commercial exteriors. Locally based off Riggins Court. Free quotes.",
-    eyebrow: "Service Area",
-    h1: "Pressure washing in Reno, NV",
-    lede:
-      "Our shop sits in south Reno, so most of the valley is a short drive for our crews. We clean homes, storefronts, offices and industrial buildings across the city.",
-    sections: [
-      {
-        h2: "Reno neighborhoods we work in",
-        blocks: [
-          "Reno is not one kind of housing stock, and the cleaning changes with the neighborhood. In the Old Southwest and the Newlands area, the homes are older, the trees are mature, and the work leans toward wood, painted brick, shaded north walls and gutters packed with leaf litter every fall.",
-          "West of town in Caughlin Ranch and toward Somersett, houses sit closer to the hillsides and take more wind, more dust and more pine debris on the roof. In the newer south Reno developments around Damonte Ranch and the South Meadows, the story is stucco, HOA standards and fine alkali dust blowing in off open ground and construction.",
-          "Downtown and Midtown are their own category: storefronts, patios and sidewalks that need cleaning on a short cycle because they take foot traffic all day and sit right against the street.",
-        ],
-      },
-      {
-        h2: "What Reno weather does to a building",
-        blocks: [
-          "The valley is high desert at about four and a half thousand feet, which means intense sun, wide temperature swings and very little rain to wash anything off. Dust settles and stays. Hard water from sprinklers leaves mineral spotting on windows, siding and stucco. Winter brings road treatment that rides home on tires and dries to a chalky film on driveways and lower panels.",
-          "Then there is smoke season. Ash from regional wildfires settles on roofs, gutters, windows and solar panels, and it does not simply rinse off with the first storm.",
-          "None of this is dramatic damage on its own. It is cumulative, which is why an annual or twice yearly wash keeps a property looking maintained rather than weathered.",
-        ],
-      },
-      {
-        h2: "Most requested services in Reno",
-        blocks: [
-          {
-            list: [
-              "House washing for stucco and siding, especially before spring listings",
-              "Driveway and concrete cleaning after the road treatment season",
-              "Roof and gutter work in neighborhoods with mature trees or pines",
-              "Commercial storefront, sidewalk and patio cleaning downtown and in Midtown",
-              "Solar panel and window rinsing after smoky stretches",
-            ],
-          },
-        ],
-      },
-    ],
-    faqs: [
-      {
-        q: "Which parts of Reno do you cover?",
-        a: "The whole city, from the Old Southwest and Midtown to Caughlin Ranch, Somersett, north Reno and the South Meadows, plus Verdi to the west.",
-      },
-      {
-        q: "How soon can you get to a property in Reno?",
-        a: "Our shop is in south Reno, so most of the city is a short drive. Call or send the quote form and we will confirm the next available window.",
-      },
-      {
-        q: "Do you work on both homes and commercial buildings here?",
-        a: "Yes. Residential and commercial are both core work for us, and commercial jobs are usually scheduled outside business hours.",
-      },
-    ],
-    services: ["house-washing", "driveway-and-concrete-cleaning", "roof-cleaning", "commercial-pressure-washing", "window-cleaning"],
-  },
+// Reno has no city page. It was folded into the homepage in November 2026,
+// because the homepage and /pressure-washing-reno/ were competing for the same
+// search, and /pressure-washing-reno/ now redirects to /. The nav, the footer
+// and the service area list use this link so Reno still appears in them.
+export const RENO_LINK = { route: "/", label: "Reno" };
 
+export const CITIES = [
   {
     slug: "pressure-washing-sparks",
     shotAlt: "Driveway cleaning at a home in Sparks, NV",
