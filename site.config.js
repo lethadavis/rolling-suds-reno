@@ -131,24 +131,73 @@ export const HUBSPOT = {
   portalId: "246064596",
   quoteFormGuid: "009a2b20-3e64-4b6e-9f7a-1efd028734c4",
   contestFormGuid: "009a2b20-3e64-4b6e-9f7a-1efd028734c4",
-  // Our field names on the left, HubSpot property names on the right.
-  // HubSpot rejects a submission that names a property its form does not
-  // have, so this lists only properties the form really carries. As of
-  // 2026-10-19 the form is First Name, Last Name and Email, nothing else.
-  //
-  // TODO: add Phone, Street Address, a dropdown for Service and a multi line
-  // text field for Notes to the HubSpot form, then uncomment the matching
-  // lines below. Until then those answers reach us through Netlify Forms and
-  // its notification email only.
+
+  // Our field name on the left, the HubSpot contact property on the right.
+  // HubSpot rejects a submission naming a property its form does not carry,
+  // so every name here has to exist on the published form.
   fieldMap: {
-    name: "firstname",      // split on the first space into firstname + lastname
+    name: "firstname",              // split at the first space, the rest is the last name
     email: "email",
-    // phone: "phone",
-    // address: "address",
-    // zip: "zip",
-    // service: "<the dropdown's internal name>",
-    // notes: "message",    // also the sink for any answer with no field of its own
+    phone: "phone",
+    address: "address",             // the quote form's single address field
+    street: "address",              // /driveway keeps street, city and zip apart
+    city: "city",
+    zip: "zip",
+    homeowner: "homeowner",
+    service: "service_selected",
+    preferred_contact: "preferred_contact_method",
   },
+
+  // The form's "Additional notes" box. message is HubSpot's standard property
+  // for whatever a visitor writes on a form.
+  notesProperty: "message",
+
+  // Service Selected accepts these values and nothing else. A quote form
+  // choice that is not one of them is left out of the field and written into
+  // the notes instead, which is what happens to "Multiple Services" and
+  // "Not Sure: Need a Consultation".
+  serviceOptions: [
+    "House Washing",
+    "Roof Cleaning",
+    "Driveway & Concrete",
+    "Deck & Fence Cleaning",
+    "Gutter Cleaning",
+    "Commercial Washing",
+    "Window Cleaning",
+    "Fleet Washing",
+    "Restaurant Exterior Cleaning",
+    "Wildfire Ash & Soot Cleanup",
+  ],
+
+  // /driveway is always the same service.
+  contestService: "Driveway & Concrete",
+
+  // Our checkbox and radio values in HubSpot's wording. The quote form allows
+  // several, and HubSpot wants them semicolon separated.
+  contactMethods: { phone: "Phone call", text: "Text message", email: "Email" },
+
+  // Lead Source option values, exactly as HubSpot stores them.
+  // TODO: "Driveway / Websit" is missing its final "e" in HubSpot. The value
+  // has to match character for character or the submission is refused, so it
+  // is spelled wrong here on purpose. Fix the option in HubSpot, then fix it
+  // here in the same change.
+  leadSource: {
+    quote: "Web Search / Website",
+    contest: "Driveway / Websit",
+  },
+
+  // Written to the end of the notes, in this order, whenever they have a value.
+  notesTail: [
+    ["offer", "Offer"],
+    ["utm_source", "UTM source"],
+    ["utm_medium", "UTM medium"],
+    ["utm_campaign", "UTM campaign"],
+    ["page_url", "Page"],
+  ],
+
+  // Homeowner is a plain text property in HubSpot, so the ticked box is
+  // written as a word rather than a boolean.
+  homeownerYes: "Yes",
 };
 
 // Google Analytics 4. Loads on the live domain only (production builds), so

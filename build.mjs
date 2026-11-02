@@ -128,10 +128,7 @@ if (dupZips.length) console.warn(`SERVED_ZIPS has duplicates, shown once: ${[...
 const zipList = [...new Set(SERVED_ZIPS)].sort().map((z) => `<span>${z}</span>`).join("");
 
 const tokens = {
-  HS_PORTAL_ID: HUBSPOT.portalId,
-  HS_QUOTE_FORM: HUBSPOT.quoteFormGuid,
-  HS_CONTEST_FORM: HUBSPOT.contestFormGuid,
-  HS_FIELD_MAP: JSON.stringify(HUBSPOT.fieldMap),
+  HS_CONFIG: JSON.stringify(HUBSPOT),
   ZIP_LIST: zipList,
   HERO_PRELOAD: heroPreload,
   CONTACT_PREF_HIDDEN: contactPrefHidden,

@@ -65,45 +65,66 @@ function contactPref(form) {
    Leads post to HubSpot's public form endpoint straight from the browser, so
    no API key ships with the site. Portal and form ids come from site.config.js.
    Until they are filled, forms fall back to Netlify Forms. */
-const HUBSPOT = {
-  portalId: "{{HS_PORTAL_ID}}",
-  quoteForm: "{{HS_QUOTE_FORM}}",
-  contestForm: "{{HS_CONTEST_FORM}}",
-  fieldMap: {{HS_FIELD_MAP}},
-};
+const HUBSPOT = {{HS_CONFIG}};
 const hubspotReady = (guid) => Boolean(HUBSPOT.portalId && guid);
-const prettyLabel = (key) => key.replace(/[_-]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 
-// Only mapped fields are named to HubSpot, because it rejects a submission
-// that names a property the form does not have. Anything unmapped goes into
-// the notes property when the form has one, and is dropped otherwise: Netlify
-// holds the full record either way, so no answer is lost.
-function hubspotPayload(entries, extraLines = []) {
+// Builds one HubSpot submission. Only properties the HubSpot form carries may
+// be named, so the long answers and the tracking tags go into the notes.
+// opts: { leadSource, service, extraLines }
+function hubspotPayload(entries, opts = {}) {
   const map = HUBSPOT.fieldMap || {};
-  const fields = [];
-  const leftovers = [];
-  const push = (name, value) => {
-    if (value) fields.push({ objectTypeId: "0-1", name, value: String(value).slice(0, 65000) });
-  };
+  const data = {};
   for (const [key, raw] of entries) {
     if (typeof raw !== "string") continue; // skip file inputs
+    if (key === "form-name" || key === "bot-field") continue;
     const value = raw.trim();
-    if (!value || key === "form-name" || key === "bot-field") continue;
-    const prop = map[key];
-    if (prop === "firstname") {
-      const [first, ...rest] = value.split(/\s+/);
-      push("firstname", first);
-      if (rest.length) push("lastname", rest.join(" "));
-    } else if (prop) {
-      push(prop, value);
-    } else {
-      leftovers.push(`${prettyLabel(key)}: ${value}`);
-    }
+    if (!value) continue;
+    // Checkboxes sharing a name arrive as several entries.
+    data[key] = key in data ? `${data[key]}, ${value}` : value;
   }
-  if (map.notes) {
-    const message = [...leftovers, ...extraLines].filter(Boolean).join("\n");
-    if (message) push(map.notes, message);
+
+  const fields = [];
+  const push = (name, value) => {
+    if (name && value) fields.push({ objectTypeId: "0-1", name, value: String(value).slice(0, 65000) });
+  };
+
+  if (data.name) {
+    const [first, ...rest] = data.name.split(/\s+/);
+    push(map.name, first);
+    if (rest.length) push("lastname", rest.join(" "));
   }
+  push(map.email, data.email);
+  push(map.phone, data.phone);
+  push(map.address, data.address || data.street);
+  push(map.city, data.city);
+  push(map.zip, data.zip);
+  if (data.homeowner) push(map.homeowner, HUBSPOT.homeownerYes);
+
+  const methods = (data.preferred_contact || "")
+    .split(/[,;]\s*/)
+    .map((v) => (HUBSPOT.contactMethods || {})[v.toLowerCase()])
+    .filter(Boolean);
+  push(map.preferred_contact, [...new Set(methods)].join(";"));
+
+  push("lead_source", opts.leadSource);
+
+  // Service Selected takes its own options only. Anything else is named in
+  // the notes so the answer survives.
+  const spare = [];
+  const service = opts.service || data.service;
+  if (service) {
+    if ((HUBSPOT.serviceOptions || []).includes(service)) push(map.service, service);
+    else spare.push(`Requested service: ${service}`);
+  }
+
+  const tail = (HUBSPOT.notesTail || [])
+    .filter(([key]) => data[key])
+    .map(([key, label]) => `${label}: ${data[key]}`);
+  push(
+    HUBSPOT.notesProperty,
+    [data.description, data.notes, ...spare, ...(opts.extraLines || []), ...tail].filter(Boolean).join("\n")
+  );
+
   const hutk = document.cookie.match(/hubspotutk=([^;]+)/);
   return {
     submittedAt: Date.now(),
@@ -112,13 +133,26 @@ function hubspotPayload(entries, extraLines = []) {
   };
 }
 
-async function sendToHubSpot(guid, entries, extraLines) {
+async function sendToHubSpot(guid, entries, opts = {}) {
   const url = `https://api.hsforms.com/submissions/v3/integration/submit/${HUBSPOT.portalId}/${guid}`;
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(hubspotPayload(entries, extraLines)),
-  });
+  const post = (payload) =>
+    fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+  const payload = hubspotPayload(entries, opts);
+  let res = await post(payload);
+  if (res.status === 400) {
+    // HubSpot refuses a submission that names a property its form does not
+    // carry, which is what happens while a field is still unpublished. Send
+    // the three the form has always had, so the lead still arrives.
+    const detail = await res.text().catch(() => "");
+    console.warn("[hubspot] full submission refused, retrying with name and email", detail.slice(0, 300));
+    const core = new Set(["firstname", "lastname", "email"]);
+    res = await post({ ...payload, fields: payload.fields.filter((f) => core.has(f.name)) });
+  }
   if (!res.ok) {
     const detail = await res.text().catch(() => "");
     throw new Error(`HubSpot ${res.status}: ${detail.slice(0, 300)}`);
@@ -411,7 +445,7 @@ syncHeader();
     if (!form.reportValidity()) return;
 
     const entries = [...new FormData(form).entries()];
-    const destination = hubspotReady(HUBSPOT.quoteForm) ? "hubspot+netlify" : "netlify";
+    const destination = hubspotReady(HUBSPOT.quoteFormGuid) ? "hubspot+netlify" : "netlify";
     track("quote_submit", {
       method: destination,
       preferred_contact: pref ? pref.value() : "",
@@ -429,12 +463,9 @@ syncHeader();
       // One of the two landing is enough: the request is not lost, and a
       // problem at one destination never shows the visitor an error.
       const sends = [sendToNetlify(entries)];
-      if (hubspotReady(HUBSPOT.quoteForm)) {
+      if (hubspotReady(HUBSPOT.quoteFormGuid)) {
         sends.push(
-          sendToHubSpot(HUBSPOT.quoteForm, entries, [
-            `Preferred contact: ${pref ? pref.value() : ""}`,
-            `Page: ${location.href}`,
-          ])
+          sendToHubSpot(HUBSPOT.quoteFormGuid, entries, { leadSource: HUBSPOT.leadSource.quote })
         );
       }
       const results = await Promise.allSettled(sends);
@@ -695,13 +726,12 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
           return res;
         }),
       ];
-      if (hubspotReady(HUBSPOT.contestForm)) {
+      if (hubspotReady(HUBSPOT.contestFormGuid)) {
         sends.push(
-          sendToHubSpot(HUBSPOT.contestForm, [...data.entries()], [
-            `Preferred contact: ${pref.value()}`,
-            `Lead source: ${form.lead_source.value}`,
-            `Page: ${form.page_url.value}`,
-          ])
+          sendToHubSpot(HUBSPOT.contestFormGuid, [...data.entries()], {
+            leadSource: HUBSPOT.leadSource.contest,
+            service: HUBSPOT.contestService,
+          })
         );
       }
       const results = await Promise.allSettled(sends);
