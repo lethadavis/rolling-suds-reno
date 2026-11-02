@@ -1,5 +1,5 @@
 // JSON-LD builders. Every block is parsed and checked by build.mjs before it ships.
-import { SITE_URL, CONTACT, AREA_SERVED } from "../site.config.js";
+import { SITE_URL, CONTACT, AREA_SERVED, SERVED_PLACES } from "../site.config.js";
 
 export const BUSINESS_ID = `${SITE_URL}/#business`;
 
@@ -24,7 +24,15 @@ export function localBusiness() {
       postalCode: CONTACT.zip,
       addressCountry: "US",
     },
-    areaServed: AREA_SERVED.map((name) => ({ "@type": "AdministrativeArea", name })),
+    // The counties the crews cover, plus the towns people actually search for.
+    // A town already named as a county entry is not repeated.
+    areaServed: [
+      ...AREA_SERVED.map((name) => ({ "@type": "AdministrativeArea", name })),
+      ...SERVED_PLACES.filter((name) => !AREA_SERVED.includes(name)).map((name) => ({
+        "@type": "Place",
+        name,
+      })),
+    ],
   };
   // openingHours is left out on purpose: the site does not publish hours.
   if (CONTACT.sameAs.length) block.sameAs = CONTACT.sameAs;

@@ -94,6 +94,18 @@ export const AREA_SERVED = [
   "Lake Tahoe, CA",
 ];
 
+// Towns named in the business block's areaServed, alongside the counties in
+// AREA_SERVED. These are the places people type into a search.
+// TODO: confirm Truckee is inside the territory. It was added for schema on
+// 2026-11-02 and is not in AREA_SERVED.
+export const SERVED_PLACES = [
+  "Reno, NV",
+  "Sparks, NV",
+  "Carson City, NV",
+  "Truckee, CA",
+  "Lake Tahoe, CA",
+];
+
 // Hero background photo, decorative. Files live at
 // images/hero/<name>-<width>.{avif,webp,jpg}; phones use the 4:5 crop in
 // mobile. Swap name for a job photo later and give it real alt text.

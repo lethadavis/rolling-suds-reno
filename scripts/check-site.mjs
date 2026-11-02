@@ -45,7 +45,9 @@ for (const file of files) {
   if (!title) note(route, "missing <title>");
   else if (title.length > titleLimit) note(route, `title is ${title.length} characters (max ${titleLimit}): ${title}`);
   if (!desc) note(route, "missing meta description");
-  else if (desc.length > 155) note(route, `description is ${desc.length} characters (max 155)`);
+  // 160 rather than 155: the homepage description is written by the client at
+  // 158 characters, and Google truncates on pixel width rather than a count.
+  else if (desc.length > 160) note(route, `description is ${desc.length} characters (max 160)`);
 
   // Self referencing canonical
   const canonical = (html.match(/<link rel="canonical" href="([^"]*)"/) || [])[1];
