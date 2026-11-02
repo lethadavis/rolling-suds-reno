@@ -132,30 +132,40 @@ export const HUBSPOT = {
   quoteFormGuid: "009a2b20-3e64-4b6e-9f7a-1efd028734c4",
   contestFormGuid: "009a2b20-3e64-4b6e-9f7a-1efd028734c4",
 
-  // Our field name on the left, the HubSpot contact property on the right.
-  // HubSpot rejects a submission naming a property its form does not carry,
-  // so every name here has to exist on the published form.
+  // Our field name on the left, the HubSpot property the published form
+  // carries on the right. HubSpot refuses a submission that names a property
+  // its form does not have, so these follow the form, not our wishes.
+  // Read from the published form on 2026-11-02.
   fieldMap: {
     name: "firstname",              // split at the first space, the rest is the last name
-    email: "email",
-    phone: "phone",
-    address: "address",             // the quote form's single address field
-    street: "address",              // /driveway keeps street, city and zip apart
+    email: "email",                 // required by the form, required by both of ours
+    phone: "mobilephone",           // the form uses Mobile Phone Number, not Phone Number
+    address: "service_street_address", // required by the form
+    street: "service_street_address",
     city: "city",
-    zip: "zip",
+    zip: "service_zip",
     homeowner: "homeowner",
     service: "service_selected",
-    preferred_contact: "preferred_contact_method",
   },
 
-  // The form's "Additional notes" box. message is HubSpot's standard property
-  // for whatever a visitor writes on a form.
+  // The form's "Additional notes" box.
   notesProperty: "message",
 
-  // Service Selected accepts these values and nothing else. A quote form
-  // choice that is not one of them is left out of the field and written into
-  // the notes instead, which is what happens to "Multiple Services" and
-  // "Not Sure: Need a Consultation".
+  // The form asks for the preferred contact method as separate checkboxes
+  // rather than one property, so each is set true or false.
+  contactCheckboxes: { phone: "phone_contact", text: "text_message" },
+
+  // Wording for the notes line that records the choice in full.
+  contactMethods: { phone: "Phone call", text: "Text message", email: "Email" },
+
+  // TODO: the form's "Email" checkbox points at work_email, which is a text
+  // property for an email address, so a tick cannot be written there without
+  // putting a word where an address belongs. Give it its own checkbox
+  // property, add it to contactCheckboxes, and it stops living in the notes.
+
+  // Service Selected accepts these and nothing else. A quote form choice that
+  // is not one of them is written into the notes instead, which is what
+  // happens to "Multiple Services" and "Not Sure: Need a Consultation".
   serviceOptions: [
     "House Washing",
     "Roof Cleaning",
@@ -171,10 +181,6 @@ export const HUBSPOT = {
 
   // /driveway is always the same service.
   contestService: "Driveway & Concrete",
-
-  // Our checkbox and radio values in HubSpot's wording. The quote form allows
-  // several, and HubSpot wants them semicolon separated.
-  contactMethods: { phone: "Phone call", text: "Text message", email: "Email" },
 
   // Lead Source option values, exactly as HubSpot stores them.
   // TODO: "Driveway / Websit" is missing its final "e" in HubSpot. The value
@@ -195,8 +201,7 @@ export const HUBSPOT = {
     ["page_url", "Page"],
   ],
 
-  // Homeowner is a plain text property in HubSpot, so the ticked box is
-  // written as a word rather than a boolean.
+  // Homeowner is a plain text property, so the ticked box is written as a word.
   homeownerYes: "Yes",
 };
 

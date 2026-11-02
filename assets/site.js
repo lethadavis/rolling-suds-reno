@@ -100,17 +100,27 @@ function hubspotPayload(entries, opts = {}) {
   push(map.zip, data.zip);
   if (data.homeowner) push(map.homeowner, HUBSPOT.homeownerYes);
 
-  const methods = (data.preferred_contact || "")
+  // Preferred contact: one checkbox property per method, plus a line in the
+  // notes so the whole answer is readable, including any method the form has
+  // no checkbox for.
+  const chosen = (data.preferred_contact || "")
     .split(/[,;]\s*/)
-    .map((v) => (HUBSPOT.contactMethods || {})[v.toLowerCase()])
+    .map((v) => v.toLowerCase())
     .filter(Boolean);
-  push(map.preferred_contact, [...new Set(methods)].join(";"));
+  for (const key of Object.keys(HUBSPOT.contactCheckboxes || {})) {
+    push(HUBSPOT.contactCheckboxes[key], chosen.includes(key) ? "true" : "false");
+  }
 
   push("lead_source", opts.leadSource);
 
   // Service Selected takes its own options only. Anything else is named in
   // the notes so the answer survives.
   const spare = [];
+  if (chosen.length) {
+    spare.push(
+      `Preferred contact: ${chosen.map((c) => (HUBSPOT.contactMethods || {})[c] || c).join(", ")}`
+    );
+  }
   const service = opts.service || data.service;
   if (service) {
     if ((HUBSPOT.serviceOptions || []).includes(service)) push(map.service, service);
